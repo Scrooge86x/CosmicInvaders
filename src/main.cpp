@@ -82,7 +82,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
-        shader.setVec3("color", 0.0f, 0.0f, (sin(glfwGetTime() * 2.f) / 2.f) + .5f);
+        const float currentTime{ static_cast<float>(glfwGetTime()) };
+        shader.setVec3("color", 0.0f, 0.0f, (sin(currentTime * 2.f) / 2.f) + .5f);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
