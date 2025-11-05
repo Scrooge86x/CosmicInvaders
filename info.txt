@@ -1,0 +1,9 @@
+Wymagania:
+- CMake 3.30 lub nowszy
+- Kompilator ze wsparciem dla C++20
+
+Instrukcja budowania:
+mkdir build
+cd build
+cmake ..
+cmake --build .
