@@ -1,6 +1,15 @@
 #include <iostream>
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+static void framebufferSizeCallback(
+    [[maybe_unused]] GLFWwindow* const window,
+    const int width,
+    const int height
+) {
+    glViewport(0, 0, width, height);
+}
 
 int main() {
     if (!glfwInit()) {
@@ -20,8 +29,18 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+        std::cerr << "Failed to initialize GLAD\n";
+        return -1;
+    }
 
     while (!glfwWindowShouldClose(window)) {
+        glClearColor(0.f, 0.5f, 0.5f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
