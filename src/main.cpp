@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,6 +13,11 @@ static void framebufferSizeCallback(
 }
 
 int main() {
+    if (!std::filesystem::exists("assets/textures/texture.png")) {
+        std::cerr << "Failed to read assets\n";
+        return -1;
+    }
+
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
         return -1;
