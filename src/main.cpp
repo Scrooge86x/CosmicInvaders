@@ -6,6 +6,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#define MINIAUDIO_IMPLEMENTATION
+#include <miniaudio.h>
+
 #include "renderer/shader.h"
 
 static void framebufferSizeCallback(
@@ -28,6 +31,14 @@ int main() {
         std::cerr << "Failed to read assets\n";
         return -1;
     }
+
+    ma_engine audioEngine{};
+    if (ma_engine_init(NULL, &audioEngine) != MA_SUCCESS) {
+        std::cerr << "Failed to initialize miniaudio engine\n";
+        return -1;
+    }
+
+    ma_engine_play_sound(&audioEngine, "assets/sounds/space-laser.mp3", NULL);
 
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
@@ -92,6 +103,7 @@ int main() {
         glfwPollEvents();
     }
 
+    ma_engine_uninit(&audioEngine);
     glfwTerminate();
     return 0;
 }
