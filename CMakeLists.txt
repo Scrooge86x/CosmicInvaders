@@ -19,6 +19,7 @@ endif ()
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     glad
+    glm
 )
 
 add_custom_target(copy_assets ALL

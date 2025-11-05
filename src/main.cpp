@@ -1,8 +1,10 @@
 #include <iostream>
 #include <filesystem>
+#include <format>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 static void framebufferSizeCallback(
     [[maybe_unused]] GLFWwindow* const window,
@@ -13,6 +15,13 @@ static void framebufferSizeCallback(
 }
 
 int main() {
+    glm::mat2 matrix1{ 1.f, 2.f,
+                       2.f, 1.f };
+    glm::mat2 matrix2{ 2.f, 1.f,
+                       1.f, 2.f };
+    glm::mat2 matrix3{ matrix1 * matrix2 };
+    std::cout << std::format("[{}, {}]\n[{}, {}]\n", matrix3[0][0], matrix3[0][1], matrix3[1][0], matrix3[1][1]);
+
     if (!std::filesystem::exists("assets/textures/texture.png")) {
         std::cerr << "Failed to read assets\n";
         return -1;
