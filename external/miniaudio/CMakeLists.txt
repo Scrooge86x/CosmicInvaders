@@ -1,2 +1,2 @@
-add_library(miniaudio INTERFACE)
-target_include_directories(miniaudio SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(miniaudio STATIC miniaudio.cpp)
+target_include_directories(miniaudio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

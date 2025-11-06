@@ -6,7 +6,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
 #include <imgui.h>
