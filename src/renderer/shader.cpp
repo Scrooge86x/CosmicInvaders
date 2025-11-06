@@ -14,10 +14,6 @@ Shader::Shader(
     createShaderProgram();
 }
 
-Shader::~Shader() {
-    deleteShaderProgram();
-}
-
 Shader::Shader(Shader&& other) noexcept
     : m_shaderProgramId   { std::exchange(other.m_shaderProgramId, 0) }
     , m_vertexShaderPath  { std::exchange(other.m_vertexShaderPath, {}) }

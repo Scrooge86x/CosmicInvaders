@@ -18,7 +18,10 @@ public:
         const std::filesystem::path& fragmentShaderPath,
         const std::filesystem::path& geometryShaderPath = {}
     );
-    ~Shader();
+
+    ~Shader() {
+        deleteShaderProgram();
+    }
 
     Shader(const Shader&) = delete;
     Shader& operator=(const Shader&) = delete;
