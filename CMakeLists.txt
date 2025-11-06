@@ -22,6 +22,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glm
     miniaudio
     imgui
+    stb_image
 )
 
 add_custom_target(copy_assets ALL
