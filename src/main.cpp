@@ -13,6 +13,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "renderer/shader.h"
+#include "renderer/texture2d.h"
 
 static void framebufferSizeCallback(
     [[maybe_unused]] GLFWwindow* const window,
@@ -70,10 +71,12 @@ int main() {
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     float vertices[]{
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+         0.0f,  0.5f, 0.0f,   0.5f, 1.0f,
     };
+
+    Texture2D texture{ "assets/textures/texture.png" };
 
     GLuint VBO{};
     GLuint VAO{};
@@ -85,8 +88,11 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -102,8 +108,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
-        const float currentTime{ static_cast<float>(glfwGetTime()) };
-        shader.setVec3("color", 0.0f, 0.0f, (sin(currentTime * 2.f) / 2.f) + .5f);
+        shader.setInt("testTexture", texture.getId());
+        texture.bind(1);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
