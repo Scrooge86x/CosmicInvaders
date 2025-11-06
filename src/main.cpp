@@ -9,6 +9,10 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "renderer/shader.h"
 
 static void framebufferSizeCallback(
@@ -88,6 +92,12 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -99,9 +109,22 @@ int main() {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     ma_engine_uninit(&audioEngine);
     glfwTerminate();

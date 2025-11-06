@@ -21,6 +21,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glad
     glm
     miniaudio
+    imgui
 )
 
 add_custom_target(copy_assets ALL
