@@ -42,6 +42,11 @@ bool Shader::reload() {
     return m_shaderProgramId != 0;
 }
 
+GLint Shader::getUniformLocation(const GLchar* const name) {
+    auto [it, wasInserted]{ m_uniformLocations.try_emplace(name, 0) };
+    return !wasInserted ? it->second : (it->second = glGetUniformLocation(m_shaderProgramId, name));
+}
+
 GLuint Shader::createShaderFromFile(const GLenum type, const std::filesystem::path& fileName) {
     std::ifstream shaderFile{ fileName };
     if (!shaderFile) {
