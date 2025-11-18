@@ -1,10 +1,11 @@
-#include <iostream>
+﻿#include <iostream>
 #include <filesystem>
 #include <format>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <miniaudio.h>
 
@@ -14,6 +15,7 @@
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
+#include "renderer/mesh.h"
 
 static void framebufferSizeCallback(
     [[maybe_unused]] GLFWwindow* const window,
@@ -68,34 +70,64 @@ int main() {
         return -1;
     }
 
-    Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
-
-    float vertices[]{
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
-         0.0f,  0.5f, 0.0f,   0.5f, 1.0f,
+    Vertex vertices[]{
+        // back
+        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
+        {{ 0.5f, -0.5f, -0.5f}, {}, {1.0f, 0.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 1.0f}},
+        {{-0.5f,  0.5f, -0.5f}, {}, {0.0f, 1.0f}},
+        // front
+        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 0.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {}, {1.0f, 0.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {}, {0.0f, 1.0f}},
+        // left
+        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
+        {{-0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
+        // right
+        {{ 0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
+        // top
+        {{-0.5f,  0.5f, -0.5f}, {}, {0.0f, 0.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {}, {0.0f, 1.0f}},
+        // bottom
+        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
+        {{ 0.5f, -0.5f, -0.5f}, {}, {1.0f, 0.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {}, {1.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
     };
 
+    GLuint indices[]{
+        // back
+        0, 1, 2, 2, 3, 0,
+        // front
+        4, 5, 6, 6, 7, 4,
+        // left
+        8, 9,10,10,11, 8,
+        // right
+       12,13,14,14,15,12,
+        // top
+       16,17,18,18,19,16,
+        // bottom
+       20,21,22,22,23,20,
+    };
+
+    Mesh mesh{ vertices, indices };
+    Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
     Texture2D texture{ "assets/textures/texture.png" };
 
-    GLuint VBO{};
-    GLuint VAO{};
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(0));
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glm::mat4 view{ glm::lookAt(
+        glm::vec3(1.f, 1.f, 1.f),
+        glm::vec3(0.f, 0.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f)
+    ) };
+    glm::mat4 projection{ glm::perspective(glm::radians(90.0f), 900.0f / 600.0f, 0.1f, 100.0f) };
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -105,14 +137,20 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glm::mat4 model{ glm::rotate(glm::mat4(1.f), static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 1.f, 0.f)) };
 
         shader.use();
-        shader.setInt("testTexture", texture.getId());
+        shader.setInt("u_texture", texture.getId());
+        shader.setMat4("u_model", model);
+        shader.setMat4("u_view", view);
+        shader.setMat4("u_projection", projection);
         texture.bind(1);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(mesh.getVao());
+        glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
