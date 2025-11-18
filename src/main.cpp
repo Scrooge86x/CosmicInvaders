@@ -17,12 +17,17 @@
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
 
+constexpr float initialWindowWidth{ 900.f };
+constexpr float initialWindowHeight{ 600.f };
+
+static float g_aspectRatio{ initialWindowWidth / initialWindowHeight};
 static void framebufferSizeCallback(
     [[maybe_unused]] GLFWwindow* const window,
     const int width,
     const int height
 ) {
     glViewport(0, 0, width, height);
+    g_aspectRatio = static_cast<float>(width) / height;
 }
 
 int main() {
@@ -55,7 +60,13 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window{ glfwCreateWindow(900, 600, "Test Window", NULL, NULL) };
+    GLFWwindow* window{ glfwCreateWindow(
+        static_cast<int>(initialWindowWidth),
+        static_cast<int>(initialWindowHeight),
+        "Test Window",
+        NULL,
+        NULL
+    ) };
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
@@ -127,7 +138,6 @@ int main() {
         glm::vec3(0.f, 0.f, 0.f),
         glm::vec3(0.f, 1.f, 0.f)
     ) };
-    glm::mat4 projection{ glm::perspective(glm::radians(90.0f), 900.0f / 600.0f, 0.1f, 100.0f) };
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -140,6 +150,7 @@ int main() {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glm::mat4 projection{ glm::perspective(glm::radians(90.0f), g_aspectRatio, 0.1f, 100.0f) };
         glm::mat4 model{ glm::rotate(glm::mat4(1.f), static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 1.f, 0.f)) };
 
         shader.use();
