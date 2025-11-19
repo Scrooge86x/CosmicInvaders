@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <filesystem>
 #include <format>
 
@@ -27,7 +27,9 @@ static void framebufferSizeCallback(
     const int height
 ) {
     glViewport(0, 0, width, height);
-    g_aspectRatio = static_cast<float>(width) / height;
+    if (height) {
+        g_aspectRatio = static_cast<float>(width) / height;
+    }
 }
 
 int main() {
