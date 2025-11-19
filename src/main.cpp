@@ -147,13 +147,20 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    float rotationSpeed{ 0.5f };
+    float rotationAngle{};
+    float lastTime{};
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        const float currentTime{ static_cast<float>(glfwGetTime()) };
+        rotationAngle += (currentTime - lastTime) * rotationSpeed;
+        lastTime = currentTime;
+
         glm::mat4 projection{ glm::perspective(glm::radians(90.0f), g_aspectRatio, 0.1f, 100.0f) };
-        glm::mat4 model{ glm::rotate(glm::mat4(1.f), static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 1.f, 0.f)) };
+        glm::mat4 model{ glm::rotate(glm::mat4(1.f), rotationAngle, glm::vec3(0.5f, 1.f, 0.f)) };
 
         shader.use();
         shader.setInt("u_texture", texture.getId());
@@ -170,6 +177,11 @@ int main() {
         ImGui::NewFrame();
 
         ImGui::ShowDemoWindow();
+
+        ImGui::Begin("Config");
+        ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
+        ImGui::End();
+
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
