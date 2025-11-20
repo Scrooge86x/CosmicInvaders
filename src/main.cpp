@@ -136,9 +136,9 @@ int main() {
     Texture2D texture{ "assets/textures/texture.png" };
 
     glm::mat4 view{ glm::lookAt(
-        glm::vec3(1.f, 1.f, 1.f),
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 1.f, 0.f)
+        glm::vec3{ 1.f, 1.f, 1.f },
+        glm::vec3{ 0.f, 0.f, 0.f },
+        glm::vec3{ 0.f, 1.f, 0.f }
     ) };
 
     IMGUI_CHECKVERSION();
@@ -149,18 +149,23 @@ int main() {
 
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
+    float modelScale{ 1.f };
+
     float lastTime{};
     while (!glfwWindowShouldClose(window)) {
+        const float currentTime{ static_cast<float>(glfwGetTime()) };
+        const float dt{ currentTime - lastTime };
+        lastTime = currentTime;
+
+        rotationAngle += dt * rotationSpeed;
+
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        const float currentTime{ static_cast<float>(glfwGetTime()) };
-        rotationAngle += (currentTime - lastTime) * rotationSpeed;
-        lastTime = currentTime;
-
         glm::mat4 projection{ glm::perspective(glm::radians(90.0f), g_aspectRatio, 0.1f, 100.0f) };
-        glm::mat4 model{ glm::rotate(glm::mat4(1.f), rotationAngle, glm::vec3(0.5f, 1.f, 0.f)) };
+        glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
+        model = glm::scale(model, glm::vec3{ modelScale });
 
         shader.use();
         shader.setInt("u_texture", texture.getId());
@@ -180,6 +185,7 @@ int main() {
 
         ImGui::Begin("Config");
         ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
+        ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
         ImGui::End();
 
         ImGui::Render();
