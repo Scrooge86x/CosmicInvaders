@@ -105,7 +105,7 @@ int main() {
         }
     }
 
-    Mesh mesh{ *assimpMesh, material };
+    Mesh mesh{ *assimpMesh, material, glm::scale(glm::mat4{ 1.f }, glm::vec3{ 5.f, 5.f, 5.f })};
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     IMGUI_CHECKVERSION();
@@ -116,7 +116,7 @@ int main() {
 
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
-    float modelScale{ 20.f };
+    float modelScale{ 4.f };
     float lastTime{};
 
     glEnable(GL_DEPTH_TEST);

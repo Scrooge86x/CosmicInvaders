@@ -13,7 +13,10 @@ Mesh::Mesh(
     createMesh(vertices, indices);
 }
 
-Mesh::Mesh(const aiMesh& mesh, const std::shared_ptr<Material> material)
+Mesh::Mesh(
+    const aiMesh& mesh,
+    const std::shared_ptr<Material> material,
+    const glm::mat4& transform)
         : m_material{ material }
         , m_indexCount{ static_cast<GLsizei>(mesh.mNumFaces * 3) } // Assumes aiProcess_Triangulate was used
         , m_vertexCount{ static_cast<GLsizei>(mesh.mNumVertices) } {
@@ -22,18 +25,21 @@ Mesh::Mesh(const aiMesh& mesh, const std::shared_ptr<Material> material)
 
     const bool hasNormals{ mesh.HasNormals() };
     const bool hasTextureCoords{ mesh.HasTextureCoords(0) };
+    const glm::mat3 normalMatrix{ glm::transpose(glm::inverse(glm::mat3{ transform })) };
+
     for (unsigned int i{}; i < mesh.mNumVertices; ++i) {
         vertices.emplace_back(
-            glm::vec3{
+            glm::vec3{ transform * glm::vec4{
                 mesh.mVertices[i].x,
                 mesh.mVertices[i].y,
                 mesh.mVertices[i].z,
-            },
-            hasNormals ? glm::vec3{
+                1.f
+            } },
+            hasNormals ? glm::normalize(normalMatrix * glm::vec3{
                 mesh.mNormals[i].x,
                 mesh.mNormals[i].y,
                 mesh.mNormals[i].z
-            } : glm::vec3{},
+            }) : glm::vec3{},
             hasTextureCoords ? glm::vec2{
                 mesh.mTextureCoords[0][i].x,
                 mesh.mTextureCoords[0][i].y

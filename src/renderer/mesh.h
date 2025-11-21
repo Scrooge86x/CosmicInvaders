@@ -26,7 +26,11 @@ public:
         const std::span<GLuint> indices,
         const std::shared_ptr<Material> material
     );
-    Mesh(const aiMesh& mesh, const std::shared_ptr<Material> material);
+    Mesh(
+        const aiMesh& mesh,
+        const std::shared_ptr<Material> material,
+        const glm::mat4& transform = { 1.f }
+    );
 
     Mesh(const Mesh&) = delete;
     Mesh& operator=(const Mesh&) = delete;
