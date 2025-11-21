@@ -1,8 +1,14 @@
-﻿#include "mesh.h"
+#include "mesh.h"
 
-Mesh::Mesh(const std::span<Vertex> vertices, const std::span<GLuint> indices)
+#include <utility>
+
+Mesh::Mesh(
+    const std::span<Vertex> vertices,
+    const std::span<GLuint> indices,
+    Material&& material)
         : m_vertexCount{ static_cast<GLsizei>(vertices.size()) }
-        , m_indexCount{ static_cast<GLsizei>(indices.size()) } {
+        , m_indexCount{ static_cast<GLsizei>(indices.size()) }
+        , m_material{ std::move(material) } {
     createMesh(vertices, indices);
 }
 

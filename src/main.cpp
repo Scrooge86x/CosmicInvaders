@@ -131,9 +131,10 @@ int main() {
        20,21,22,22,23,20,
     };
 
-    Mesh mesh{ vertices, indices };
+    Mesh mesh{ vertices, indices, {
+        .diffuse{ "assets/textures/texture.png" }
+    } };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
-    Texture2D texture{ "assets/textures/texture.png" };
 
     glm::mat4 view{ glm::lookAt(
         glm::vec3{ 1.f, 1.f, 1.f },
@@ -167,12 +168,15 @@ int main() {
         glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
         model = glm::scale(model, glm::vec3{ modelScale });
 
+        const auto& [diffuse]{ mesh.getMaterial() };
+
         shader.use();
-        shader.setInt("u_texture", texture.getId());
         shader.setMat4("u_model", model);
         shader.setMat4("u_view", view);
         shader.setMat4("u_projection", projection);
-        texture.bind(1);
+
+        diffuse.bind(0);
+        shader.setInt("u_material.diffuse", 0);
 
         glBindVertexArray(mesh.getVao());
         glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);

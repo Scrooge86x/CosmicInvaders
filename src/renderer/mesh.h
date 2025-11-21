@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef MESH_H
 #define MESH_H
@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-#include "texture2d.h"
+#include "material.h"
 
 struct Vertex {
     glm::vec3 position{};
@@ -19,7 +19,11 @@ struct Vertex {
 
 class Mesh {
 public:
-    Mesh(const std::span<Vertex> vertices, const std::span<GLuint> indices);
+    Mesh(
+        const std::span<Vertex> vertices,
+        const std::span<GLuint> indices,
+        Material&& material
+    );
 
     ~Mesh() {
         deleteMesh();
@@ -30,6 +34,7 @@ public:
     [[nodiscard]] GLuint getEbo() const { return m_vao; }
     [[nodiscard]] GLsizei getVertexCount() const { return m_vertexCount; }
     [[nodiscard]] GLsizei getIndexCount() const { return m_indexCount; }
+    [[nodiscard]] const Material& getMaterial() const { return m_material; }
 
 private:
     void createMesh(
@@ -42,7 +47,7 @@ private:
     GLuint m_vbo{};
     GLuint m_ebo{};
 
-    std::vector<Texture2D> m_textures{};
+    Material m_material;
     GLsizei m_vertexCount{};
     GLsizei m_indexCount{};
 };
