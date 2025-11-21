@@ -4,6 +4,7 @@
 #define MESH_H
 
 #include <span>
+#include <memory>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -23,9 +24,9 @@ public:
     Mesh(
         const std::span<Vertex> vertices,
         const std::span<GLuint> indices,
-        Material&& material
+        const std::shared_ptr<Material> material
     );
-    Mesh(const aiScene* scene, const unsigned int meshIndex);
+    Mesh(const aiMesh& mesh, const std::shared_ptr<Material> material);
 
     Mesh(const Mesh&) = delete;
     Mesh& operator=(const Mesh&) = delete;
@@ -42,7 +43,7 @@ public:
     [[nodiscard]] GLuint getEbo() const { return m_vao; }
     [[nodiscard]] GLsizei getVertexCount() const { return m_vertexCount; }
     [[nodiscard]] GLsizei getIndexCount() const { return m_indexCount; }
-    [[nodiscard]] const Material& getMaterial() const { return m_material; }
+    [[nodiscard]] std::shared_ptr<Material> getMaterial() const { return m_material; }
 
 private:
     void createMesh(
@@ -55,7 +56,7 @@ private:
     GLuint m_vbo{};
     GLuint m_ebo{};
 
-    Material m_material;
+    std::shared_ptr<Material> m_material{};
     GLsizei m_vertexCount{};
     GLsizei m_indexCount{};
 };

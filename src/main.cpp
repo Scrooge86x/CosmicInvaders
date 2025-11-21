@@ -91,7 +91,21 @@ int main() {
         return -1;
     }
 
-    Mesh mesh{ scene, 0 };
+    auto material{ std::make_shared<Material>() };
+    aiMesh* assimpMesh{ scene->mMeshes[0] };
+
+    aiMaterial* assimpMaterial{ scene->mMaterials[assimpMesh->mMaterialIndex] };
+    if (assimpMaterial->GetTextureCount(aiTextureType_DIFFUSE)) {
+        aiString texturePath{};
+        assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
+        if (texturePath.C_Str()[0] == '*') {
+            material->diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
+        } else {
+            material->diffuse = Texture2D{ texturePath.C_Str() };
+        }
+    }
+
+    Mesh mesh{ *assimpMesh, material };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     IMGUI_CHECKVERSION();
@@ -125,7 +139,7 @@ int main() {
         shader.setMat4("u_view", view);
         shader.setMat4("u_projection", projection);
 
-        const auto& [diffuse]{ mesh.getMaterial() };
+        const auto& [diffuse]{ *mesh.getMaterial() };
         if (diffuse) {
             diffuse->bind(0);
             shader.setInt("u_material.diffuse", 0);
