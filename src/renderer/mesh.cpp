@@ -73,6 +73,32 @@ Mesh::Mesh(const aiScene* scene, const unsigned int meshIndex) {
     }
 }
 
+Mesh::Mesh(Mesh&& other) noexcept
+    : m_vao        { std::exchange(other.m_vao, 0) }
+    , m_vbo        { std::exchange(other.m_vbo, 0) }
+    , m_ebo        { std::exchange(other.m_ebo, 0) }
+    , m_material   { std::exchange(other.m_material, {}) }
+    , m_vertexCount{ std::exchange(other.m_vertexCount, 0) }
+    , m_indexCount { std::exchange(other.m_indexCount, 0) }
+{}
+
+Mesh& Mesh::operator=(Mesh&& other) noexcept {
+    if (this == &other) {
+        return *this;
+    }
+
+    deleteMesh();
+
+    m_vao         = std::exchange(other.m_vao, 0);
+    m_vbo         = std::exchange(other.m_vbo, 0);
+    m_ebo         = std::exchange(other.m_ebo, 0);
+    m_material    = std::exchange(other.m_material, {});
+    m_vertexCount = std::exchange(other.m_vertexCount, 0);
+    m_indexCount  = std::exchange(other.m_indexCount, 0);
+
+    return *this;
+}
+
 void Mesh::createMesh(
     const std::span<Vertex> vertices,
     const std::span<GLuint> indices

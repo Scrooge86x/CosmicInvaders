@@ -27,6 +27,12 @@ public:
     );
     Mesh(const aiScene* scene, const unsigned int meshIndex);
 
+    Mesh(const Mesh&) = delete;
+    Mesh& operator=(const Mesh&) = delete;
+
+    Mesh(Mesh&& other) noexcept;
+    Mesh& operator=(Mesh&& other) noexcept;
+
     ~Mesh() {
         deleteMesh();
     }
