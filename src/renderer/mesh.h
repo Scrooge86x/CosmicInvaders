@@ -4,10 +4,11 @@
 #define MESH_H
 
 #include <span>
-#include <vector>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <assimp/mesh.h>
+#include <assimp/scene.h>
 
 #include "material.h"
 
@@ -24,6 +25,7 @@ public:
         const std::span<GLuint> indices,
         Material&& material
     );
+    Mesh(const aiScene* scene, const unsigned int meshIndex);
 
     ~Mesh() {
         deleteMesh();

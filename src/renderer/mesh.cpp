@@ -1,6 +1,7 @@
 #include "mesh.h"
 
 #include <utility>
+#include <vector>
 
 Mesh::Mesh(
     const std::span<Vertex> vertices,
@@ -10,6 +11,66 @@ Mesh::Mesh(
         , m_indexCount{ static_cast<GLsizei>(indices.size()) }
         , m_material{ std::move(material) } {
     createMesh(vertices, indices);
+}
+
+Mesh::Mesh(const aiScene* scene, const unsigned int meshIndex) {
+    if (!scene || scene->mNumMeshes <= meshIndex) {
+        return;
+    }
+
+    const aiMesh* mesh{ scene->mMeshes[meshIndex] };
+    m_vertexCount = mesh->mNumVertices;
+
+    // Assumes aiProcess_Triangulate was used
+    m_indexCount = mesh->mNumFaces * 3;
+
+    std::vector<Vertex> vertices{};
+    vertices.reserve(m_vertexCount);
+
+    const bool hasNormals{ mesh->HasNormals() };
+    const bool hasTextureCoords{ mesh->HasTextureCoords(0) };
+    for (unsigned int i{}; i < mesh->mNumVertices; ++i) {
+        vertices.emplace_back(
+            glm::vec3{
+                mesh->mVertices[i].x,
+                mesh->mVertices[i].y,
+                mesh->mVertices[i].z,
+            },
+            hasNormals ? glm::vec3{
+                mesh->mNormals[i].x,
+                mesh->mNormals[i].y,
+                mesh->mNormals[i].z
+            } : glm::vec3{},
+            hasTextureCoords ? glm::vec2{
+                mesh->mTextureCoords[0][i].x,
+                mesh->mTextureCoords[0][i].y
+            } : glm::vec2{}
+        );
+    }
+
+    std::vector<GLuint> indices{};
+    indices.reserve(m_indexCount);
+
+    for (unsigned int i{}; i < mesh->mNumFaces; ++i) {
+        const aiFace& face{ mesh->mFaces[i] };
+        for (unsigned int j{}; j < face.mNumIndices; ++j) {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
+    createMesh(vertices, indices);
+
+    aiMaterial* material{ scene->mMaterials[mesh->mMaterialIndex] };
+
+    aiString texturePath{};
+    if (material->GetTextureCount(aiTextureType_DIFFUSE)) {
+        material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
+        if (texturePath.C_Str()[0] == '*') {
+            m_material.diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
+        } else {
+            m_material.diffuse = Texture2D{ texturePath.C_Str() };
+        }
+    }
 }
 
 void Mesh::createMesh(

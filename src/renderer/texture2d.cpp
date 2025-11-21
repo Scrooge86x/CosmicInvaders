@@ -16,6 +16,23 @@ Texture2D::Texture2D(const std::filesystem::path& path) {
     stbi_image_free(data);
 }
 
+Texture2D::Texture2D(const aiTexture& texture) {
+    unsigned char* data{ stbi_load_from_memory(
+        reinterpret_cast<stbi_uc*>(texture.pcData),
+        texture.mWidth,
+        &m_width,
+        &m_height,
+        &m_nChannels,
+        0
+    ) };
+    if (!data) {
+        return;
+    }
+
+    createTextureFromData(data);
+    stbi_image_free(data);
+}
+
 Texture2D::Texture2D(Texture2D&& other) noexcept
     : m_textureId{ std::exchange(other.m_textureId, 0) }
     , m_width    { std::exchange(other.m_width, 0) }

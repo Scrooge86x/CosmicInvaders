@@ -6,10 +6,12 @@
 #include <filesystem>
 
 #include <glad/glad.h>
+#include <assimp/texture.h>
 
 class Texture2D {
 public:
     explicit Texture2D(const std::filesystem::path& path);
+    explicit Texture2D(const aiTexture& texture);
 
     ~Texture2D() {
         deleteTexture();

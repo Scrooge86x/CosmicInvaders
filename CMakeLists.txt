@@ -23,6 +23,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     miniaudio
     imgui
     stb_image
+    assimp
 )
 
 add_custom_target(copy_assets ALL

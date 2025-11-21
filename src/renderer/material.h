@@ -5,8 +5,10 @@
 
 #include "texture2d.h"
 
+#include <optional>
+
 struct Material {
-    Texture2D diffuse;
+    std::optional<Texture2D> diffuse{};
 };
 
 #endif // MATERIAL_H

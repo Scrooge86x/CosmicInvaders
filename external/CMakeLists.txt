@@ -1,6 +1,8 @@
 set(GLFW_STANDALONE OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
 
 add_subdirectory(glfw)
 add_subdirectory(glad)
@@ -8,3 +10,4 @@ add_subdirectory(glm)
 add_subdirectory(miniaudio)
 add_subdirectory(imgui)
 add_subdirectory(stb)
+add_subdirectory(assimp)

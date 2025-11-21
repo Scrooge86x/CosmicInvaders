@@ -13,6 +13,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
@@ -83,57 +87,22 @@ int main() {
         return -1;
     }
 
-    Vertex vertices[]{
-        // back
-        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
-        {{ 0.5f, -0.5f, -0.5f}, {}, {1.0f, 0.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 1.0f}},
-        {{-0.5f,  0.5f, -0.5f}, {}, {0.0f, 1.0f}},
-        // front
-        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 0.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {}, {1.0f, 0.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {}, {0.0f, 1.0f}},
-        // left
-        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
-        {{-0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
-        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
-        // right
-        {{ 0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
-        // top
-        {{-0.5f,  0.5f, -0.5f}, {}, {0.0f, 0.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {}, {1.0f, 0.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {}, {1.0f, 1.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {}, {0.0f, 1.0f}},
-        // bottom
-        {{-0.5f, -0.5f, -0.5f}, {}, {0.0f, 0.0f}},
-        {{ 0.5f, -0.5f, -0.5f}, {}, {1.0f, 0.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {}, {1.0f, 1.0f}},
-        {{-0.5f, -0.5f,  0.5f}, {}, {0.0f, 1.0f}},
-    };
+    Assimp::Importer importer{};
+    const aiScene* scene{ importer.ReadFile(
+        "assets/3d-models/Avocado.glb",
+        aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FlipUVs
+    ) };
 
-    GLuint indices[]{
-        // back
-        0, 1, 2, 2, 3, 0,
-        // front
-        4, 5, 6, 6, 7, 4,
-        // left
-        8, 9,10,10,11, 8,
-        // right
-       12,13,14,14,15,12,
-        // top
-       16,17,18,18,19,16,
-        // bottom
-       20,21,22,22,23,20,
-    };
+    if (!scene) {
+        std::cerr << importer.GetErrorString() << '\n';
+        return -1;
+    }
+    if (scene->mNumMeshes != 1) {
+        std::cerr << "Demo expects only one mesh in a file.\n";
+        return -1;
+    }
 
-    Mesh mesh{ vertices, indices, {
-        .diffuse{ "assets/textures/texture.png" }
-    } };
+    Mesh mesh{ scene, 0 };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     glm::mat4 view{ glm::lookAt(
@@ -150,7 +119,7 @@ int main() {
 
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
-    float modelScale{ 1.f };
+    float modelScale{ 20.f };
 
     float lastTime{};
     while (!glfwWindowShouldClose(window)) {
@@ -168,15 +137,16 @@ int main() {
         glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
         model = glm::scale(model, glm::vec3{ modelScale });
 
-        const auto& [diffuse]{ mesh.getMaterial() };
-
         shader.use();
         shader.setMat4("u_model", model);
         shader.setMat4("u_view", view);
         shader.setMat4("u_projection", projection);
 
-        diffuse.bind(0);
-        shader.setInt("u_material.diffuse", 0);
+        const auto& [diffuse]{ mesh.getMaterial() };
+        if (diffuse) {
+            diffuse->bind(0);
+            shader.setInt("u_material.diffuse", 0);
+        }
 
         glBindVertexArray(mesh.getVao());
         glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);
