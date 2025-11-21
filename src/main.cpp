@@ -22,18 +22,6 @@
 #include "renderer/mesh.h"
 
 int main() {
-    glm::mat2 matrix1{ 1.f, 2.f,
-                       2.f, 1.f };
-    glm::mat2 matrix2{ 2.f, 1.f,
-                       1.f, 2.f };
-    glm::mat2 matrix3{ matrix1 * matrix2 };
-    std::cout << std::format("[{}, {}]\n[{}, {}]\n", matrix3[0][0], matrix3[0][1], matrix3[1][0], matrix3[1][1]);
-
-    if (!std::filesystem::exists("assets/textures/texture.png")) {
-        std::cerr << "Failed to read assets\n";
-        return -1;
-    }
-
     ma_engine audioEngine{};
     if (ma_engine_init(NULL, &audioEngine) != MA_SUCCESS) {
         std::cerr << "Failed to initialize miniaudio engine\n";
@@ -69,6 +57,12 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
+    glm::mat4 view{ glm::lookAt(
+        glm::vec3{ 1.f, 1.f, 1.f },
+        glm::vec3{ 0.f, 0.f, 0.f },
+        glm::vec3{ 0.f, 1.f, 0.f }
+    ) };
+
     static glm::mat4 projection{ glm::perspective(glm::radians(90.0f), initialWindowWidth / initialWindowHeight, 0.1f, 100.0f) };
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, const int width, const int height) {
         glViewport(0, 0, width, height);
@@ -100,12 +94,6 @@ int main() {
     Mesh mesh{ scene, 0 };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
-    glm::mat4 view{ glm::lookAt(
-        glm::vec3{ 1.f, 1.f, 1.f },
-        glm::vec3{ 0.f, 0.f, 0.f },
-        glm::vec3{ 0.f, 1.f, 0.f }
-    ) };
-
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
@@ -115,8 +103,10 @@ int main() {
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     float modelScale{ 20.f };
-
     float lastTime{};
+
+    glEnable(GL_DEPTH_TEST);
+
     while (!glfwWindowShouldClose(window)) {
         const float currentTime{ static_cast<float>(glfwGetTime()) };
         const float dt{ currentTime - lastTime };
@@ -125,7 +115,6 @@ int main() {
         rotationAngle += dt * rotationSpeed;
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
-        glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
@@ -143,7 +132,7 @@ int main() {
         }
 
         glBindVertexArray(mesh.getVao());
-        glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -169,6 +158,7 @@ int main() {
     ImGui::DestroyContext();
 
     ma_engine_uninit(&audioEngine);
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
