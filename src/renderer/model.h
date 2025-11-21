@@ -1,0 +1,42 @@
+#pragma once
+
+#ifndef MODEL_H
+#define MODEL_H
+
+#include "mesh.h"
+#include "material.h"
+
+#include <assimp/scene.h>
+
+#include <vector>
+#include <filesystem>
+
+class Model {
+public:
+    using MaterialVec = std::vector<std::shared_ptr<Material>>;
+
+    explicit Model(
+        const std::filesystem::path& path,
+        const glm::mat4& transform = { 1.f }
+    );
+
+    Model(const Model&) = delete;
+    Model& operator=(const Model&) = delete;
+
+    Model(Model&& other) noexcept = default;
+    Model& operator=(Model&& other) noexcept = default;
+
+    const std::vector<Mesh>& getMeshes() const { return m_meshes; }
+
+private:
+    void processNode(
+        const aiScene* const scene,
+        const aiNode* const node,
+        const glm::mat4& parentTransform
+    );
+
+    std::vector<Mesh> m_meshes{};
+    MaterialVec m_materials{};
+};
+
+#endif // MODEL_H

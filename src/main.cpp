@@ -13,13 +13,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
+#include "renderer/model.h"
 
 int main() {
     ma_engine audioEngine{};
@@ -58,7 +55,7 @@ int main() {
     glfwMakeContextCurrent(window);
 
     glm::mat4 view{ glm::lookAt(
-        glm::vec3{ 1.f, 1.f, 1.f },
+        glm::vec3{ 5.f, 1.f, 5.f },
         glm::vec3{ 0.f, 0.f, 0.f },
         glm::vec3{ 0.f, 1.f, 0.f }
     ) };
@@ -76,36 +73,7 @@ int main() {
         return -1;
     }
 
-    Assimp::Importer importer{};
-    const aiScene* scene{ importer.ReadFile(
-        "assets/3d-models/Avocado.glb",
-        aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FlipUVs
-    ) };
-
-    if (!scene) {
-        std::cerr << importer.GetErrorString() << '\n';
-        return -1;
-    }
-    if (scene->mNumMeshes != 1) {
-        std::cerr << "Demo expects only one mesh in a file.\n";
-        return -1;
-    }
-
-    auto material{ std::make_shared<Material>() };
-    aiMesh* assimpMesh{ scene->mMeshes[0] };
-
-    aiMaterial* assimpMaterial{ scene->mMaterials[assimpMesh->mMaterialIndex] };
-    if (assimpMaterial->GetTextureCount(aiTextureType_DIFFUSE)) {
-        aiString texturePath{};
-        assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
-        if (texturePath.C_Str()[0] == '*') {
-            material->diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
-        } else {
-            material->diffuse = Texture2D{ texturePath.C_Str() };
-        }
-    }
-
-    Mesh mesh{ *assimpMesh, material, glm::scale(glm::mat4{ 1.f }, glm::vec3{ 5.f, 5.f, 5.f })};
+    Model object{ "assets/3d-models/DiffuseTransmissionPlant.glb", glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.f, 2.f, 2.f }) };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     IMGUI_CHECKVERSION();
@@ -139,14 +107,16 @@ int main() {
         shader.setMat4("u_view", view);
         shader.setMat4("u_projection", projection);
 
-        const auto& [diffuse]{ *mesh.getMaterial() };
-        if (diffuse) {
-            diffuse->bind(0);
-            shader.setInt("u_material.diffuse", 0);
-        }
+        for (const auto& mesh : object.getMeshes()) {
+            const auto& [diffuse] { *mesh.getMaterial() };
+            if (diffuse) {
+                diffuse->bind(0);
+                shader.setInt("u_material.diffuse", 0);
+            }
 
-        glBindVertexArray(mesh.getVao());
-        glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
+            glBindVertexArray(mesh.getVao());
+            glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
+        }
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
