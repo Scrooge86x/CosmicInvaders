@@ -2,8 +2,8 @@
 
 out vec4 FragColor;
 
-in vec2 Uv;
 in vec3 Normal;
+in vec2 Uv;
 
 struct Material {
     sampler2D diffuse;

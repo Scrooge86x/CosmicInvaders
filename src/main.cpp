@@ -21,21 +21,6 @@
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
 
-constexpr float initialWindowWidth{ 900.f };
-constexpr float initialWindowHeight{ 600.f };
-
-static float g_aspectRatio{ initialWindowWidth / initialWindowHeight};
-static void framebufferSizeCallback(
-    [[maybe_unused]] GLFWwindow* const window,
-    const int width,
-    const int height
-) {
-    glViewport(0, 0, width, height);
-    if (height) {
-        g_aspectRatio = static_cast<float>(width) / height;
-    }
-}
-
 int main() {
     glm::mat2 matrix1{ 1.f, 2.f,
                        2.f, 1.f };
@@ -66,6 +51,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    constexpr float initialWindowWidth{ 900.f };
+    constexpr float initialWindowHeight{ 600.f };
+
     GLFWwindow* window{ glfwCreateWindow(
         static_cast<int>(initialWindowWidth),
         static_cast<int>(initialWindowHeight),
@@ -80,7 +68,14 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    static glm::mat4 projection{ glm::perspective(glm::radians(90.0f), initialWindowWidth / initialWindowHeight, 0.1f, 100.0f) };
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, const int width, const int height) {
+        glViewport(0, 0, width, height);
+        if (height) {
+            projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / height, 0.1f, 100.0f);
+        }
+    });
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         std::cerr << "Failed to initialize GLAD\n";
@@ -133,7 +128,6 @@ int main() {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 projection{ glm::perspective(glm::radians(90.0f), g_aspectRatio, 0.1f, 100.0f) };
         glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
         model = glm::scale(model, glm::vec3{ modelScale });
 
