@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-void Renderer::Draw(const Model& object, Shader& shader) const {
+void Renderer::draw(const Model& object, Shader& shader) const {
     for (const auto& mesh : object.getMeshes()) {
         const auto& [diffuse] { *mesh.getMaterial() };
         if (diffuse) {

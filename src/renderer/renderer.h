@@ -3,5 +3,5 @@
 
 class Renderer {
 public:
-	void Draw(const Model& object, Shader& shader) const;
+	void draw(const Model& object, Shader& shader) const;
 };
