@@ -32,6 +32,7 @@ public:
 
 private:
 	friend Derived;
+	Renderer() {};
 };
 
 #endif 
