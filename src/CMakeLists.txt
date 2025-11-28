@@ -6,6 +6,7 @@ add_subdirectory(core)
 add_subdirectory(renderer)
 add_subdirectory(gameplay)
 add_subdirectory(ui)
+add_subdirectory(ecs)
 
 if (MSVC)
     set(COMPILER_FLAGS /W4)
@@ -22,6 +23,7 @@ target_link_libraries(game
         gameplay
         renderer
         ui
+        ecs
         glad
         glfw
 )
@@ -30,6 +32,7 @@ target_link_libraries(demo
         core
         renderer
         ui
+        ecs
         glad
         glfw
         glm
