@@ -20,6 +20,7 @@ entt::entity createEntity(entt::registry& registry, Model& object, glm::vec3& po
 	registry.emplace<Health>(entity, 100.0f, 100.0f);
 	registry.emplace<Render>(entity, object);
 	registry.emplace<EnemyTag>(entity, type);
+	registry.emplace<ShouldDestroy>(entity);
 
 	return entity;
 }

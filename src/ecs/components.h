@@ -30,6 +30,10 @@ struct Lifetime {
     float timeRemaining;
 };
 
+struct ShouldDestroy {
+    bool shuld{ false };
+};
+
 struct Render {
     std::shared_ptr<Model> object;
 };
