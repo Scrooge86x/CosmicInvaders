@@ -7,12 +7,10 @@ layout (location = 2) in vec2 aUv;
 out vec3 Normal;
 out vec2 Uv;
 
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
+uniform mat4 u_mvp;
 
 void main() {
-    gl_Position = u_projection * u_view * u_model * vec4(aPosition, 1.0);
+    gl_Position = u_mvp * vec4(aPosition, 1.0);
     Uv = aUv;
     Normal = aNormal;
 }

@@ -106,9 +106,7 @@ int main() {
         model = glm::scale(model, glm::vec3{ modelScale });
 
         shader.use();
-        shader.setMat4("u_model", model);
-        shader.setMat4("u_view", view);
-        shader.setMat4("u_projection", projection);
+        shader.setMat4("u_mvp", projection * view * model);
 
         for (const auto& mesh : object.getMeshes()) {
             const auto& [diffuse] { *mesh.getMaterial() };
@@ -132,7 +130,7 @@ int main() {
         ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
         ImGui::SliderFloat("Position X", &position.x, -10.f, 10.f);
         ImGui::SliderFloat("Position Y", &position.y, -10.f, 10.f);
-        ImGui::SliderFloat("Position Z", &position.z, -10.f, 10.f);
+        ImGui::SliderFloat("Position Z", &position.z, -15.f, -0.5f);
         ImGui::End();
 
         ImGui::Render();
