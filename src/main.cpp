@@ -55,7 +55,7 @@ int main() {
     glfwMakeContextCurrent(window);
 
     glm::mat4 view{ glm::lookAt(
-        glm::vec3{ 5.f, 1.f, 5.f },
+        glm::vec3{ 0.f, 0.f, 1.f },
         glm::vec3{ 0.f, 0.f, 0.f },
         glm::vec3{ 0.f, 1.f, 0.f }
     ) };
@@ -85,21 +85,24 @@ int main() {
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     float modelScale{ 4.f };
-    float lastTime{};
+    glm::vec3 position{ 0.f, -2.f, -5.f };
 
     glEnable(GL_DEPTH_TEST);
+    float previousTime{};
 
     while (!glfwWindowShouldClose(window)) {
         const float currentTime{ static_cast<float>(glfwGetTime()) };
-        const float dt{ currentTime - lastTime };
-        lastTime = currentTime;
+        const float dt{ currentTime - previousTime };
+        previousTime = currentTime;
 
         rotationAngle += dt * rotationSpeed;
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 model{ glm::rotate(glm::mat4{ 1.f }, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f }) };
+        glm::mat4 model{ 1.f };
+        model = glm::translate(model, position);
+        model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
         model = glm::scale(model, glm::vec3{ modelScale });
 
         shader.use();
@@ -127,6 +130,9 @@ int main() {
         ImGui::Begin("Config");
         ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
         ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
+        ImGui::SliderFloat("Position X", &position.x, -10.f, 10.f);
+        ImGui::SliderFloat("Position Y", &position.y, -10.f, 10.f);
+        ImGui::SliderFloat("Position Z", &position.z, -10.f, 10.f);
         ImGui::End();
 
         ImGui::Render();
