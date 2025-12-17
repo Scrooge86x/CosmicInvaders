@@ -14,6 +14,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "core/gl-window.h"
+#include "core/fps-counter.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
@@ -58,6 +59,8 @@ int main() {
     Model object{ "assets/3d-models/DiffuseTransmissionPlant.glb", glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.f, 2.f, 2.f }) };
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
+    FpsCounter fpsCounter{};
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
@@ -82,6 +85,7 @@ int main() {
         previousTime = currentTime;
 
         rotationAngle += dt * rotationSpeed;
+        fpsCounter.update(dt);
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,6 +125,7 @@ int main() {
         ImGui::ShowDemoWindow();
 
         ImGui::Begin("Config");
+        ImGui::Text("Fps %lf", fpsCounter.getFps());
         ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
         ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
         ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
