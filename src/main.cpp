@@ -117,13 +117,17 @@ int main() {
         shader.setVec3("u_lighting.ambient", lighting.ambient);
         shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
         shader.setVec3("u_lighting.sunColor", lighting.sunColor);
+        shader.setVec3("u_cameraPos", glm::vec3{ 0.f, 0.f, 1.f });
 
         for (const auto& mesh : object.getMeshes()) {
-            const auto& [diffuse] { *mesh.getMaterial() };
-            if (diffuse) {
-                diffuse->bind(0);
+            const auto& material{ *mesh.getMaterial() };
+            if (material.diffuse) {
+                material.diffuse->bind(0);
                 shader.setInt("u_material.diffuse", 0);
             }
+            shader.setVec3("u_material.specularColor", material.specularColor);
+            shader.setFloat("u_material.specularStrength", material.specularStrength);
+            shader.setFloat("u_material.shininess", material.shininess);
 
             glBindVertexArray(mesh.getVao());
             glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);

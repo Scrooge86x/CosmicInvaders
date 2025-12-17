@@ -10,6 +10,9 @@
 
 struct Material {
     std::optional<Texture2D> diffuse{};
+    glm::vec3 specularColor{ 1.f };
+    float specularStrength{ 1.f };
+    float shininess{ 32.f };
 };
 
 #endif // MATERIAL_H
