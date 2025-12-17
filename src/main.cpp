@@ -13,6 +13,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "core/gl-window.h"
+
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
@@ -33,27 +35,12 @@ int main() {
         return -1;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    constexpr float initialWindowWidth{ 900.f };
-    constexpr float initialWindowHeight{ 600.f };
-
-    GLFWwindow* window{ glfwCreateWindow(
-        static_cast<int>(initialWindowWidth),
-        static_cast<int>(initialWindowHeight),
-        "Test Window",
-        NULL,
-        NULL
-    ) };
+    GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
         return -1;
     }
-
-    glfwMakeContextCurrent(window);
 
     glm::mat4 view{ glm::lookAt(
         glm::vec3{ 0.f, 0.f, 1.f },
@@ -61,14 +48,12 @@ int main() {
         glm::vec3{ 0.f, 1.f, 0.f }
     ) };
 
-    static glm::mat4 projection{ glm::perspective(glm::radians(90.0f), initialWindowWidth / initialWindowHeight, 0.1f, 100.0f) };
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, const int width, const int height) {
-        glViewport(0, 0, width, height);
-        if (height) {
-            projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / height, 0.1f, 100.0f);
-        }
+    glm::mat4 projection{ glm::perspective(glm::radians(90.0f), window.getFramebufferAspectRatio(), 0.1f, 100.0f)};
+    window.setResizeCallback([&projection, &window](int, int) {
+        projection = glm::perspective(glm::radians(90.0f), window.getFramebufferAspectRatio(), 0.1f, 100.0f);
     });
 
+    window.makeCurrentContext();
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         std::cerr << "Failed to initialize GLAD\n";
         return -1;
@@ -80,7 +65,7 @@ int main() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
     float rotationSpeed{ 0.5f };
@@ -95,7 +80,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     float previousTime{};
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!window.shouldClose()) {
         const float currentTime{ static_cast<float>(glfwGetTime()) };
         const float dt{ currentTime - previousTime };
         previousTime = currentTime;
@@ -154,8 +139,8 @@ int main() {
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window.swapBuffers();
+        window.pollEvents();
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -163,7 +148,6 @@ int main() {
     ImGui::DestroyContext();
 
     ma_engine_uninit(&audioEngine);
-    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
