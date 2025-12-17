@@ -4,4 +4,5 @@ target_sources(${PROJECT_NAME} PRIVATE
     mesh.cpp mesh.h
     model.cpp model.h
     material.h
+    lighting.h
 )

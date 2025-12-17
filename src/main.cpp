@@ -17,6 +17,7 @@
 #include "renderer/texture2d.h"
 #include "renderer/mesh.h"
 #include "renderer/model.h"
+#include "renderer/lighting.h"
 
 int main() {
     ma_engine audioEngine{};
@@ -86,6 +87,7 @@ int main() {
     float rotationAngle{};
     float modelScale{ 4.f };
     glm::vec3 position{ 0.f, -2.f, -5.f };
+    Lighting lighting{};
 
     glEnable(GL_DEPTH_TEST);
     float previousTime{};
@@ -114,6 +116,7 @@ int main() {
                 diffuse->bind(0);
                 shader.setInt("u_material.diffuse", 0);
             }
+            shader.setVec3("u_lighting.ambient", lighting.ambient);
 
             glBindVertexArray(mesh.getVao());
             glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
@@ -131,6 +134,7 @@ int main() {
         ImGui::SliderFloat("Position X", &position.x, -10.f, 10.f);
         ImGui::SliderFloat("Position Y", &position.y, -10.f, 10.f);
         ImGui::SliderFloat("Position Z", &position.z, -15.f, -0.5f);
+        ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
         ImGui::End();
 
         ImGui::Render();
