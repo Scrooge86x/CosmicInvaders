@@ -20,6 +20,7 @@
 #include "renderer/mesh.h"
 #include "renderer/model.h"
 #include "renderer/lighting.h"
+#include "renderer/camera.h"
 
 int main() {
     ma_engine audioEngine{};
@@ -42,15 +43,10 @@ int main() {
         return -1;
     }
 
-    glm::mat4 view{ glm::lookAt(
-        glm::vec3{ 0.f, 0.f, 1.f },
-        glm::vec3{ 0.f, 0.f, 0.f },
-        glm::vec3{ 0.f, 1.f, 0.f }
-    ) };
-
-    glm::mat4 projection{ glm::perspective(glm::radians(90.0f), window.getFramebufferAspectRatio(), 0.1f, 100.0f)};
-    window.setResizeCallback([&projection, &window](int, int) {
-        projection = glm::perspective(glm::radians(90.0f), window.getFramebufferAspectRatio(), 0.1f, 100.0f);
+    Camera camera{ { 0.f, 0.f, 1.f } };
+    camera.setAspectRatio(window.getFramebufferAspectRatio());
+    window.setResizeCallback([&camera, &window](int, int) {
+        camera.setAspectRatio(window.getFramebufferAspectRatio());
     });
 
     window.makeCurrentContext();
@@ -71,7 +67,7 @@ int main() {
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     float modelScale{ 4.f };
-    glm::vec3 position{ 0.f, -2.f, -5.f };
+    glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
         .sunPosition{ 0.f, -20.f, 0.f },
         .sunColor{ 1.f, 1.f, 3.f },
@@ -97,12 +93,12 @@ int main() {
         glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
         shader.use();
-        shader.setMat4("u_mvp", projection * view * model);
+        shader.setMat4("u_mvp", camera.getViewProjection() * model);
         shader.setMat3("u_normal", normal);
         shader.setVec3("u_lighting.ambient", lighting.ambient);
         shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
         shader.setVec3("u_lighting.sunColor", lighting.sunColor);
-        shader.setVec3("u_cameraPos", glm::vec3{ 0.f, 0.f, 1.f });
+        shader.setVec3("u_cameraPos", camera.getPosition());
 
         for (const auto& mesh : object.getMeshes()) {
             const auto& material{ *mesh.getMaterial() };
@@ -127,9 +123,7 @@ int main() {
         ImGui::Begin("Config");
         ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
         ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
-        ImGui::SliderFloat("Position X", &position.x, -10.f, 10.f);
-        ImGui::SliderFloat("Position Y", &position.y, -10.f, 10.f);
-        ImGui::SliderFloat("Position Z", &position.z, -15.f, -0.5f);
+        ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
         ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
         ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);
         ImGui::SliderFloat3("Sun color", &lighting.sunColor[0], 0.f, 5.f);
