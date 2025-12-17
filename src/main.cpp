@@ -87,7 +87,10 @@ int main() {
     float rotationAngle{};
     float modelScale{ 4.f };
     glm::vec3 position{ 0.f, -2.f, -5.f };
-    Lighting lighting{};
+    Lighting lighting{
+        .sunPosition{ 0.f, -20.f, 0.f },
+        .sunColor{ 1.f, 1.f, 3.f },
+    };
 
     glEnable(GL_DEPTH_TEST);
     float previousTime{};
@@ -106,9 +109,14 @@ int main() {
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
         model = glm::scale(model, glm::vec3{ modelScale });
+        glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
         shader.use();
         shader.setMat4("u_mvp", projection * view * model);
+        shader.setMat3("u_normal", normal);
+        shader.setVec3("u_lighting.ambient", lighting.ambient);
+        shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
+        shader.setVec3("u_lighting.sunColor", lighting.sunColor);
 
         for (const auto& mesh : object.getMeshes()) {
             const auto& [diffuse] { *mesh.getMaterial() };
@@ -116,7 +124,6 @@ int main() {
                 diffuse->bind(0);
                 shader.setInt("u_material.diffuse", 0);
             }
-            shader.setVec3("u_lighting.ambient", lighting.ambient);
 
             glBindVertexArray(mesh.getVao());
             glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
@@ -135,6 +142,8 @@ int main() {
         ImGui::SliderFloat("Position Y", &position.y, -10.f, 10.f);
         ImGui::SliderFloat("Position Z", &position.z, -15.f, -0.5f);
         ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
+        ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);
+        ImGui::SliderFloat3("Sun color", &lighting.sunColor[0], 0.f, 5.f);
         ImGui::End();
 
         ImGui::Render();

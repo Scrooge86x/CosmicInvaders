@@ -6,7 +6,9 @@
 #include <glm/glm.hpp>
 
 struct Lighting {
-    glm::vec3 ambient{ 1.f };
+    glm::vec3 ambient{ 0.3f };
+    glm::vec3 sunPosition{};
+    glm::vec3 sunColor{ 0.5f };
 };
 
 #endif // LIGHTING_H

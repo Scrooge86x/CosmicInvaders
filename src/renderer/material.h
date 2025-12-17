@@ -5,6 +5,7 @@
 
 #include "texture2d.h"
 
+#include <glm/glm.hpp>
 #include <optional>
 
 struct Material {
