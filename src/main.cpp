@@ -15,6 +15,7 @@
 
 #include "core/gl-window.h"
 #include "core/fps-counter.h"
+#include "core/input-manager.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
@@ -60,6 +61,7 @@ int main() {
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     FpsCounter fpsCounter{};
+    InputManager inputManager{};
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -67,6 +69,7 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    bool isGuiVisible{ true };
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     float modelScale{ 4.f };
@@ -85,7 +88,9 @@ int main() {
         previousTime = currentTime;
 
         rotationAngle += dt * rotationSpeed;
+
         fpsCounter.update(dt);
+        inputManager.update(window.getNativeHandle());
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -124,15 +129,20 @@ int main() {
 
         ImGui::ShowDemoWindow();
 
-        ImGui::Begin("Config");
-        ImGui::Text("Fps %lf", fpsCounter.getFps());
-        ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
-        ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
-        ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
-        ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
-        ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);
-        ImGui::SliderFloat3("Sun color", &lighting.sunColor[0], 0.f, 5.f);
-        ImGui::End();
+        if (inputManager.isPressed(InputManager::Key::Escape)) {
+            isGuiVisible = !isGuiVisible;
+        }
+        if (isGuiVisible) {
+            ImGui::Begin("Config (Press ESC to close)", &isGuiVisible);
+            ImGui::Text("Fps %lf", fpsCounter.getFps());
+            ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
+            ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
+            ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
+            ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
+            ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);
+            ImGui::SliderFloat3("Sun color", &lighting.sunColor[0], 0.f, 5.f);
+            ImGui::End();
+        }
 
         ImGui::Render();
 
