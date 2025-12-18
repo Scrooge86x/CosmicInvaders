@@ -19,9 +19,9 @@ public:
 
     glm::vec3 getPosition() const { return m_position; }
     float getYaw() const { return m_yaw; }
-    float getPitch() const { return m_yaw; }
-    float getRoll() const { return m_yaw; }
-    float getAspectRatio() const { return m_yaw; }
+    float getPitch() const { return m_pitch; }
+    float getRoll() const { return m_roll; }
+    float getAspectRatio() const { return m_aspectRatio; }
 
     const glm::mat4& getView() const;
     const glm::mat4& getProjection() const;
