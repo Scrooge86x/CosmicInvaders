@@ -3,4 +3,5 @@ target_sources(${PROJECT_NAME} PRIVATE
     fps-counter.cpp fps-counter.h
     input-manager.cpp input-manager.h
     model-store.cpp model-store.h
+    settings.cpp settings.h
 )

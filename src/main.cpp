@@ -13,12 +13,11 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <nlohmann/json.hpp>
-
 #include "core/gl-window.h"
 #include "core/fps-counter.h"
 #include "core/input-manager.h"
 #include "core/model-store.h"
+#include "core/settings.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
@@ -28,11 +27,6 @@
 #include "renderer/camera.h"
 
 int main() {
-    nlohmann::json json{};
-    json["hello"] = 123;
-    json["world"] = "test";
-    std::cout << json << '\n';
-
     ma_engine audioEngine{};
     if (ma_engine_init(NULL, &audioEngine) != MA_SUCCESS) {
         std::cerr << "Failed to initialize miniaudio engine\n";
@@ -87,10 +81,10 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    Settings settings{ "config.json" };
+
     bool isGuiVisible{ true };
-    float rotationSpeed{ 0.5f };
     float rotationAngle{};
-    float modelScale{ 4.f };
     glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
         .sunPosition{ 0.f, -20.f, 0.f },
@@ -105,7 +99,7 @@ int main() {
         const float dt{ currentTime - previousTime };
         previousTime = currentTime;
 
-        rotationAngle += dt * rotationSpeed;
+        rotationAngle += dt * settings.rotationSpeed;
 
         fpsCounter.update(dt);
         inputManager.update(window.getNativeHandle());
@@ -116,7 +110,7 @@ int main() {
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
-        model = glm::scale(model, glm::vec3{ modelScale });
+        model = glm::scale(model, glm::vec3{ settings.modelScale });
         glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
         shader.use();
@@ -153,12 +147,15 @@ int main() {
         if (isGuiVisible) {
             ImGui::Begin("Config (Press ESC to close)", &isGuiVisible);
             ImGui::Text("Fps %lf", fpsCounter.getFps());
-            ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
-            ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
+            ImGui::SliderFloat("Rotation speed", &settings.rotationSpeed, 0.5f, 5.f);
+            ImGui::SliderFloat("Model scale", &settings.modelScale, 0.01f, 30.f);
             ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
             ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
             ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);
             ImGui::SliderFloat3("Sun color", &lighting.sunColor[0], 0.f, 5.f);
+            if (ImGui::Button("Save config")) {
+                settings.saveToFile();
+            }
             ImGui::End();
         }
 
