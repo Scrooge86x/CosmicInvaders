@@ -7,8 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <miniaudio.h>
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -18,6 +16,7 @@
 #include "core/input-manager.h"
 #include "core/model-store.h"
 #include "core/settings.h"
+#include "core/audio-engine.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
@@ -27,18 +26,13 @@
 #include "renderer/camera.h"
 
 int main() {
-    ma_engine audioEngine{};
-    if (ma_engine_init(NULL, &audioEngine) != MA_SUCCESS) {
-        std::cerr << "Failed to initialize miniaudio engine\n";
-        return -1;
-    }
-
-    ma_engine_play_sound(&audioEngine, "assets/sounds/space-laser.mp3", NULL);
-
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
         return -1;
     }
+
+    AudioEngine audioEngine{};
+    audioEngine.play("assets/sounds/space-laser.mp3");
 
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
     if (!window) {
@@ -171,7 +165,6 @@ int main() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    ma_engine_uninit(&audioEngine);
     glfwTerminate();
     return 0;
 }

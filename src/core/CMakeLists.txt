@@ -4,4 +4,5 @@ target_sources(${PROJECT_NAME} PRIVATE
     input-manager.cpp input-manager.h
     model-store.cpp model-store.h
     settings.cpp settings.h
+    audio-engine.cpp audio-engine.h
 )
