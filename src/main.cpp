@@ -25,19 +25,13 @@
 #include "renderer/lighting.h"
 #include "renderer/camera.h"
 
-int main() {
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW\n";
-        return -1;
-    }
-
+static int runDemo() {
     AudioEngine audioEngine{};
     audioEngine.play("assets/sounds/space-laser.mp3");
 
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
-        glfwTerminate();
         return -1;
     }
 
@@ -65,16 +59,8 @@ int main() {
     }
 
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
-
     FpsCounter fpsCounter{};
     InputManager inputManager{};
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
     Settings settings{ "config.json" };
 
     bool isGuiVisible{ true };
@@ -85,8 +71,11 @@ int main() {
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    glEnable(GL_DEPTH_TEST);
     float previousTime{};
+    glEnable(GL_DEPTH_TEST);
+
+    ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     while (!window.shouldClose()) {
         const float currentTime{ static_cast<float>(glfwGetTime()) };
@@ -163,8 +152,20 @@ int main() {
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+}
 
+int main() {
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW\n";
+        return -1;
+    }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    int returnValue{ runDemo() };
+
+    ImGui::DestroyContext();
     glfwTerminate();
-    return 0;
+    return returnValue;
 }
