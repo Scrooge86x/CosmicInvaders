@@ -13,6 +13,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <nlohmann/json.hpp>
+
 #include "core/gl-window.h"
 #include "core/fps-counter.h"
 #include "core/input-manager.h"
@@ -26,6 +28,11 @@
 #include "renderer/camera.h"
 
 int main() {
+    nlohmann::json json{};
+    json["hello"] = 123;
+    json["world"] = "test";
+    std::cout << json << '\n';
+
     ma_engine audioEngine{};
     if (ma_engine_init(NULL, &audioEngine) != MA_SUCCESS) {
         std::cerr << "Failed to initialize miniaudio engine\n";

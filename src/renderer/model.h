@@ -14,8 +14,6 @@
 
 class Model {
 public:
-    using MaterialVec = std::vector<std::shared_ptr<Material>>;
-
     explicit Model(
         const std::filesystem::path& path,
         const glm::mat4& transform = { 1.f }
@@ -37,7 +35,7 @@ private:
     );
 
     std::vector<Mesh> m_meshes{};
-    MaterialVec m_materials{};
+    std::vector<std::shared_ptr<Material>> m_materials{};
 };
 
 #endif // MODEL_H

@@ -24,6 +24,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     imgui
     stb_image
     assimp
+    nlohmann_json
 )
 
 add_custom_target(copy_assets ALL
