@@ -16,6 +16,7 @@
 #include "core/gl-window.h"
 #include "core/fps-counter.h"
 #include "core/input-manager.h"
+#include "core/model-store.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
@@ -57,7 +58,17 @@ int main() {
         return -1;
     }
 
-    Model object{ "assets/3d-models/DiffuseTransmissionPlant.glb", glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.f, 2.f, 2.f }) };
+    ModelStore modelStore{};
+    const auto object{ modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 2.f) };
+    if (object != modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 2.f)) {
+        std::cerr << "ModelStore failed to cache the object!\n";
+        return -1;
+    }
+    if (object == modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 1.f)) {
+        std::cerr << "ModelStore cached differently scaled objects!\n";
+        return -1;
+    }
+
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
 
     FpsCounter fpsCounter{};
@@ -109,7 +120,7 @@ int main() {
         shader.setVec3("u_lighting.sunColor", lighting.sunColor);
         shader.setVec3("u_cameraPos", camera.getPosition());
 
-        for (const auto& mesh : object.getMeshes()) {
+        for (const auto& mesh : object->getMeshes()) {
             const auto& material{ *mesh.getMaterial() };
             if (material.diffuse) {
                 material.diffuse->bind(0);

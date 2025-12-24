@@ -7,6 +7,7 @@
 #include "material.h"
 
 #include <assimp/scene.h>
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <filesystem>

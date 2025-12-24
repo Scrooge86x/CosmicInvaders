@@ -2,7 +2,6 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-#include <glm/glm.hpp>
 
 Model::Model(
     const std::filesystem::path& path,
