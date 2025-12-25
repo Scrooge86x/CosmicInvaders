@@ -7,10 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
 #include "core/gl-window.h"
 #include "core/fps-counter.h"
 #include "core/input-manager.h"
@@ -24,6 +20,8 @@
 #include "renderer/model.h"
 #include "renderer/lighting.h"
 #include "renderer/camera.h"
+
+#include "ui/ui-core.h"
 
 static int runDemo() {
     AudioEngine audioEngine{};
@@ -74,8 +72,7 @@ static int runDemo() {
     float previousTime{};
     glEnable(GL_DEPTH_TEST);
 
-    ImGui_ImplGlfw_InitForOpenGL(window.getNativeHandle(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
     while (!window.shouldClose()) {
         const float currentTime{ static_cast<float>(glfwGetTime()) };
@@ -118,9 +115,7 @@ static int runDemo() {
             glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
         }
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        ui::beginFrame();
 
         ImGui::ShowDemoWindow();
 
@@ -142,16 +137,13 @@ static int runDemo() {
             ImGui::End();
         }
 
-        ImGui::Render();
-
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ui::endFrame();
 
         window.swapBuffers();
         window.pollEvents();
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
+    return 0;
 }
 
 int main() {
@@ -160,12 +152,8 @@ int main() {
         return -1;
     }
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
     int returnValue{ runDemo() };
 
-    ImGui::DestroyContext();
     glfwTerminate();
     return returnValue;
 }
