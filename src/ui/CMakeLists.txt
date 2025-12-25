@@ -1,3 +1,9 @@
-target_sources(demo PRIVATE
+add_library(ui STATIC
     ui-core.cpp ui-core.h
+)
+
+target_link_libraries(ui PUBLIC
+    glfw
+    glad
+    imgui
 )

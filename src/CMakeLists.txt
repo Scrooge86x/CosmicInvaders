@@ -16,14 +16,13 @@ target_compile_options(game PRIVATE ${COMPILER_FLAGS})
 target_compile_options(demo PRIVATE ${COMPILER_FLAGS})
 
 target_link_libraries(demo PRIVATE
+    core
+    renderer
+    ui
+
     glfw
     glad
     glm
-    miniaudio
-    imgui
-    stb_image
-    assimp
-    nlohmann_json
 )
 
 add_custom_target(copy_demo_assets ALL

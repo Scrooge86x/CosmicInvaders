@@ -1,4 +1,4 @@
-target_sources(demo PRIVATE
+add_library(renderer STATIC
     shader.cpp shader.h
     texture2d.cpp texture2d.h
     mesh.cpp mesh.h
@@ -6,4 +6,12 @@ target_sources(demo PRIVATE
     camera.cpp camera.h
     material.h
     lighting.h
+)
+
+target_link_libraries(renderer PUBLIC
+    glad
+    glfw
+    glm
+    stb_image
+    assimp
 )
