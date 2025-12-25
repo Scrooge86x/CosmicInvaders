@@ -15,3 +15,5 @@ target_link_libraries(renderer PUBLIC
     stb_image
     assimp
 )
+
+target_include_directories(renderer PUBLIC ${PROJECT_SOURCE_DIR}/src)

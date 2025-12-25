@@ -3,7 +3,7 @@
 #ifndef MODEL_STORE_H
 #define MODEL_STORE_H
 
-#include "../renderer/model.h"
+#include <renderer/model.h>
 
 #include <filesystem>
 #include <unordered_map>
