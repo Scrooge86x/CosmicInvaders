@@ -24,6 +24,9 @@ void Game::update(const double dt) {
         break;
     case GameState::Paused:
         ui::drawPauseMenu(*this);
+        if (m_inputManager.isPressed(InputManager::Escape)) {
+            m_gameState = GameState::Playing;
+        }
         break;
     case GameState::GameOver:
         ui::drawGameOverScreen(*this);
