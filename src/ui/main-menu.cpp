@@ -53,10 +53,9 @@ void ui::drawMainMenu(Game& game) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ padding, padding });
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.f, buttonSpacing });
 
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{ 0.05f, 0.05f, 0.05f, 1.f });
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.15f, 0.15f, 0.15f, 1.f });
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.25f, 0.25f, 1.f });
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.35f, 0.35f, 0.35f, 1.f });
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.15f, 0.15f, 0.2f, 1.f });
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.25f, 0.3f, 1.f });
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.35f, 0.35f, 0.4f, 1.f });
 
     ImGui::SetCursorPos(center - menuSize * 0.5f);
     ImGui::BeginChild("MenuPanel", menuSize, true, ImGuiWindowFlags_NoDecoration);
@@ -73,7 +72,7 @@ void ui::drawMainMenu(Game& game) {
 
     ImGui::EndChild();
 
-    ImGui::PopStyleColor(4);
+    ImGui::PopStyleColor(3);
     ImGui::PopStyleVar(2);
     ImGui::End();
 }
