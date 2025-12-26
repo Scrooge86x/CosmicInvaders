@@ -1,4 +1,5 @@
 #include "main-menu.h"
+#include "settings-menu.h"
 
 #include <gameplay/game.h>
 
@@ -18,8 +19,9 @@ void ui::drawMainMenu(Game& game) {
         "MainMenu",
         NULL,
         ImGuiWindowFlags_NoDecoration
-        | ImGuiWindowFlags_NoSavedSettings
-        | ImGuiWindowFlags_NoMove
+            | ImGuiWindowFlags_NoSavedSettings
+            | ImGuiWindowFlags_NoMove
+            | ImGuiWindowFlags_NoBringToFrontOnFocus
     );
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
@@ -60,11 +62,13 @@ void ui::drawMainMenu(Game& game) {
     ImGui::SetCursorPos(center - menuSize * 0.5f);
     ImGui::BeginChild("MenuPanel", menuSize, true, ImGuiWindowFlags_NoDecoration);
 
+    static bool s_showSettings{};
     if (ImGui::Button("Play", buttonSize)) {
+        s_showSettings = false;
         game.setState(GameState::Playing);
     }
     if (ImGui::Button("Settings", buttonSize)) {
-        // TODO: ui::drawSettings(game);
+        s_showSettings = true;
     }
     if (ImGui::Button("Quit", buttonSize)) {
         game.requestQuit();
@@ -75,4 +79,6 @@ void ui::drawMainMenu(Game& game) {
     ImGui::PopStyleColor(3);
     ImGui::PopStyleVar(2);
     ImGui::End();
+
+    drawSettingsMenu(game, s_showSettings);
 }

@@ -55,6 +55,8 @@ static int runDemo() {
     Timer timer{};
 
     bool isGuiVisible{ true };
+    float modelScale{ 4.f };
+    float rotationSpeed{ 0.5f };
     float rotationAngle{};
     glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
@@ -69,7 +71,7 @@ static int runDemo() {
     while (!window.shouldClose()) {
         timer.update();
 
-        rotationAngle += timer.getDt<float>() * settings.rotationSpeed;
+        rotationAngle += timer.getDt<float>() * rotationSpeed;
 
         fpsCounter.update(timer.getDt<double>());
         inputManager.update();
@@ -80,7 +82,7 @@ static int runDemo() {
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
-        model = glm::scale(model, glm::vec3{ settings.modelScale });
+        model = glm::scale(model, glm::vec3{ modelScale });
         glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
         shader.use();
@@ -114,9 +116,12 @@ static int runDemo() {
         }
         if (isGuiVisible) {
             ImGui::Begin("Config (Press ESC to close)", &isGuiVisible);
-            ImGui::Text("Fps %lf", fpsCounter.getFps());
-            ImGui::SliderFloat("Rotation speed", &settings.rotationSpeed, 0.5f, 5.f);
-            ImGui::SliderFloat("Model scale", &settings.modelScale, 0.01f, 30.f);
+            if (settings.showFps) {
+                ImGui::Text("Fps %lf", fpsCounter.getFps());
+            }
+            ImGui::Checkbox("Show fps", &settings.showFps);
+            ImGui::SliderFloat("Rotation speed", &rotationSpeed, 0.5f, 5.f);
+            ImGui::SliderFloat("Model scale", &modelScale, 0.01f, 30.f);
             ImGui::SliderFloat3("Model position", &position[0], -20.f, 20.f);
             ImGui::SliderFloat3("Ambient light", &lighting.ambient[0], 0.f, 1.5f);
             ImGui::SliderFloat3("Sun position", &lighting.sunPosition[0], -20.f, 20.f);

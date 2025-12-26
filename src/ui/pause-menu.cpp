@@ -1,4 +1,5 @@
 #include "pause-menu.h"
+#include "settings-menu.h"
 
 #include <gameplay/game.h>
 
@@ -20,6 +21,7 @@ void ui::drawPauseMenu(Game& game) {
         ImGuiWindowFlags_NoDecoration
             | ImGuiWindowFlags_NoSavedSettings
             | ImGuiWindowFlags_NoMove
+            | ImGuiWindowFlags_NoBringToFrontOnFocus
     );
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
@@ -61,13 +63,16 @@ void ui::drawPauseMenu(Game& game) {
 
     ImGui::PopFont();
 
+    static bool s_showSettings{};
     if (ImGui::Button("Resume", buttonSize)) {
+        s_showSettings = false;
         game.setState(GameState::Playing);
     }
     if (ImGui::Button("Settings", buttonSize)) {
-        // TODO: ui::drawSettings(game);
+        s_showSettings = true;
     }
     if (ImGui::Button("Main Menu", buttonSize)) {
+        s_showSettings = false;
         game.setState(GameState::MainMenu);
     }
 
@@ -76,4 +81,6 @@ void ui::drawPauseMenu(Game& game) {
     ImGui::PopStyleColor(4);
     ImGui::PopStyleVar(2);
     ImGui::End();
+
+    drawSettingsMenu(game, s_showSettings);
 }

@@ -5,6 +5,10 @@
 #include <format>
 
 void ui::drawHud(Game& game) {
+    if (!game.getSettings().showFps) {
+        return;
+    }
+
     const ImGuiViewport* const mainViewport{ ImGui::GetMainViewport() };
     ImDrawList* const drawList{ ImGui::GetBackgroundDrawList() };
 

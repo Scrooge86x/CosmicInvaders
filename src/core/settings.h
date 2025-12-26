@@ -6,8 +6,7 @@
 #include <filesystem>
 
 #define SETTINGS_H_CONFIG \
-    X(float, modelScale, 4.f) \
-    X(float, rotationSpeed, 0.5f)
+    X(bool, showFps, true)
 
 class Settings {
 public:
