@@ -1,27 +1,27 @@
-#include <iostream>
-#include <filesystem>
-#include <format>
+#include <core/gl-window.h>
+#include <core/fps-counter.h>
+#include <core/input-manager.h>
+#include <core/model-store.h>
+#include <core/settings.h>
+#include <core/audio-engine.h>
+
+#include <renderer/shader.h>
+#include <renderer/texture2d.h>
+#include <renderer/material.h>
+#include <renderer/model.h>
+#include <renderer/lighting.h>
+#include <renderer/camera.h>
+
+#include <ui/ui-core.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "core/gl-window.h"
-#include "core/fps-counter.h"
-#include "core/input-manager.h"
-#include "core/model-store.h"
-#include "core/settings.h"
-#include "core/audio-engine.h"
-
-#include "renderer/shader.h"
-#include "renderer/texture2d.h"
-#include "renderer/material.h"
-#include "renderer/model.h"
-#include "renderer/lighting.h"
-#include "renderer/camera.h"
-
-#include "ui/ui-core.h"
+#include <iostream>
+#include <filesystem>
+#include <format>
 
 static int runDemo() {
     AudioEngine audioEngine{};
@@ -38,12 +38,6 @@ static int runDemo() {
     window.setResizeCallback([&camera, &window](int, int) {
         camera.setAspectRatio(window.getFramebufferAspectRatio());
     });
-
-    window.makeCurrentContext();
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        std::cerr << "Failed to initialize GLAD\n";
-        return -1;
-    }
 
     ModelStore modelStore{};
     const auto object{ modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 2.f) };

@@ -17,3 +17,5 @@ target_link_libraries(core
         glm
         nlohmann_json
 )
+
+target_include_directories(core PUBLIC ${PROJECT_SOURCE_DIR}/src)

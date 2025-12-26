@@ -18,6 +18,11 @@ GlWindow::GlWindow(
         return;
     }
 
+    glfwMakeContextCurrent(m_window);
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+        return;
+    }
+
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         if (glfwGetCurrentContext() == window) {

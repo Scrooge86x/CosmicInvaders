@@ -9,3 +9,5 @@ target_link_libraries(ui
         glfw
         glad
 )
+
+target_include_directories(ui PUBLIC ${PROJECT_SOURCE_DIR}/src)
