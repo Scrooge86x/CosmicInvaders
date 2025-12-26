@@ -1,5 +1,10 @@
 #include "mesh.h"
 
+#include "material.h"
+
+#include <assimp/mesh.h>
+#include <assimp/scene.h>
+
 #include <utility>
 #include <vector>
 

@@ -3,10 +3,11 @@
 #ifndef TEXTURE2D_H
 #define TEXTURE2D_H
 
+#include <glad/glad.h>
+
 #include <filesystem>
 
-#include <glad/glad.h>
-#include <assimp/texture.h>
+struct aiTexture;
 
 class Texture2D {
 public:

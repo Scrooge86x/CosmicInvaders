@@ -4,13 +4,15 @@
 #define MODEL_H
 
 #include "mesh.h"
-#include "material.h"
 
-#include <assimp/scene.h>
 #include <glm/glm.hpp>
 
 #include <vector>
 #include <filesystem>
+
+struct Material;
+struct aiScene;
+struct aiNode;
 
 class Model {
 public:

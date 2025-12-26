@@ -3,15 +3,14 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <glm/glm.hpp>
+#include <glad/glad.h>
+
 #include <span>
 #include <memory>
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <assimp/mesh.h>
-#include <assimp/scene.h>
-
-#include "material.h"
+struct aiMesh;
+struct Material;
 
 struct Vertex {
     glm::vec3 position{};

@@ -16,7 +16,7 @@
 
 #include "renderer/shader.h"
 #include "renderer/texture2d.h"
-#include "renderer/mesh.h"
+#include "renderer/material.h"
 #include "renderer/model.h"
 #include "renderer/lighting.h"
 #include "renderer/camera.h"

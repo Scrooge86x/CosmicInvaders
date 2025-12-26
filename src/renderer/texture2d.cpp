@@ -1,8 +1,9 @@
 #include "texture2d.h"
 
-#include <utility>
-
 #include <stb_image.h>
+#include <assimp/texture.h>
+
+#include <utility>
 
 Texture2D::Texture2D(const std::filesystem::path& path) {
     stbi_set_flip_vertically_on_load(true);
