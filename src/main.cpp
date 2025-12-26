@@ -20,18 +20,18 @@ static int runGame() {
     Game game{ inputManager };
 
     glEnable(GL_DEPTH_TEST); // TODO: Move to the Renderer class
-    while (!window.shouldClose()) {
+    while (!window.shouldClose() && !game.shouldQuit()) {
+        window.pollEvents();
         inputManager.update();
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f); // TODO: Move to the Renderer class
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Move to the Renderer class
 
         ui::beginFrame();
-        ImGui::ShowDemoWindow();
+        game.update();
         ui::endFrame();
 
         window.swapBuffers();
-        window.pollEvents();
     }
 
     return 0;

@@ -1,11 +1,16 @@
 add_library(ui STATIC
     ui-core.cpp ui-core.h
+    main-menu.cpp main-menu.h
+    pause-menu.cpp pause-menu.h
+    hud.cpp hud.h
+    game-over-screen.cpp game-over-screen.h
 )
 
 target_link_libraries(ui
     PUBLIC
         imgui
     PRIVATE
+        gameplay
         glfw
         glad
 )

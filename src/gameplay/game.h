@@ -30,10 +30,14 @@ public:
     Game(Game&&) = delete;
     Game& operator=(Game&&) = delete;
 
+    void update();
+    void requestQuit() { m_shouldQuit = true; }
+
     double getFps() const { return m_fpsCounter.getFps(); }
     const Settings& getSettings() const { return m_settings; }
     const Camera& getCamera() const { return m_camera; }
     const Lighting& getLighting() const { return m_lighting; }
+    bool shouldQuit() const { return m_shouldQuit; }
 
     void setState(const GameState newState) { m_gameState = newState; }
     GameState getState() const { return m_gameState; }
@@ -51,6 +55,8 @@ private:
     Lighting m_lighting{};
 
     GameState m_gameState{ GameState::MainMenu };
+
+    bool m_shouldQuit{};
 };
 
 #endif // GAME_H
