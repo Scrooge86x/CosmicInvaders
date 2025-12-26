@@ -5,7 +5,7 @@
 #include <format>
 
 void ui::drawHud(Game& game) {
-    const ImGuiViewport* mainViewPort{ ImGui::GetMainViewport() };
+    const ImGuiViewport* const mainViewport{ ImGui::GetMainViewport() };
     ImDrawList* const drawList{ ImGui::GetForegroundDrawList() };
 
     const std::string fpsText{ std::format("{:.2f} FPS", game.getFps()) };
@@ -13,7 +13,7 @@ void ui::drawHud(Game& game) {
 
     constexpr float padding{ 10.f };
     drawList->AddText(
-        { mainViewPort->WorkSize.x - textSize.x - padding, padding },
+        { mainViewport->WorkSize.x - textSize.x - padding, padding },
         IM_COL32_WHITE,
         fpsText.c_str()
     );
