@@ -7,12 +7,13 @@ add_library(core STATIC
     audio-engine.cpp audio-engine.h
 )
 
-target_link_libraries(core PUBLIC
-    renderer
-
-    glad
-    glfw
-    glm
-    miniaudio
-    nlohmann_json
+target_link_libraries(core
+    PUBLIC
+        glad
+        glfw
+        miniaudio
+    PRIVATE
+        renderer
+        glm
+        nlohmann_json
 )

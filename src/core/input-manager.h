@@ -3,9 +3,10 @@
 #ifndef INPUT_MANAGER_H
 #define INPUT_MANAGER_H
 
-#include <GLFW/glfw3.h>
 #include <array>
 #include <cstddef>
+
+struct GLFWwindow;
 
 class InputManager {
 public:

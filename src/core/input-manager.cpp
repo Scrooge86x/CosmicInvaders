@@ -1,5 +1,7 @@
 #include "input-manager.h"
 
+#include <GLFW/glfw3.h>
+
 void InputManager::update(GLFWwindow* const window) {
     m_previousStates = m_currentStates;
 
