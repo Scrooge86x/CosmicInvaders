@@ -1,7 +1,6 @@
 #include <core/gl-window.h>
 #include <core/fps-counter.h>
 #include <core/input-manager.h>
-#include <core/model-store.h>
 #include <core/settings.h>
 #include <core/audio-engine.h>
 
@@ -9,6 +8,7 @@
 #include <renderer/texture2d.h>
 #include <renderer/material.h>
 #include <renderer/model.h>
+#include <renderer/model-store.h>
 #include <renderer/lighting.h>
 #include <renderer/camera.h>
 

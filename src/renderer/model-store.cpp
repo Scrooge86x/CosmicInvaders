@@ -1,6 +1,6 @@
 #include "model-store.h"
 
-#include <renderer/model.h>
+#include "model.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

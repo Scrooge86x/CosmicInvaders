@@ -4,6 +4,7 @@ add_library(renderer STATIC
     mesh.cpp mesh.h
     model.cpp model.h
     camera.cpp camera.h
+    model-store.cpp model-store.h
     material.h
     lighting.h
 )
