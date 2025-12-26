@@ -3,6 +3,7 @@
 #ifndef GUI_H
 #define GUI_H
 
+// This is included because ui-core will basically always be used together with imgui.h
 #include <imgui.h>
 
 struct GLFWwindow;

@@ -1,5 +1,8 @@
 #include "gl-window.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 GlWindow::GlWindow(
     const int width,
     const int height,
@@ -45,13 +48,8 @@ GlWindow& GlWindow::operator=(GlWindow&& other) noexcept {
     return *this;
 }
 
-void GlWindow::makeCurrentContext() const {
-    glfwMakeContextCurrent(m_window);
-
-    const auto& [width, height] { getFramebufferSize() };
-    if (glViewport) {
-        glViewport(0, 0, width, height);
-    }
+GlWindow::~GlWindow() {
+    glfwDestroyWindow(m_window);
 }
 
 std::pair<int, int> GlWindow::getFramebufferSize() const {
@@ -64,4 +62,25 @@ std::pair<int, int> GlWindow::getFramebufferSize() const {
 float GlWindow::getFramebufferAspectRatio() const {
     const auto& [width, height] { getFramebufferSize() };
     return static_cast<float>(width) / height;
+}
+
+void GlWindow::makeCurrentContext() const {
+    glfwMakeContextCurrent(m_window);
+
+    const auto& [width, height] { getFramebufferSize() };
+    if (glViewport) {
+        glViewport(0, 0, width, height);
+    }
+}
+
+bool GlWindow::shouldClose() const {
+    return glfwWindowShouldClose(m_window);
+}
+
+void GlWindow::swapBuffers() const {
+    glfwSwapBuffers(m_window);
+}
+
+void GlWindow::pollEvents() const {
+    glfwPollEvents();
 }

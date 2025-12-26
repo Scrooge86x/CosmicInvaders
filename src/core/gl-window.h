@@ -3,11 +3,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <functional>
 #include <utility>
+
+struct GLFWwindow;
 
 class GlWindow {
 public:
@@ -26,39 +25,27 @@ public:
     GlWindow(GlWindow&& other) noexcept;
     GlWindow& operator=(GlWindow&& other) noexcept;
 
-    ~GlWindow() {
-        glfwDestroyWindow(m_window);
-    }
+    ~GlWindow();
 
     operator bool() const {
         return m_window != NULL;
     }
 
-    void makeCurrentContext() const;
-
     void setResizeCallback(const ResizeCallback& resizeCallback) {
         m_resizeCallback = resizeCallback;
     }
-
-    std::pair<int, int> getFramebufferSize() const;
-
-    float getFramebufferAspectRatio() const;
 
     GLFWwindow* getNativeHandle() const {
         return m_window;
     }
 
-    bool shouldClose() const {
-        return glfwWindowShouldClose(m_window);
-    }
+    std::pair<int, int> getFramebufferSize() const;
+    float getFramebufferAspectRatio() const;
 
-    void swapBuffers() const {
-        glfwSwapBuffers(m_window);
-    }
-
-    void pollEvents() const {
-        glfwPollEvents();
-    }
+    void makeCurrentContext() const;
+    bool shouldClose() const;
+    void swapBuffers() const;
+    void pollEvents() const;
 
 private:
     GLFWwindow* m_window{};

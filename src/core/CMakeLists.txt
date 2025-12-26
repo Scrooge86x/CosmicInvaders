@@ -9,11 +9,11 @@ add_library(core STATIC
 
 target_link_libraries(core
     PUBLIC
-        glad
-        glfw
         miniaudio
     PRIVATE
         renderer
+        glad
+        glfw
         glm
         nlohmann_json
 )
