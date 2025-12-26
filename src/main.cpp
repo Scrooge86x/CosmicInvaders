@@ -27,7 +27,7 @@ static int runGame() {
         window.pollEvents();
         inputManager.update();
 
-        glClearColor(0.f, 0.5f, 0.5f, 1.f); // TODO: Move to the Renderer class
+        glClearColor(0.05f, 0.05f, 0.05f, 1.f); // TODO: Move to the Renderer class
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Move to the Renderer class
 
         ui::beginFrame();

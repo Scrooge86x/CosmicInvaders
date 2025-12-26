@@ -30,7 +30,7 @@ GlWindow::GlWindow(
         }
 
         GlWindow* thisWindow{ static_cast<GlWindow*>(glfwGetWindowUserPointer(window)) };
-        if (thisWindow) {
+        if (thisWindow && thisWindow->m_resizeCallback) {
             thisWindow->m_resizeCallback(width, height);
         }
     });
