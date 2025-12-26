@@ -6,7 +6,7 @@
 
 void ui::drawHud(Game& game) {
     const ImGuiViewport* const mainViewport{ ImGui::GetMainViewport() };
-    ImDrawList* const drawList{ ImGui::GetForegroundDrawList() };
+    ImDrawList* const drawList{ ImGui::GetBackgroundDrawList() };
 
     const std::string fpsText{ std::format("{:.2f} FPS", game.getFps()) };
     const ImVec2 textSize{ ImGui::CalcTextSize(fpsText.c_str()) };

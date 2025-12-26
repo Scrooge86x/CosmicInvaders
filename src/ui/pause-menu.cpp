@@ -12,6 +12,8 @@ void ui::drawPauseMenu(Game& game) {
     ImGui::SetNextWindowPos(mainViewport->Pos);
     ImGui::SetNextWindowSize(mainViewport->Size);
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.f, 0.f, 0.f, 0.6f });
     ImGui::Begin(
         "PauseMenu",
         nullptr,
@@ -19,6 +21,8 @@ void ui::drawPauseMenu(Game& game) {
             | ImGuiWindowFlags_NoSavedSettings
             | ImGuiWindowFlags_NoMove
     );
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar();
 
     constexpr int numButtons{ 4 };
     constexpr float padding{ 20.f };
