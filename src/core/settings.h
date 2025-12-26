@@ -16,7 +16,8 @@ public:
 #undef X
 
 public:
-    Settings(const std::filesystem::path& path);
+    explicit Settings(const std::filesystem::path& path);
+
     bool saveToFile() const;
 
 private:

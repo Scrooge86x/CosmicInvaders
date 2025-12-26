@@ -1,11 +1,11 @@
-#include <iostream>
-
 #include <core/gl-window.h>
 #include <gameplay/game.h>
 #include <ui/ui-core.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 static int runGame() {
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
