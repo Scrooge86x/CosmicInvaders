@@ -16,7 +16,7 @@ void ui::drawPauseMenu(Game& game) {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.f, 0.f, 0.f, 0.6f });
     ImGui::Begin(
         "PauseMenu",
-        nullptr,
+        NULL,
         ImGuiWindowFlags_NoDecoration
             | ImGuiWindowFlags_NoSavedSettings
             | ImGuiWindowFlags_NoMove
