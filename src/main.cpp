@@ -18,9 +18,12 @@ static int runGame() {
 
     InputManager inputManager{ window.getNativeHandle() };
     Game game{ inputManager };
+    Timer timer{};
 
     glEnable(GL_DEPTH_TEST); // TODO: Move to the Renderer class
     while (!window.shouldClose() && !game.shouldQuit()) {
+        timer.update();
+
         window.pollEvents();
         inputManager.update();
 
@@ -28,7 +31,7 @@ static int runGame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Move to the Renderer class
 
         ui::beginFrame();
-        game.update();
+        game.update(timer.getDt<double>());
         ui::endFrame();
 
         window.swapBuffers();

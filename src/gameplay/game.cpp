@@ -9,9 +9,8 @@ Game::Game(InputManager& inputManager)
     : m_inputManager{ inputManager }
 {}
 
-void Game::update() {
-    m_timer.update();
-    m_fpsCounter.update(m_timer.getDt<double>());
+void Game::update(const double dt) {
+    m_fpsCounter.update(dt);
 
     switch (m_gameState) {
     case GameState::MainMenu:

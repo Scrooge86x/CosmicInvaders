@@ -30,7 +30,7 @@ public:
     Game(Game&&) = delete;
     Game& operator=(Game&&) = delete;
 
-    void update();
+    void update(const double dt);
     void requestQuit() { m_shouldQuit = true; }
 
     double getFps() const { return m_fpsCounter.getFps(); }
@@ -48,7 +48,6 @@ private:
     AudioEngine m_audioEngine{};
     FpsCounter m_fpsCounter{};
     Settings m_settings{ "config.json" };
-    Timer m_timer{};
 
     Camera m_camera{};
     ModelStore m_modelStore{};
