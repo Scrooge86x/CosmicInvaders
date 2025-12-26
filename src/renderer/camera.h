@@ -7,6 +7,8 @@
 
 class Camera {
 public:
+    Camera() = default;
+
     explicit Camera(const glm::vec3& position) {
         setPosition(position);
     }

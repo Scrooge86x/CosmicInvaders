@@ -16,6 +16,14 @@ endif ()
 target_compile_options(game PRIVATE ${COMPILER_FLAGS})
 target_compile_options(demo PRIVATE ${COMPILER_FLAGS})
 
+target_link_libraries(game
+    PRIVATE
+        core
+        renderer
+        ui
+        glad
+        glfw
+)
 target_link_libraries(demo
     PRIVATE
         core
