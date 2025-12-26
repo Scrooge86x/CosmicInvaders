@@ -4,7 +4,7 @@ set_target_properties(demo PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 add_subdirectory(core)
 add_subdirectory(renderer)
-add_subdirectory(game)
+add_subdirectory(gameplay)
 add_subdirectory(ui)
 
 if (MSVC)
@@ -21,8 +21,8 @@ target_link_libraries(demo
         core
         renderer
         ui
-        glfw
         glad
+        glfw
         glm
 )
 

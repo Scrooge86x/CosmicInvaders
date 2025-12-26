@@ -5,7 +5,6 @@
 #include <core/audio-engine.h>
 
 #include <renderer/shader.h>
-#include <renderer/texture2d.h>
 #include <renderer/material.h>
 #include <renderer/model.h>
 #include <renderer/model-store.h>
@@ -20,8 +19,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
-#include <filesystem>
-#include <format>
 
 static int runDemo() {
     AudioEngine audioEngine{};
