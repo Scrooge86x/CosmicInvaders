@@ -3,6 +3,7 @@
 #include <core/input-manager.h>
 #include <core/settings.h>
 #include <core/audio-engine.h>
+#include <core/timer.h>
 
 #include <renderer/shader.h>
 #include <renderer/material.h>
@@ -51,6 +52,7 @@ static int runDemo() {
     FpsCounter fpsCounter{};
     InputManager inputManager{};
     Settings settings{ "config.json" };
+    Timer timer{};
 
     bool isGuiVisible{ true };
     float rotationAngle{};
@@ -60,19 +62,16 @@ static int runDemo() {
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    float previousTime{};
     glEnable(GL_DEPTH_TEST);
 
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
     while (!window.shouldClose()) {
-        const float currentTime{ static_cast<float>(glfwGetTime()) };
-        const float dt{ currentTime - previousTime };
-        previousTime = currentTime;
+        timer.update();
 
-        rotationAngle += dt * settings.rotationSpeed;
+        rotationAngle += timer.getDt<float>() * settings.rotationSpeed;
 
-        fpsCounter.update(dt);
+        fpsCounter.update(timer.getDt<double>());
         inputManager.update(window.getNativeHandle());
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);

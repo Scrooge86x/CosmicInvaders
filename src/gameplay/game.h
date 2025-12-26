@@ -7,6 +7,7 @@
 #include <core/fps-counter.h>
 #include <core/input-manager.h>
 #include <core/settings.h>
+#include <core/timer.h>
 
 #include <renderer/camera.h>
 #include <renderer/model-store.h>
@@ -42,6 +43,7 @@ private:
     FpsCounter m_fpsCounter{};
     InputManager m_inputManager{};
     Settings m_settings{ "config.json" };
+    Timer m_timer{};
 
     Camera m_camera{};
     ModelStore m_modelStore{};
