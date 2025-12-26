@@ -17,6 +17,7 @@ GlWindow::GlWindow(
     if (!m_window) {
         return;
     }
+    glfwSetWindowSizeLimits(m_window, 250, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     glfwMakeContextCurrent(m_window);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
