@@ -36,6 +36,7 @@ public:
     double getFps() const { return m_fpsCounter.getFps(); }
     const Settings& getSettings() const { return m_settings; }
     const Camera& getCamera() const { return m_camera; }
+    Camera& getCamera() { return m_camera; }
     const Lighting& getLighting() const { return m_lighting; }
     bool shouldQuit() const { return m_shouldQuit; }
 

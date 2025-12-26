@@ -15,10 +15,15 @@ static int runGame() {
     }
 
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
+    Timer timer{};
 
     InputManager inputManager{ window.getNativeHandle() };
     Game game{ inputManager };
-    Timer timer{};
+
+    game.getCamera().setAspectRatio(window.getFramebufferAspectRatio());
+    window.setResizeCallback([&game](const int width, const int height) {
+        game.getCamera().setAspectRatio(static_cast<float>(width) / height);
+    });
 
     glEnable(GL_DEPTH_TEST); // TODO: Move to the Renderer class
     while (!window.shouldClose() && !game.shouldQuit()) {
