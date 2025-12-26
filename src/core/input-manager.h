@@ -18,13 +18,22 @@ public:
         KEY_COUNT,
     };
 
-    void update(GLFWwindow* const window);
+    explicit InputManager(GLFWwindow* const window);
+
+    InputManager(const InputManager&) = delete;
+    InputManager& operator=(const InputManager&) = delete;
+
+    InputManager(InputManager&& other) noexcept;
+    InputManager& operator=(InputManager&& other) noexcept;
+
+    void update();
 
     bool isDown(const Key key) const { return m_currentStates[key]; }
     bool isHeld(const Key key) const { return m_currentStates[key] && m_previousStates[key]; }
     bool isPressed(const Key key) const { return m_currentStates[key] && !m_previousStates[key]; }
 
 private:
+    GLFWwindow* m_window{};
     std::array<bool, Key::KEY_COUNT> m_currentStates{};
     std::array<bool, Key::KEY_COUNT> m_previousStates{};
 };

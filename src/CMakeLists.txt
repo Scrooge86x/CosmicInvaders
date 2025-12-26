@@ -19,6 +19,7 @@ target_compile_options(demo PRIVATE ${COMPILER_FLAGS})
 target_link_libraries(game
     PRIVATE
         core
+        gameplay
         renderer
         ui
         glad

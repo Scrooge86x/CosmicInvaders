@@ -50,7 +50,7 @@ static int runDemo() {
 
     Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
     FpsCounter fpsCounter{};
-    InputManager inputManager{};
+    InputManager inputManager{ window.getNativeHandle() };
     Settings settings{ "config.json" };
     Timer timer{};
 
@@ -72,7 +72,7 @@ static int runDemo() {
         rotationAngle += timer.getDt<float>() * settings.rotationSpeed;
 
         fpsCounter.update(timer.getDt<double>());
-        inputManager.update(window.getNativeHandle());
+        inputManager.update();
 
         glClearColor(0.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

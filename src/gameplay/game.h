@@ -22,7 +22,7 @@ enum class GameState {
 
 class Game {
 public:
-    Game() = default;
+    Game(InputManager& inputManager);
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
@@ -39,9 +39,10 @@ public:
     GameState getState() const { return m_gameState; }
 
 private:
+    InputManager& m_inputManager;
+
     AudioEngine m_audioEngine{};
     FpsCounter m_fpsCounter{};
-    InputManager m_inputManager{};
     Settings m_settings{ "config.json" };
     Timer m_timer{};
 

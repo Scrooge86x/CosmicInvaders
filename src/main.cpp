@@ -16,10 +16,13 @@ static int runGame() {
 
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
-    Game game{};
+    InputManager inputManager{ window.getNativeHandle() };
+    Game game{ inputManager };
 
     glEnable(GL_DEPTH_TEST); // TODO: Move to the Renderer class
     while (!window.shouldClose()) {
+        inputManager.update();
+
         glClearColor(0.f, 0.5f, 0.5f, 1.f); // TODO: Move to the Renderer class
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Move to the Renderer class
 
