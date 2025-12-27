@@ -19,11 +19,11 @@ public:
     void setPitch(const float pitch);
     void setRoll(const float roll);
 
-    glm::vec3 getPosition() const { return m_position; }
-    float getYaw() const { return m_yaw; }
-    float getPitch() const { return m_pitch; }
-    float getRoll() const { return m_roll; }
-    float getAspectRatio() const { return m_aspectRatio; }
+    [[nodiscard]] glm::vec3 getPosition() const { return m_position; }
+    [[nodiscard]] float getYaw() const { return m_yaw; }
+    [[nodiscard]] float getPitch() const { return m_pitch; }
+    [[nodiscard]] float getRoll() const { return m_roll; }
+    [[nodiscard]] float getAspectRatio() const { return m_aspectRatio; }
 
     const glm::mat4& getView() const;
     const glm::mat4& getProjection() const;

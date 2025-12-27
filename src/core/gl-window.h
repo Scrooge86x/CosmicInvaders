@@ -27,25 +27,25 @@ public:
 
     ~GlWindow();
 
-    operator bool() const {
+    [[nodiscard]] operator bool() const {
         return m_window != NULL;
     }
+
+    [[nodiscard]] GLFWwindow* getNativeHandle() const {
+        return m_window;
+    }
+
+    [[nodiscard]] std::pair<int, int> getFramebufferSize() const;
+    [[nodiscard]] float getFramebufferAspectRatio() const;
+    [[nodiscard]] bool shouldClose() const;
+
+    void makeCurrentContext() const;
+    void swapBuffers() const;
+    void pollEvents() const;
 
     void setResizeCallback(const ResizeCallback& resizeCallback) {
         m_resizeCallback = resizeCallback;
     }
-
-    GLFWwindow* getNativeHandle() const {
-        return m_window;
-    }
-
-    std::pair<int, int> getFramebufferSize() const;
-    float getFramebufferAspectRatio() const;
-
-    void makeCurrentContext() const;
-    bool shouldClose() const;
-    void swapBuffers() const;
-    void pollEvents() const;
 
 private:
     GLFWwindow* m_window{};

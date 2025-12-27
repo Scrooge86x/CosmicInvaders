@@ -33,16 +33,16 @@ public:
     void update(const double dt);
     void requestQuit() { m_shouldQuit = true; }
 
-    double getFps() const { return m_fpsCounter.getFps(); }
-    const Settings& getSettings() const { return m_settings; }
-    Settings& getSettings() { return m_settings; }
-    const Camera& getCamera() const { return m_camera; }
-    Camera& getCamera() { return m_camera; }
-    const Lighting& getLighting() const { return m_lighting; }
-    bool shouldQuit() const { return m_shouldQuit; }
+    [[nodiscard]] double getFps() const { return m_fpsCounter.getFps(); }
+    [[nodiscard]] const Settings& getSettings() const { return m_settings; }
+    [[nodiscard]] Settings& getSettings() { return m_settings; }
+    [[nodiscard]] const Camera& getCamera() const { return m_camera; }
+    [[nodiscard]] Camera& getCamera() { return m_camera; }
+    [[nodiscard]] const Lighting& getLighting() const { return m_lighting; }
+    [[nodiscard]] bool shouldQuit() const { return m_shouldQuit; }
 
     void setState(const GameState newState) { m_gameState = newState; }
-    GameState getState() const { return m_gameState; }
+    [[nodiscard]] GameState getState() const { return m_gameState; }
 
 private:
     InputManager& m_inputManager;

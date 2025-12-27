@@ -28,9 +28,9 @@ public:
 
     void update();
 
-    bool isDown(const Key key) const { return m_currentStates[key]; }
-    bool isHeld(const Key key) const { return m_currentStates[key] && m_previousStates[key]; }
-    bool isPressed(const Key key) const { return m_currentStates[key] && !m_previousStates[key]; }
+    [[nodiscard]] bool isDown(const Key key) const { return m_currentStates[key]; }
+    [[nodiscard]] bool isHeld(const Key key) const { return m_currentStates[key] && m_previousStates[key]; }
+    [[nodiscard]] bool isPressed(const Key key) const { return m_currentStates[key] && !m_previousStates[key]; }
 
 private:
     GLFWwindow* m_window{};

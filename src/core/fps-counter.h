@@ -9,7 +9,7 @@ class FpsCounter {
 public:
     void update(const double dt);
 
-    double getFps() const {
+    [[nodiscard]] double getFps() const {
         return m_fps;
     }
 

@@ -10,7 +10,7 @@ public:
     void update();
 
     template <std::floating_point T>
-    T getDt() const {
+    [[nodiscard]] T getDt() const {
         return static_cast<T>(m_dt);
     }
 

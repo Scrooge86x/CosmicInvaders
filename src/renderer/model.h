@@ -27,7 +27,9 @@ public:
     Model(Model&& other) noexcept = default;
     Model& operator=(Model&& other) noexcept = default;
 
-    const std::vector<Mesh>& getMeshes() const { return m_meshes; }
+    [[nodiscard]] const std::vector<Mesh>& getMeshes() const {
+        return m_meshes;
+    }
 
 private:
     void processNode(
