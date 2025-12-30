@@ -3,7 +3,7 @@
 #include "material.h"
 
 Renderer::Renderer() : m_shaders{
-	Shader("assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl")
+	Shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" }
 } {
 	glEnable(GL_DEPTH_TEST);
 }
@@ -13,7 +13,7 @@ void Renderer::beginFrame() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::onceAFrame(const Lighting& lighting, const glm::highp_mat4 camera, const glm::vec3& cameraPosition) {
+void Renderer::onceAFrame(const Lighting& lighting, const glm::mat4& camera, const glm::vec3& cameraPosition) {
 	m_shaders[0].use();
 	m_shaders[0].setMat4("u_mvp", camera);
 	m_shaders[0].setVec3("u_lighting.ambient", lighting.ambient);

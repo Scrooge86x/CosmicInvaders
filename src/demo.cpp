@@ -54,6 +54,7 @@ static int runDemo() {
     InputManager inputManager{ window.getNativeHandle() };
     Settings settings{ "config.json" };
     Timer timer{};
+    Renderer renderer{};
 
     bool isGuiVisible{ true };
     float modelScale{ 4.f };
@@ -64,8 +65,6 @@ static int runDemo() {
         .sunPosition{ 0.f, -20.f, 0.f },
         .sunColor{ 1.f, 1.f, 3.f },
     };
-
-    Renderer renderer{  };
 
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
