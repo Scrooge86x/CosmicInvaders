@@ -76,17 +76,14 @@ static int runDemo() {
         fpsCounter.update(timer.getDt<double>());
         inputManager.update();
 
-        renderer.beginFrame();
+        renderer.beginFrame(lighting, camera);
 
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
         model = glm::scale(model, glm::vec3{ modelScale });
-        glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
-        renderer.onceAFrame(lighting, camera.getViewProjection() * model, camera.getPosition());
-
-        renderer.draw(*object, normal);
+        renderer.draw(*object, model);
 
         //shader.use();
         //shader.setMat4("u_mvp", camera.getViewProjection() * model);

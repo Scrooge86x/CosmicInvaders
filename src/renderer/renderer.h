@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <array>
 
+class Camera;
 class Model;
 struct Lighting;
 
@@ -20,11 +21,10 @@ public:
 	Renderer(Renderer&&) = delete;
 	Renderer& operator=(Renderer&&) = delete;
 
-	void beginFrame();
+	void beginFrame(const Lighting& lighting, const Camera& camera);
 	void endFrame();
 
-	void draw(const Model& object, const glm::mat3& normal);
-	void onceAFrame(const Lighting& lighting, const glm::mat4& camera, const glm::vec3& cameraPosition);
+	void draw(const Model& object, const glm::mat4& transform);
 
 private:
 	enum ShaderTypes {
@@ -33,6 +33,7 @@ private:
 	};
 
 	std::array<Shader, ShaderTypes::COUNT> m_shaders;
+	const Camera* m_cachedCamera{};
 };
 
 #endif 

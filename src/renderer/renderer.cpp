@@ -3,6 +3,7 @@
 #include "material.h"
 #include "lighting.h"
 #include "model.h"
+#include "camera.h"
 
 Renderer::Renderer() : m_shaders{
 	Shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" }
@@ -10,25 +11,30 @@ Renderer::Renderer() : m_shaders{
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::beginFrame() {
+void Renderer::beginFrame(const Lighting& lighting, const Camera& camera) {
+	m_cachedCamera = &camera;
+
 	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	m_shaders[0].use();
+	m_shaders[0].setVec3("u_lighting.ambient", lighting.ambient);
+	m_shaders[0].setVec3("u_lighting.sunPosition", lighting.sunPosition);
+	m_shaders[0].setVec3("u_lighting.sunColor", lighting.sunColor);
+	m_shaders[0].setVec3("u_cameraPos", m_cachedCamera->getPosition());
 }
 
 void Renderer::endFrame() {}
 
-void Renderer::onceAFrame(const Lighting& lighting, const glm::mat4& camera, const glm::vec3& cameraPosition) {
-	m_shaders[0].use();
-	m_shaders[0].setMat4("u_mvp", camera);
-	m_shaders[0].setVec3("u_lighting.ambient", lighting.ambient);
-	m_shaders[0].setVec3("u_lighting.sunPosition", lighting.sunPosition);
-	m_shaders[0].setVec3("u_lighting.sunColor", lighting.sunColor);
-	m_shaders[0].setVec3("u_cameraPos", cameraPosition);
-}
+void Renderer::draw(const Model& object, const glm::mat4& transform) {
+	if (!m_cachedCamera) {
+		return;
+	}
 
-void Renderer::draw(const Model& object, const glm::mat3& normal) {
-	m_shaders[0].use();
+	glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ transform })) };
+
 	m_shaders[0].setMat4("u_normal", normal);
+	m_shaders[0].setMat4("u_mvp", m_cachedCamera->getViewProjection() * transform);
 
 	for (const auto& mesh : object.getMeshes()) {
 		const auto& material{ *mesh.getMaterial() };
