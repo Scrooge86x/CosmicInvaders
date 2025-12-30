@@ -1,8 +1,13 @@
 #include "camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <cmath>
 
 void Camera::setAspectRatio(const float aspectRatio) {
+    if (std::isnan(aspectRatio)) {
+        return;
+    }
+
     m_aspectRatio = aspectRatio;
     m_projectionMatrixCache.first = true;
     m_viewProjectionMatrixCache.first = true;
