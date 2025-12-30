@@ -33,7 +33,7 @@ void Renderer::draw(const Model& object, const glm::mat4& transform) {
 		return;
 	}
 
-	glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ transform })) };
+	const glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ transform })) };
 
 	m_shaders[ShaderType::Main].setMat3("u_normal", normal);
 	m_shaders[ShaderType::Main].setMat4("u_mvp", m_cachedCamera->getViewProjection() * transform);
