@@ -27,12 +27,12 @@ public:
 	void draw(const Model& object, const glm::mat4& transform);
 
 private:
-	enum ShaderTypes {
-		MAIN = 0,
+	enum ShaderType {
+		Main = 0,
 		COUNT
 	};
 
-	std::array<Shader, ShaderTypes::COUNT> m_shaders;
+	std::array<Shader, ShaderType::COUNT> m_shaders;
 	const Camera* m_cachedCamera{};
 };
 
