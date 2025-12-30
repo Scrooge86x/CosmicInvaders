@@ -3,26 +3,30 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <array>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 #include "model.h"
 #include "shader.h"
+#include "lighting.h"
 
-template<typename Derived>
 class Renderer {
 public:
-	void beginFrame() {
-		static_cast<Derived*>(this)->beginFrameImpl();
-	}
+	enum ShaderTypes : size_t {
+		MAIN = 0,
+		COUNT
+	};
 
-	void endFrame() {
-		static_cast<Derived*>(this)->endFrameImpl();
-	}
+	Renderer();
 
-	void submit() {
-		static_cast<Derived*>(this)->submitImpl();
-	}
-	void flush() {
-		static_cast<Derived*>(this)->flushImpl();
-	}
+	void beginFrame();
+
+	void endFrame();
+
+	void draw(const Model& object, const glm::mat3& normal);
+
+	void onceAFrame(const Lighting& lighting, const glm::highp_mat4 camera, const glm::vec3& cameraPosition);
 
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
@@ -31,8 +35,7 @@ public:
 	Renderer& operator=(Renderer&&) = delete;
 
 private:
-	friend Derived;
-	Renderer() {};
+	std::array<Shader, ShaderTypes::COUNT> m_shaders;
 };
 
 #endif 

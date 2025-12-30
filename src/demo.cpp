@@ -11,6 +11,7 @@
 #include <renderer/model-store.h>
 #include <renderer/lighting.h>
 #include <renderer/camera.h>
+#include <renderer/renderer.h>
 
 #include <ui/ui-core.h>
 
@@ -64,7 +65,7 @@ static int runDemo() {
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    glEnable(GL_DEPTH_TEST);
+    Renderer renderer{  };
 
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
@@ -76,8 +77,7 @@ static int runDemo() {
         fpsCounter.update(timer.getDt<double>());
         inputManager.update();
 
-        glClearColor(0.f, 0.5f, 0.5f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderer.beginFrame();
 
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
@@ -85,27 +85,31 @@ static int runDemo() {
         model = glm::scale(model, glm::vec3{ modelScale });
         glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
-        shader.use();
-        shader.setMat4("u_mvp", camera.getViewProjection() * model);
-        shader.setMat3("u_normal", normal);
-        shader.setVec3("u_lighting.ambient", lighting.ambient);
-        shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
-        shader.setVec3("u_lighting.sunColor", lighting.sunColor);
-        shader.setVec3("u_cameraPos", camera.getPosition());
+        renderer.onceAFrame(lighting, camera.getViewProjection() * model, camera.getPosition());
 
-        for (const auto& mesh : object->getMeshes()) {
-            const auto& material{ *mesh.getMaterial() };
-            if (material.diffuse) {
-                material.diffuse->bind(0);
-                shader.setInt("u_material.diffuse", 0);
-            }
-            shader.setVec3("u_material.specularColor", material.specularColor);
-            shader.setFloat("u_material.specularStrength", material.specularStrength);
-            shader.setFloat("u_material.shininess", material.shininess);
+        renderer.draw(*object, normal);
 
-            glBindVertexArray(mesh.getVao());
-            glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
-        }
+        //shader.use();
+        //shader.setMat4("u_mvp", camera.getViewProjection() * model);
+        //shader.setVec3("u_lighting.ambient", lighting.ambient);
+        //shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
+        //shader.setVec3("u_lighting.sunColor", lighting.sunColor);
+        //shader.setVec3("u_cameraPos", camera.getPosition());
+        //shader.setMat3("u_normal", normal);
+
+        //for (const auto& mesh : object->getMeshes()) {
+        //    const auto& material{ *mesh.getMaterial() };
+        //    if (material.diffuse) {
+        //        material.diffuse->bind(0);
+        //        shader.setInt("u_material.diffuse", 0);
+        //    }
+        //    shader.setVec3("u_material.specularColor", material.specularColor);
+        //    shader.setFloat("u_material.specularStrength", material.specularStrength);
+        //    shader.setFloat("u_material.shininess", material.shininess);
+
+        //    glBindVertexArray(mesh.getVao());
+        //    glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
+        //}
 
         ui::beginFrame();
 

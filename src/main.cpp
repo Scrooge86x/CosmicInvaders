@@ -1,6 +1,7 @@
 #include <core/gl-window.h>
 #include <gameplay/game.h>
 #include <ui/ui-core.h>
+#include <renderer/renderer.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -25,15 +26,15 @@ static int runGame() {
         game.getCamera().setAspectRatio(static_cast<float>(width) / height);
     });
 
-    glEnable(GL_DEPTH_TEST); // TODO: Move to the Renderer class
+    Renderer renderer{};
+
     while (!window.shouldClose() && !game.shouldQuit()) {
         timer.update();
 
         window.pollEvents();
         inputManager.update();
 
-        glClearColor(0.05f, 0.05f, 0.05f, 1.f); // TODO: Move to the Renderer class
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Move to the Renderer class
+        renderer.beginFrame();
 
         ui::beginFrame();
         game.update(timer.getDt<double>());

@@ -7,6 +7,7 @@ add_library(renderer STATIC
     model-store.cpp model-store.h
     material.h
     lighting.h
+    renderer.cpp renderer.h 
 )
 
 target_link_libraries(renderer
