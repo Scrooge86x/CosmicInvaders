@@ -5,6 +5,8 @@
 #include "model.h"
 #include "camera.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 Renderer::Renderer() : m_shaders{
 	Shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" }
 } {
@@ -33,12 +35,11 @@ void Renderer::draw(const Model& object, const glm::mat4& transform) {
 
 	glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ transform })) };
 
-	m_shaders[ShaderType::Main].setMat4("u_normal", normal);
+	m_shaders[ShaderType::Main].setMat3("u_normal", normal);
 	m_shaders[ShaderType::Main].setMat4("u_mvp", m_cachedCamera->getViewProjection() * transform);
 
 	for (const auto& mesh : object.getMeshes()) {
 		const auto& material{ *mesh.getMaterial() };
-
 		if (material.diffuse) {
 			material.diffuse->bind(0);
 			m_shaders[ShaderType::Main].setInt("u_material.diffuse", 0);

@@ -49,7 +49,6 @@ static int runDemo() {
         return -1;
     }
 
-    Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
     FpsCounter fpsCounter{};
     InputManager inputManager{ window.getNativeHandle() };
     Settings settings{ "config.json" };
@@ -76,36 +75,14 @@ static int runDemo() {
         fpsCounter.update(timer.getDt<double>());
         inputManager.update();
 
-        renderer.beginFrame(lighting, camera);
-
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
         model = glm::scale(model, glm::vec3{ modelScale });
 
+        renderer.beginFrame(lighting, camera);
         renderer.draw(*object, model);
-
-        //shader.use();
-        //shader.setMat4("u_mvp", camera.getViewProjection() * model);
-        //shader.setVec3("u_lighting.ambient", lighting.ambient);
-        //shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
-        //shader.setVec3("u_lighting.sunColor", lighting.sunColor);
-        //shader.setVec3("u_cameraPos", camera.getPosition());
-        //shader.setMat3("u_normal", normal);
-
-        //for (const auto& mesh : object->getMeshes()) {
-        //    const auto& material{ *mesh.getMaterial() };
-        //    if (material.diffuse) {
-        //        material.diffuse->bind(0);
-        //        shader.setInt("u_material.diffuse", 0);
-        //    }
-        //    shader.setVec3("u_material.specularColor", material.specularColor);
-        //    shader.setFloat("u_material.specularStrength", material.specularStrength);
-        //    shader.setFloat("u_material.shininess", material.shininess);
-
-        //    glBindVertexArray(mesh.getVao());
-        //    glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
-        //}
+        renderer.endFrame();
 
         ui::beginFrame();
 
