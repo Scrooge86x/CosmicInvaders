@@ -36,3 +36,18 @@ void Game::update(const double dt) {
         break;
     }
 }
+
+void Game::render(Renderer& renderer) const {
+    switch (m_gameState) {
+    case GameState::Playing:
+        // TODO: Render the ECS entities
+        break;
+    case GameState::Paused:
+        // TODO: Render the ECS entities
+        break;
+    case GameState::MainMenu:
+    case GameState::GameOver:
+    default:
+        break;
+    }
+}

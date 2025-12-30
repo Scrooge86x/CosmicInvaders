@@ -34,10 +34,13 @@ static int runGame() {
         window.pollEvents();
         inputManager.update();
 
-        renderer.beginFrame();
-
         ui::beginFrame();
+        renderer.beginFrame(game.getLighting(), game.getCamera());
+
         game.update(timer.getDt<double>());
+        game.render(renderer);
+
+        renderer.endFrame();
         ui::endFrame();
 
         window.swapBuffers();

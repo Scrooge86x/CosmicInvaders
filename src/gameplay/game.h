@@ -13,6 +13,8 @@
 #include <renderer/model-store.h>
 #include <renderer/lighting.h>
 
+class Renderer;
+
 enum class GameState {
     MainMenu,
     Playing,
@@ -31,6 +33,7 @@ public:
     Game& operator=(Game&&) = delete;
 
     void update(const double dt);
+    void render(Renderer& renderer) const;
     void requestQuit() { m_shouldQuit = true; }
 
     [[nodiscard]] double getFps() const { return m_fpsCounter.getFps(); }
