@@ -3,13 +3,12 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "shader.h"
+#include <glm/glm.hpp>
 #include <array>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/glm.hpp>
-#include "model.h"
-#include "shader.h"
-#include "lighting.h"
+class Model;
+struct Lighting;
 
 class Renderer {
 public:

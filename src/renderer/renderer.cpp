@@ -1,6 +1,8 @@
 #include "renderer.h"
 
 #include "material.h"
+#include "lighting.h"
+#include "model.h"
 
 Renderer::Renderer() : m_shaders{
 	Shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" }
@@ -12,6 +14,8 @@ void Renderer::beginFrame() {
 	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
+
+void Renderer::endFrame() {}
 
 void Renderer::onceAFrame(const Lighting& lighting, const glm::mat4& camera, const glm::vec3& cameraPosition) {
 	m_shaders[0].use();
