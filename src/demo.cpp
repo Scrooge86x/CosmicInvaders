@@ -11,6 +11,7 @@
 #include <renderer/model-store.h>
 #include <renderer/lighting.h>
 #include <renderer/camera.h>
+#include <renderer/renderer.h>
 
 #include <ui/ui-core.h>
 
@@ -48,11 +49,11 @@ static int runDemo() {
         return -1;
     }
 
-    Shader shader{ "assets/shaders/vertex-test.glsl", "assets/shaders/fragment-test.glsl" };
     FpsCounter fpsCounter{};
     InputManager inputManager{ window.getNativeHandle() };
     Settings settings{ "config.json" };
     Timer timer{};
+    Renderer renderer{};
 
     bool isGuiVisible{ true };
     float modelScale{ 4.f };
@@ -64,8 +65,6 @@ static int runDemo() {
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    glEnable(GL_DEPTH_TEST);
-
     ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
     while (!window.shouldClose()) {
@@ -76,36 +75,14 @@ static int runDemo() {
         fpsCounter.update(timer.getDt<double>());
         inputManager.update();
 
-        glClearColor(0.f, 0.5f, 0.5f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         glm::mat4 model{ 1.f };
         model = glm::translate(model, position);
         model = glm::rotate(model, rotationAngle, glm::vec3{ 0.5f, 1.f, 0.f });
         model = glm::scale(model, glm::vec3{ modelScale });
-        glm::mat3 normal{ glm::transpose(glm::inverse(glm::mat3{ model })) };
 
-        shader.use();
-        shader.setMat4("u_mvp", camera.getViewProjection() * model);
-        shader.setMat3("u_normal", normal);
-        shader.setVec3("u_lighting.ambient", lighting.ambient);
-        shader.setVec3("u_lighting.sunPosition", lighting.sunPosition);
-        shader.setVec3("u_lighting.sunColor", lighting.sunColor);
-        shader.setVec3("u_cameraPos", camera.getPosition());
-
-        for (const auto& mesh : object->getMeshes()) {
-            const auto& material{ *mesh.getMaterial() };
-            if (material.diffuse) {
-                material.diffuse->bind(0);
-                shader.setInt("u_material.diffuse", 0);
-            }
-            shader.setVec3("u_material.specularColor", material.specularColor);
-            shader.setFloat("u_material.specularStrength", material.specularStrength);
-            shader.setFloat("u_material.shininess", material.shininess);
-
-            glBindVertexArray(mesh.getVao());
-            glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, NULL);
-        }
+        renderer.beginFrame(lighting, camera);
+        renderer.draw(*object, model);
+        renderer.endFrame();
 
         ui::beginFrame();
 
