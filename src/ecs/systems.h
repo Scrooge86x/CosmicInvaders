@@ -4,12 +4,11 @@
 #define SYSTEMS_H
 
 #include "components.h"
-#include "../renderer/shader.h"
-//#include "../renderer/immediate-renderer.h"
+class Renderer;
 
 //Generel systems
 void movementSystem(entt::registry& registry);
-void renderingSystem(entt::registry& registry, Shader& shader, glm::mat4& model);
+void renderingSystem(entt::registry& registry, Renderer& renderer, glm::mat4& model);
 void cleanUpSystem(entt::registry& registry);
 
 //Player systems
