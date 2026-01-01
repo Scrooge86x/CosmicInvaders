@@ -39,12 +39,13 @@ static int runDemo() {
     });
 
     ModelStore modelStore{};
-    const auto object{ modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 2.f) };
-    if (object != modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 2.f)) {
+    constexpr auto objectPath{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
+    const auto object{ modelStore.load(objectPath, 0.0003f) };
+    if (object != modelStore.load(objectPath, 0.0003f)) {
         std::cerr << "ModelStore failed to cache the object!\n";
         return -1;
     }
-    if (object == modelStore.load("assets/3d-models/DiffuseTransmissionPlant.glb", 1.f)) {
+    if (object == modelStore.load(objectPath, 1.f)) {
         std::cerr << "ModelStore cached differently scaled objects!\n";
         return -1;
     }
@@ -61,7 +62,7 @@ static int runDemo() {
     float rotationAngle{};
     glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
-        .sunPosition{ 0.f, -20.f, 0.f },
+        .sunPosition{ 0.f, 20.f, 0.f },
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
