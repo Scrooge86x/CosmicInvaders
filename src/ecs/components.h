@@ -9,7 +9,8 @@
 
 
 struct Transform {
-    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+    glm::vec3 position{};
+    glm::mat3 rotate{};
 };
 
 struct Health {
@@ -23,7 +24,6 @@ struct Damage {
 
 struct Velocity {
     glm::vec3 linear{ 0.0f, 0.0f, 0.0f };
-    float speed = 1.0f;
 };
 
 struct Lifetime {

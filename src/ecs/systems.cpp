@@ -17,6 +17,17 @@ void renderingSystem(entt::registry& registry, Renderer& renderer, glm::mat4& mo
 	}
 }
 
+void playerDirectionSystem(entt::registry& registry, const Direction direction) {
+	entt::basic_view entitie = registry.view<PlayerTag>();
+
+	if (!entitie.empty()) {
+		auto player = *entitie.begin();
+
+		auto& transform = registry.get<Transform>(player);
+		transform.position.x = direction;
+	}
+}
+
 void cleanUpSystem(entt::registry& registry) {
 	entt::basic_view view = registry.view<ShouldDestroy>();
 	
