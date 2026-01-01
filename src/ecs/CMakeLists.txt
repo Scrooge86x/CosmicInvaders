@@ -10,6 +10,7 @@ target_link_libraries(ecs
         glm
     PRIVATE 
         renderer
+        core
 )
 
 target_include_directories(ecs PUBLIC ${PROJECT_SOURCE_DIR}/src)

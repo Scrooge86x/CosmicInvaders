@@ -1,5 +1,6 @@
 #include "systems.h"
 #include <renderer/renderer.h>
+#include <core/input-manager.h>
 
 void movementSystem(entt::registry& registry) {
 	entt::basic_view view = registry.view<Transform, Velocity>();
@@ -17,14 +18,22 @@ void renderingSystem(entt::registry& registry, Renderer& renderer, glm::mat4& mo
 	}
 }
 
-void playerDirectionSystem(entt::registry& registry, const Direction direction) {
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager) {
 	entt::basic_view entitie = registry.view<PlayerTag>();
+
+	float direction{};
+
+	if (inputManager.isDown(inputManager.Key::A))
+		direction -= 1;
+
+	if (inputManager.isDown(inputManager.Key::D))
+		direction += 1;
 
 	if (!entitie.empty()) {
 		auto player = *entitie.begin();
 
-		auto& transform = registry.get<Transform>(player);
-		transform.position.x = direction;
+		auto& velocity = registry.get<Velocity>(player);
+		velocity.linear.x = direction;
 	}
 }
 
