@@ -6,6 +6,32 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
+#include <optional>
+#include <iostream>
+#include <format>
+
+[[nodiscard]] static std::optional<std::filesystem::path> findTextureInAssets(
+    const std::filesystem::path searchRoot,
+    const std::filesystem::path fullTexturePath
+) {
+    try {
+        if (!std::filesystem::exists(searchRoot) || !std::filesystem::is_directory(searchRoot)) {
+            return {};
+        }
+
+        const auto targetFileName{ fullTexturePath.filename() };
+        for (const auto& entry : std::filesystem::recursive_directory_iterator{ searchRoot }) {
+            if (entry.is_regular_file() && entry.path().filename() == targetFileName) {
+                return entry.path();
+            }
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "std::filesystem error: " << e.what() << '\n';
+    }
+
+    return {};
+}
+
 Model::Model(
     const std::filesystem::path& path,
     const glm::mat4& transform
@@ -31,7 +57,12 @@ Model::Model(
             if (texturePath.C_Str()[0] == '*') {
                 materialPtr->diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
             } else {
-                materialPtr->diffuse = Texture2D{ texturePath.C_Str() };
+                auto textureAssetPath{ findTextureInAssets(path.parent_path(), texturePath.C_Str())};
+                if (textureAssetPath) {
+                    materialPtr->diffuse = Texture2D{ *textureAssetPath };
+                } else {
+                    std::cerr << std::format("Asset path of '{}' was not found.", texturePath.C_Str());
+                }
             }
         }
 
