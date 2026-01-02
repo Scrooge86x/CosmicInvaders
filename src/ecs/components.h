@@ -10,7 +10,7 @@
 
 struct Transform {
     glm::vec3 position{};
-    glm::mat3 rotate{};
+    glm::vec3 rotate{};
 };
 
 struct Health {
