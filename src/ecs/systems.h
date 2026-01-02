@@ -8,15 +8,15 @@ class Renderer;
 class InputManager;
 
 //Generel systems
-void movementSystem(entt::registry& registry);
-void renderingSystem(entt::registry& registry, Renderer& renderer, glm::mat4& model);
+void movementSystem(entt::registry& registry, const float deltaTime);
+void renderingSystem(entt::registry& registry, Renderer& renderer);
 void cleanUpSystem(entt::registry& registry);
 
 //Player systems
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager);
-void shootingSystem(entt::registry& registry);
 
-//Enemy systems
+//Enemy & player systems
+void shootingSystem(entt::registry& registry);
 void beingShotSystem(entt::registry& registry);
 
 #endif // !SYSTEMS_H
