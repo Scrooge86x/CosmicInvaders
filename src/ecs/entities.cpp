@@ -4,7 +4,7 @@
 entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> object) {
 	entt::entity entity = registry.create();
 
-	registry.emplace<Transform>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
+	registry.emplace<Transform>(entity, glm::vec3(1.0f, -2.0f, -10.0f));
 	registry.emplace<Velocity>(entity);
 	registry.emplace<Health>(entity, 100.0f, 100.0f);
 	registry.emplace<Render>(entity, object);
@@ -13,7 +13,7 @@ entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> objec
 	return entity;
 }
 
-entt::entity createEntity(entt::registry& registry, std::shared_ptr<Model> object, glm::vec3& position, glm::mat3 rotate, std::string& type) {
+entt::entity createEntity(entt::registry& registry, std::shared_ptr<Model> object, glm::vec3& position, glm::vec3 rotate, std::string& type) {
 
 	entt::entity entity = registry.create();
 
@@ -27,7 +27,7 @@ entt::entity createEntity(entt::registry& registry, std::shared_ptr<Model> objec
 	return entity;
 }
 
-entt::entity createBullet(entt::registry& registry, std::shared_ptr<Model> object, glm::vec3& position, glm::mat3 rotate) {
+entt::entity createBullet(entt::registry& registry, std::shared_ptr<Model> object, glm::vec3& position, glm::vec3 rotate) {
 	entt::entity entity = registry.create();
 
 	registry.emplace<Transform>(entity, position, rotate);
