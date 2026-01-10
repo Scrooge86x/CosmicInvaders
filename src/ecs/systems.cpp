@@ -37,6 +37,15 @@ void renderingSystem(entt::registry& registry, Renderer& renderer) {
 	}
 }
 
+void cleanUpSystem(entt::registry& registry) {
+	entt::basic_view view = registry.view<ShouldDestroy>();
+	
+	for (auto [entity, shouldDestroy] : view.each()) {
+		if (shouldDestroy.shuld)
+			registry.destroy(entity);
+	}
+}
+
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
 	constexpr float animationTime = 0.3f;
 
@@ -62,7 +71,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 
 			if (player.canShoot() && inputManager.isDown(inputManager.Key::Space)) {
 				constexpr auto path{"assets/3d-models/"};
-				createBullet(registry, modelStore.load(path, 0.0003f), transform.position, transform.rotate);
+				createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.0003f), transform.position, transform.rotate);
 			}
 		}
 
@@ -85,22 +94,85 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 	};
 }
 
-void cleanUpSystem(entt::registry& registry) {
-	entt::basic_view view = registry.view<ShouldDestroy>();
-	
-	for (auto [entity, shouldDestroy] : view.each()) {
-		if (!shouldDestroy.shuld)
-			continue;
+void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
+	constexpr float invincibilityTime = 0.3f;
 
-		registry.destroy(entity);
+	auto player = registry.view<PlayerTag, Health, Transform>();
+	auto enemy = registry.view<EnemyTag, Transform, Damage, Health, ShouldDestroy>();
+	auto bullet = registry.view<BulletTag, Transform, Damage, FromWho, ShouldDestroy>();
+
+	for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+		for (auto [bulletEntity, bulletTransform, bulletDamage, fromWho, bulletShouldDestroy] : bullet.each()) {
+			if (fromWho.fromWho == EntityTypes::Enemy) {
+				continue;
+			}
+
+			if (enemyTransform.position.x != enemyTransform.position.x) {
+				continue;
+			}
+
+			if (!(enemyTransform.position.z > bulletTransform.position.z)) {
+				continue;
+			}
+
+			enemyHealth.current -= bulletDamage.current;
+			bulletShouldDestroy.shuld = true;
+
+			if (enemyHealth.current <= 0) 
+				shouldDestroy.shuld = true;
+		}
+	}
+
+	for (auto [entity, health, transform] : player.each()) {
+		if (health.invincibilityTime > 0.0f) {
+			health.invincibilityTime -= deltaTime;
+		}
+
+		if (health.invincibilityTime > 0.0f) {
+			return;
+		}
+	}
+
+	for (auto [playerEntity, health, transform] : player.each()) {
+		for (auto [bulletEntity, bulletTransform, damage, fromWho, shouldDestroy] : bullet.each()) {
+			if (fromWho.fromWho == EntityTypes::Player) {
+				continue;
+			}
+
+			if (transform.position.x != bulletTransform.position.x) {
+				continue;
+			}
+
+			if (!(bulletTransform.position.z <= transform.position.z)) {
+				continue;
+			}
+
+			health.current -= damage.current;
+			health.invincibilityTime = 1.0f;
+
+			shouldDestroy.shuld = true;
+		}
+	}
+
+	for (auto [playerEntity, health, transform] : player.each()) {
+		for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+			if (transform.position.x != enemyTransform.position.x) {
+				continue;
+			}
+
+			if (!(enemyTransform.position.z < transform.position.z)) {
+				continue;
+			}
+
+			health.current -= damage.current;
+			health.invincibilityTime = 1.0f;
+
+			shouldDestroy.shuld = true;
+		}
 	}
 }
 
-void shootingSystem(entt::registry& registry, const InputManager& inputManager) {
-
-}
-
-void recievingDamageSystem(entt::registry& registry) {
+void enemyShootingSystem(entt::registry& registry, const InputManager& inputManager) {
 
 }
 

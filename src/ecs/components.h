@@ -48,14 +48,20 @@ namespace Lane {
     }
 }
 
+enum class EntityTypes {
+    Player,
+    Enemy
+};
+
 struct Transform {
     glm::vec3 position{};
     glm::vec3 rotate{};
 };
 
 struct Health {
-	float max;
-	float current;
+    float max;
+    float current;
+    float invincibilityTime{ 0.0f };
 };
 
 struct Damage {
@@ -82,12 +88,12 @@ struct Animation {
     bool canShoot() const { return animationTime <= 0.0f; }
 };
 
-struct PlayerTag {};
-
-struct EnemyTag {
-    std::string type;
+struct FromWho {
+    EntityTypes fromWho;
 };
 
+struct PlayerTag {};
+struct EnemyTag {};
 struct BulletTag {};
 
 #endif // !COMPONENTS_H
