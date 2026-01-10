@@ -13,10 +13,10 @@ void renderingSystem(entt::registry& registry, Renderer& renderer);
 void cleanUpSystem(entt::registry& registry);
 
 //Player systems
-void playerInputSystem(entt::registry& registry, const InputManager& inputManager);
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager, const float deltaTime);
 
 //Enemy & player systems
-void shootingSystem(entt::registry& registry);
-void beingShotSystem(entt::registry& registry);
+void shootingSystem(entt::registry& registry, const InputManager& inputManager);
+void recievingDamageSystem(entt::registry& registry);
 
 #endif // !SYSTEMS_H

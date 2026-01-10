@@ -33,6 +33,7 @@ entt::entity createBullet(entt::registry& registry, std::shared_ptr<Model> objec
 	registry.emplace<Transform>(entity, position, rotate);
 	registry.emplace<Velocity>(entity);
 	registry.emplace<Render>(entity, object);
+	registry.emplace<ShouldDestroy>(entity);
 	registry.emplace<BulletTag>(entity);
 
 	return entity;
