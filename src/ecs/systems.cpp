@@ -3,11 +3,12 @@
 #include "entities.h"
 
 #include <renderer/renderer.h>
+#include <renderer/model-store.h>
 #include <core/input-manager.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
+#include <cmath>
 
 void movementSystem(entt::registry& registry, const float deltaTime) {
 	entt::basic_view view = registry.view<Transform, Velocity>();
@@ -24,7 +25,7 @@ void renderingSystem(entt::registry& registry, Renderer& renderer) {
 
 	for (auto [entity, render, transform] : view.each()) {
 
-		std::cout << transform.position.x << " " << transform.position.y << " " << transform.position.z << "\n";
+		//std::cout << transform.position.x << " " << transform.position.y << " " << transform.position.z << "\n";
 
 		glm::mat4 model{ 1.f };
 		model = glm::translate(model, transform.position);
@@ -36,52 +37,49 @@ void renderingSystem(entt::registry& registry, Renderer& renderer) {
 	}
 }
 
-void playerInputSystem(entt::registry& registry, const InputManager& inputManager, std::shared_ptr<Model> object, const float deltaTime) {
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
 	constexpr float animationTime = 0.3f;
 
-	auto view = registry.view<PlayerTag, Transform>();
+	auto view = registry.view<Animation, Transform>();
 
-	for (auto [entity, playerTag, transform] : view.each()) {
+	for (auto [entity, player, transform] : view.each()) {
 
-		if (playerTag.animationTime <= 0.0f) {
-			Lane::Lane newLane{playerTag.currentLane};
-			bool shouldMove{ false };
+		if (player.animationTime <= 0.0f) {
+			Lane::Lane newLane{player.currentLane};
 
 			bool aPressed{ inputManager.isDown(inputManager.Key::A) };
 			bool dPressed{ inputManager.isDown(inputManager.Key::D) };
 
 			if (aPressed && !dPressed) { 
-				newLane = Lane::changeLane(playerTag.currentLane, false);
-				shouldMove = true;
+				newLane = Lane::changeLane(player.currentLane, Lane::LaneDirection::Left);
 			}
 			else if (!aPressed && dPressed) {
-				newLane = Lane::changeLane(playerTag.currentLane, true);
-				shouldMove = true;
+				newLane = Lane::changeLane(player.currentLane, Lane::LaneDirection::Right);
 			}
 
-			if (shouldMove) {
-				playerTag.targetLane = newLane;
-				playerTag.animationTime = animationTime;
-				playerTag.startX = transform.position.x;
-				playerTag.targetX = Lane::getLaneXPosition(newLane);
-			}
+			player.targetLane = newLane;
+			player.animationTime = animationTime;
 
-			if (playerTag.canShoot() && inputManager.isDown(inputManager.Key::Space)) {
-				createBullet(registry, object, transform.position, transform.rotate);
+			if (player.canShoot() && inputManager.isDown(inputManager.Key::Space)) {
+				constexpr auto path{"assets/3d-models/"};
+				createBullet(registry, modelStore.load(path, 0.0003f), transform.position, transform.rotate);
 			}
 		}
 
-		if (playerTag.animationTime > 0.f) {
-			playerTag.animationTime -= deltaTime;
+		if (player.animationTime > 0.f) {
+			player.animationTime -= deltaTime;
 
-			if (playerTag.animationTime <= 0.f) {
-				playerTag.animationTime = 0.f;
-				playerTag.currentLane = playerTag.targetLane;
-				transform.position.x = playerTag.targetX;
+			if (player.animationTime <= 0.f) {
+				player.animationTime = 0.f;
+				player.currentLane = player.targetLane;
+				transform.position.x = Lane::getLaneXPosition(player.currentLane);
 			}
 			else {
-				float t{ 1.f - (playerTag.animationTime / animationTime) };
-				transform.position.x = playerTag.startX + (playerTag.targetX - playerTag.startX) * t;
+				float t{ 1.f - (player.animationTime / animationTime) };
+				float startX{ Lane::getLaneXPosition(player.currentLane) };
+				float targetX{ Lane::getLaneXPosition(player.targetLane) };
+
+				transform.position.x = std::lerp(startX, targetX, t);
 			}
 		}
 	};
@@ -97,3 +95,12 @@ void cleanUpSystem(entt::registry& registry) {
 		registry.destroy(entity);
 	}
 }
+
+void shootingSystem(entt::registry& registry, const InputManager& inputManager) {
+
+}
+
+void recievingDamageSystem(entt::registry& registry) {
+
+}
+

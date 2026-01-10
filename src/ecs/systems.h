@@ -6,6 +6,7 @@
 #include "components.h"
 class Renderer;
 class InputManager;
+class ModelStore;
 
 //Generel systems
 void movementSystem(entt::registry& registry, const float deltaTime);
@@ -13,7 +14,7 @@ void renderingSystem(entt::registry& registry, Renderer& renderer);
 void cleanUpSystem(entt::registry& registry);
 
 //Player systems
-void playerInputSystem(entt::registry& registry, const InputManager& inputManager, const float deltaTime);
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager, const ModelStore& modelStore, const float deltaTime);
 
 //Enemy & player systems
 void shootingSystem(entt::registry& registry, const InputManager& inputManager);

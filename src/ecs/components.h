@@ -14,7 +14,14 @@ namespace Lane {
         Right
     };
 
-    Lane changeLane(Lane current, bool moveRight) {
+    enum class LaneDirection {
+        Left,
+        Right
+    };
+
+    Lane changeLane(Lane current, LaneDirection direction) {
+        bool moveRight = (direction == LaneDirection::Right);
+
         switch (current) {
         case Lane::Left:
             return moveRight ? Lane::Middle : current;
@@ -35,6 +42,8 @@ namespace Lane {
             return 0.f;
         case Lane::Right:
             return 15.f;
+        default:
+            return 0.f;
         }
     }
 }
@@ -65,16 +74,15 @@ struct Render {
     std::shared_ptr<Model> object;
 };
 
-struct PlayerTag {
+struct Animation {
     Lane::Lane currentLane{ Lane::Lane::Middle };
     Lane::Lane targetLane{ Lane::Lane::Middle };
     float animationTime{};
-    float startX = 0.0f;
-    float targetX = 0.0f;
 
-    bool canMove() const { return animationTime <= 0.0f; }
     bool canShoot() const { return animationTime <= 0.0f; }
 };
+
+struct PlayerTag {};
 
 struct EnemyTag {
     std::string type;

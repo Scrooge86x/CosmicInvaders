@@ -8,6 +8,7 @@ entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> objec
 	registry.emplace<Velocity>(entity);
 	registry.emplace<Health>(entity, 100.0f, 100.0f);
 	registry.emplace<Render>(entity, object);
+	registry.emplace<Animation>(entity);
 	registry.emplace<PlayerTag>(entity);
 
 	return entity;
