@@ -6,6 +6,7 @@ target_link_libraries(gameplay
     PUBLIC
         core
         renderer
+        ecs
     PRIVATE
         ui
 )

@@ -13,6 +13,8 @@
 #include <renderer/model-store.h>
 #include <renderer/lighting.h>
 
+#include <ecs/systems.h>
+
 class Renderer;
 
 enum class GameState {
@@ -33,7 +35,7 @@ public:
     Game& operator=(Game&&) = delete;
 
     void update(const double dt);
-    void render(Renderer& renderer) const;
+    void render(Renderer& renderer);
     void requestQuit() { m_shouldQuit = true; }
 
     [[nodiscard]] double getFps() const { return m_fpsCounter.getFps(); }
@@ -46,6 +48,8 @@ public:
 
     void setState(const GameState newState) { m_gameState = newState; }
     [[nodiscard]] GameState getState() const { return m_gameState; }
+
+    void loadEntities();
 
 private:
     InputManager& m_inputManager;
@@ -61,6 +65,10 @@ private:
     GameState m_gameState{ GameState::MainMenu };
 
     bool m_shouldQuit{};
+
+    entt::registry m_registry{};
+
+    void updateSystems(const double dt);
 };
 
 #endif // GAME_H

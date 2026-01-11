@@ -5,6 +5,8 @@
 #include <ui/pause-menu.h>
 #include <ui/game-over-screen.h>
 
+#include <iostream>
+
 Game::Game(InputManager& inputManager)
     : m_inputManager{ inputManager }
 {}
@@ -21,6 +23,7 @@ void Game::update(const double dt) {
         if (m_inputManager.isPressed(InputManager::Escape)) {
             m_gameState = GameState::Paused;
         }
+        updateSystems(dt);
         break;
     case GameState::Paused:
         ui::drawHud(*this);
@@ -37,10 +40,11 @@ void Game::update(const double dt) {
     }
 }
 
-void Game::render(Renderer& renderer) const {
+void Game::render(Renderer& renderer) {
     switch (m_gameState) {
     case GameState::Playing:
-        // TODO: Render the ECS entities
+        //std::cout << "W" << "\n";
+        renderingSystem(m_registry, renderer);
         break;
     case GameState::Paused:
         // TODO: Render the ECS entities
@@ -51,3 +55,22 @@ void Game::render(Renderer& renderer) const {
         break;
     }
 }
+
+void Game::loadEntities() {
+    std::cout << "W?" << "\n";
+    constexpr auto playerPath{"assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx"};
+
+    m_registry.clear();
+
+    createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f));
+}
+
+void Game::updateSystems(const double dt) {
+    //std::cout << "W" << "\n";
+    cleanUpSystem(m_registry);
+    enemyShootingSystem(m_registry);
+    receivingDamageSystem(m_registry, dt);
+    playerInputSystem(m_registry, m_inputManager, m_modelStore, dt);
+    movementSystem(m_registry, dt);
+}
+
