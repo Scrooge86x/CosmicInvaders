@@ -22,8 +22,8 @@ entt::entity createEntity(entt::registry& registry, std::shared_ptr<Model> objec
 	registry.emplace<Velocity>(entity);
 	registry.emplace<Health>(entity, 5.0f, 5.0f);
 	registry.emplace<Render>(entity, std::move(object));
-	registry.emplace<Damage>(entity, 3);
-	registry.emplace<EnemyTag>(entity, type);
+	registry.emplace<Damage>(entity, 3.0f);
+	registry.emplace<EnemyTag>(entity);
 	registry.emplace<ShouldDestroy>(entity);
 
 	return entity;
