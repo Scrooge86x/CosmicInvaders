@@ -29,9 +29,9 @@ void renderingSystem(entt::registry& registry, Renderer& renderer) {
 
 		glm::mat4 model{ 1.f };
 		model = glm::translate(model, transform.position);
-		model = glm::rotate(model, transform.rotate.x, glm::vec3{ 0.f, 1.f, 0.f });
-		model = glm::rotate(model, transform.rotate.y, glm::vec3{ 1.f, 0.f, 0.f });
-		model = glm::rotate(model, transform.rotate.z, glm::vec3{ 0.f, 0.f, 1.f });
+		model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3{ 1.f, 0.f, 0.f });
+		model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3{ 0.f, 1.f, 0.f });
+		model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3{ 0.f, 0.f, 1.f });
 
 		renderer.draw(*render.object, model);
 	}

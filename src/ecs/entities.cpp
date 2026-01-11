@@ -4,7 +4,7 @@
 entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> object) {
 	entt::entity entity = registry.create();
 
-	registry.emplace<Transform>(entity, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
+	registry.emplace<Transform>(entity, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3{ 0.f, 90.f, 0.f });
 	registry.emplace<Health>(entity, 10.0f, 10.0f);
 	registry.emplace<Render>(entity, object);
 	registry.emplace<Animation>(entity);
