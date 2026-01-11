@@ -28,10 +28,10 @@ entt::entity createEntity(entt::registry& registry, std::shared_ptr<Model> objec
 	return entity;
 }
 
-entt::entity createBullet(entt::registry& registry, const EntityTypes fromWho, std::shared_ptr<Model> object, glm::vec3& position, glm::vec3 direction) {
+entt::entity createBullet(entt::registry& registry, const EntityTypes fromWho, std::shared_ptr<Model> object, glm::vec3& position) {
 	entt::entity entity = registry.create();
 
-	registry.emplace<Transform>(entity, position, direction);
+	registry.emplace<Transform>(entity, position, glm::vec3{});
 	registry.emplace<Velocity>(entity);
 	registry.emplace<Render>(entity, object);
 	registry.emplace<ShouldDestroy>(entity);

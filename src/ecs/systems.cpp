@@ -71,7 +71,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 
 			if (player.canShoot() && inputManager.isDown(inputManager.Key::Space)) {
 				constexpr auto path{"assets/3d-models/"};
-				createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.0003f), transform.position, transform.rotate);
+				createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.0003f), transform.position);
 			}
 		}
 
