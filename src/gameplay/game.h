@@ -62,7 +62,10 @@ private:
 
     Camera m_camera{};
     ModelStore m_modelStore{};
-    Lighting m_lighting{};
+    Lighting m_lighting{
+        .sunPosition{ 0.f, 20.f, 0.f },
+        .sunColor{ 1.f, 1.f, 3.f },
+    };
 
     GameState m_gameState{ GameState::MainMenu };
 
