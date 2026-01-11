@@ -40,9 +40,9 @@ private:
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 500.f };
 
-    mutable std::pair<bool, glm::mat4> m_viewMatrixCache{};
-    mutable std::pair<bool, glm::mat4> m_projectionMatrixCache{};
-    mutable std::pair<bool, glm::mat4> m_viewProjectionMatrixCache{};
+    mutable std::pair<bool, glm::mat4> m_viewMatrixCache{ true, glm::mat4{} };
+    mutable std::pair<bool, glm::mat4> m_projectionMatrixCache{ true, glm::mat4{} };
+    mutable std::pair<bool, glm::mat4> m_viewProjectionMatrixCache{ true, glm::mat4{} };
 };
 
 #endif // CAMERA_H
