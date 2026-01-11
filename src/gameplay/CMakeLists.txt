@@ -6,9 +6,10 @@ target_link_libraries(gameplay
     PUBLIC
         core
         renderer
-        ecs
+        EnTT::EnTT
     PRIVATE
         ui
+        ecs
 )
 
 target_include_directories(gameplay PUBLIC ${PROJECT_SOURCE_DIR}/src)

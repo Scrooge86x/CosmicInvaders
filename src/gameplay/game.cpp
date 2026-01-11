@@ -5,6 +5,8 @@
 #include <ui/pause-menu.h>
 #include <ui/game-over-screen.h>
 
+#include <ecs/systems.h>
+
 #include <iostream>
 
 Game::Game(InputManager& inputManager)

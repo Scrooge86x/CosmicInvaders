@@ -13,7 +13,7 @@
 #include <renderer/model-store.h>
 #include <renderer/lighting.h>
 
-#include <ecs/systems.h>
+#include <entt/entity/registry.hpp>
 
 class Renderer;
 
@@ -52,6 +52,8 @@ public:
     void loadEntities();
 
 private:
+    void updateSystems(const double dt);
+
     InputManager& m_inputManager;
 
     AudioEngine m_audioEngine{};
@@ -67,8 +69,6 @@ private:
     bool m_shouldQuit{};
 
     entt::registry m_registry{};
-
-    void updateSystems(const double dt);
 };
 
 #endif // GAME_H
