@@ -64,7 +64,7 @@ void Game::loadEntities() {
 
     m_registry.clear();
 
-    createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f));
+    createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -10.f });
 }
 
 void Game::updateSystems(const double dt) {

@@ -1,10 +1,10 @@
 #include "entities.h"
 #include <renderer/model.h>
 
-entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> object) {
+entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> object, const glm::vec3& position) {
 	entt::entity entity = registry.create();
 
-	registry.emplace<Transform>(entity, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3{ 0.f, 90.f, 0.f });
+	registry.emplace<Transform>(entity, position, glm::vec3{ 0.f, 90.f, 0.f });
 	registry.emplace<Health>(entity, 10.0f, 10.0f);
 	registry.emplace<Render>(entity, object);
 	registry.emplace<Animation>(entity);
