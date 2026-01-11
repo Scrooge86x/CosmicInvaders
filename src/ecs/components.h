@@ -19,7 +19,7 @@ namespace Lane {
         Right
     };
 
-    Lane changeLane(Lane current, LaneDirection direction) {
+    inline Lane changeLane(Lane current, LaneDirection direction) {
         bool moveRight = (direction == LaneDirection::Right);
 
         switch (current) {
@@ -34,7 +34,7 @@ namespace Lane {
         }
     }
 
-    float getLaneXPosition(Lane current) {
+    inline float getLaneXPosition(Lane current) {
         switch (current) {
         case Lane::Left:
             return -15.f;

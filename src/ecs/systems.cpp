@@ -1,7 +1,5 @@
 #include "systems.h"
 
-#include "entities.h"
-
 #include <renderer/renderer.h>
 #include <renderer/model-store.h>
 #include <core/input-manager.h>
@@ -9,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <cmath>
+
+#include <iostream>
 
 void movementSystem(entt::registry& registry, const float deltaTime) {
 	entt::basic_view view = registry.view<Transform, Velocity>();
@@ -172,7 +172,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 	}
 }
 
-void enemyShootingSystem(entt::registry& registry, const InputManager& inputManager) {
+void enemyShootingSystem(entt::registry& registry) {
 
 }
 
