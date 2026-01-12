@@ -6,6 +6,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <random>
 #include <cmath>
 
 #include <iostream>
@@ -141,6 +142,9 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 			}
 
 			if (transform.position.x != bulletTransform.position.x) {
+				if (bulletTransform.position.z > 0) {
+					shouldDestroy.shuld = true;
+				}
 				continue;
 			}
 
@@ -185,12 +189,22 @@ void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const
 			continue;
 		}
 
-		timeDelay.time = delay;
+		timeDelay.time = getRandomDelay(2.0f, 3.0f);
 
-		constexpr auto path{""};
-		glm::vec3 velocity{0.0f, 0.0f, 1.0f};
+		constexpr auto path{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
+		glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 
 		createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.0003f), transform.position, velocity);
 
 	}
+}
+
+float getRandomDelay(float min, float max) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	std::uniform_real_distribution<float> distrib(min, max);
+	float rawNumber = distrib(gen);
+
+	return std::round(rawNumber * 10) / 10.0f;
 }
