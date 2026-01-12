@@ -64,13 +64,17 @@ void Game::loadEntities() {
 
     m_registry.clear();
 
-    createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -10.f });
+    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ -3.75f, -2.f, -17.f });
+    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -17.f });
+    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 3.75f, -2.f, -17.f });
+
+    //createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -7.f });
 }
 
 void Game::updateSystems(const double dt) {
     //std::cout << "W" << "\n";
     cleanUpSystem(m_registry);
-    enemyShootingSystem(m_registry);
+    enemyShootingSystem(m_registry, m_modelStore);
     receivingDamageSystem(m_registry, dt);
     playerInputSystem(m_registry, m_inputManager, m_modelStore, dt);
     movementSystem(m_registry, dt);

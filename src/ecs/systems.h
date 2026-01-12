@@ -20,7 +20,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 void receivingDamageSystem(entt::registry& registry, const float deltaTime);
 
 //Enemy systems
-void enemyShootingSystem(entt::registry& registry);
+void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore);
 
 
 #endif // !SYSTEMS_H

@@ -37,11 +37,11 @@ namespace Lane {
     inline float getLaneXPosition(Lane current) {
         switch (current) {
         case Lane::Left:
-            return -15.f;
+            return -3.75f;
         case Lane::Middle:
             return 0.f;
         case Lane::Right:
-            return 15.f;
+            return 3.75f;
         default:
             return 0.f;
         }
@@ -61,7 +61,6 @@ struct Transform {
 struct Health {
     float max;
     float current;
-    float invincibilityTime{ 0.0f };
 };
 
 struct Damage {
@@ -86,6 +85,10 @@ struct Animation {
     float animationTime{};
 
     bool canShoot() const { return animationTime <= 0.0f; }
+};
+
+struct TimeDelay {
+    float time{ 0.0f };
 };
 
 struct FromWho {
