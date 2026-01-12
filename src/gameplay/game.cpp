@@ -74,7 +74,7 @@ void Game::loadEntities() {
 void Game::updateSystems(const double dt) {
     //std::cout << "W" << "\n";
     cleanUpSystem(m_registry);
-    enemyShootingSystem(m_registry, m_modelStore);
+    enemyShootingSystem(m_registry, m_modelStore, dt);
     receivingDamageSystem(m_registry, dt);
     playerInputSystem(m_registry, m_inputManager, m_modelStore, dt);
     movementSystem(m_registry, dt);
