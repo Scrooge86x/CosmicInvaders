@@ -96,6 +96,22 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 	};
 }
 
+void restorePlayerHealthSystem(entt::registry& registry) {
+	auto player = registry.view<PlayerTag, Health>();
+
+	for (auto [playerEntity, health] : player.each()) {
+		health.current = health.max;
+	}
+}
+
+bool isPlayerAliveSystem(entt::registry& registry) {
+	auto player = registry.view<PlayerTag, Health>();
+
+	for (auto [playerEntity, health] : player.each()) {
+		return health.current > 0;
+	}
+}
+
 void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 	constexpr float invincibilityTime{ 1.0f };
 
