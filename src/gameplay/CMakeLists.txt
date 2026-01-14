@@ -1,5 +1,6 @@
 add_library(gameplay STATIC
     game.cpp game.h
+    levels.h
 )
 
 target_link_libraries(gameplay
