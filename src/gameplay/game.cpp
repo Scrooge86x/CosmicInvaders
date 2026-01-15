@@ -4,6 +4,7 @@
 #include <ui/hud.h>
 #include <ui/pause-menu.h>
 #include <ui/game-over-screen.h>
+#include <ui/victory-screen.h>
 
 #include <ecs/systems.h>
 #include <ecs/queries.h>
@@ -40,6 +41,9 @@ void Game::update(const double dt) {
     case GameState::GameOver:
         ui::drawGameOverScreen(*this);
         break;
+    case GameState::Victory:
+        ui::drawVictoryScreen(*this);
+        break;
     default:
         break;
     }
@@ -56,6 +60,7 @@ void Game::render(Renderer& renderer) {
         break;
     case GameState::MainMenu:
     case GameState::GameOver:
+    case GameState::Victory:
     default:
         break;
     }

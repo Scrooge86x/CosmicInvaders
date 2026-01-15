@@ -23,6 +23,7 @@ enum class GameState {
     Playing,
     Paused,
     GameOver,
+    Victory,
 };
 
 class Game {

@@ -4,6 +4,7 @@ add_library(ui STATIC
     pause-menu.cpp pause-menu.h
     hud.cpp hud.h
     game-over-screen.cpp game-over-screen.h
+    victory-screen.cpp victory-screen.h
     settings-menu.cpp settings-menu.h
 )
 
