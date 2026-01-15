@@ -1,7 +1,5 @@
 #include "queries.h"
 
-#include "components.h"
-
 bool isPlayerAlive(const entt::registry& registry) {
 	auto player{ registry.view<PlayerTag>().front() };
 	return registry.get<Health>(player).current > 0;

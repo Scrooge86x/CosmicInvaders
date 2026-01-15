@@ -88,7 +88,7 @@ struct Animation {
 };
 
 struct Stats {
-    float lostHealth{};
+    int lostHealth{};
     double firedBullets{};
     float damageDealt{};
 };

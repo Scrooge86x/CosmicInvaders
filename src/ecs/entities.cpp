@@ -19,8 +19,8 @@ entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelSt
 
 	entt::entity entity = registry.create();
 	std::shared_ptr<Model> object;
-	glm::vec3 position{ Lane::getLaneXPosition(lane), -2.0f, -100.0f};
-	glm::vec3 velocity{0.0f, 0.0f, 2.0f};
+	glm::vec3 position{ Lane::getLaneXPosition(lane), -2.0f, -30.0f};
+	glm::vec3 velocity{0.0f, 0.0f, 0.5f};
 	float health{ 5.0f };
 
 	constexpr auto basicEnemy{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
@@ -33,12 +33,12 @@ entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelSt
 		break;
 	case EnemyType::Slim:
 		object = modelStore.load(slimEnemy, 0.0003f);
-		velocity.z = 4.0f;
+		velocity.z = 1.5f;
 		health = 3.0f;
 		break;
 	case EnemyType::Bulky:
 		object = modelStore.load(bulkyEnemy, 0.0003f);
-		velocity.z = 0.5f;
+		velocity.z = 0.2f;
 		health = 8.0f;
 		break;
 	default:
