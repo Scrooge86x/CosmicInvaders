@@ -80,7 +80,7 @@ void Game::updateSystems(const double dt) {
     m_timePassed += dt;
 
     if (gameplay::levels[m_currentLevel].spawns.size() <= m_enemyIdx) {
-        if (m_currentLevel < gameplay::levelsCount) {
+        if (m_currentLevel < gameplay::levels.size()) {
             ++m_currentLevel;
             m_enemyIdx = 0;
             restorePlayerHealthSystem(m_registry);
@@ -89,7 +89,7 @@ void Game::updateSystems(const double dt) {
 
         }
     }
-    else if (m_currentLevel >= gameplay::levelsCount) {} // ten else if jest dopÛki nie doda siÍ GameState::Win lub coú takiego
+    else if (m_currentLevel >= gameplay::levels.size()) {} // ten else if jest dop√≥ki nie doda siƒô GameState::Win lub co≈õ takiego
     else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed * 1000) {
         auto enemyType{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].enemyType };
         auto lane{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].lane };
