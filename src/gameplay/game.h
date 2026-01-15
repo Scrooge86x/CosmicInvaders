@@ -45,6 +45,8 @@ public:
     [[nodiscard]] const Camera& getCamera() const { return m_camera; }
     [[nodiscard]] Camera& getCamera() { return m_camera; }
     [[nodiscard]] const Lighting& getLighting() const { return m_lighting; }
+    [[nodiscard]] std::size_t getCurrentLevel() const { return m_currentLevel; }
+    [[nodiscard]] const entt::registry& getRegistry() const { return m_registry; }
     [[nodiscard]] bool shouldQuit() const { return m_shouldQuit; }
 
     void setState(const GameState newState) { m_gameState = newState; }

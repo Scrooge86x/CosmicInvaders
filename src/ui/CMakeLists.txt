@@ -11,6 +11,7 @@ target_link_libraries(ui
     PUBLIC
         imgui
     PRIVATE
+        ecs
         gameplay
         glfw
         glad
