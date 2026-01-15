@@ -6,6 +6,7 @@
 #include <ui/game-over-screen.h>
 
 #include <ecs/systems.h>
+#include <ecs/queries.h>
 
 #include "levels.h"
 
@@ -71,7 +72,7 @@ void Game::loadPlayer() {
 void Game::updateSystems(const double dt) {
     //std::cout << "W" << "\n";
 
-    if (!isPlayerAliveSystem(m_registry)) {
+    if (!isPlayerAlive(m_registry)) {
         m_gameState = GameState::GameOver;
         return;
     }
@@ -84,11 +85,11 @@ void Game::updateSystems(const double dt) {
             m_enemyIdx = 0;
             restorePlayerHealthSystem(m_registry);
         }
-        else {
+        else if (!enemyExists(m_registry)) {
 
         }
     }
-    else if (m_currentLevel >= gameplay::levelsCount) {} // ten else if jest dopuki nie doda siê GameState::Win lub coœ takiego
+    else if (m_currentLevel >= gameplay::levelsCount) {} // ten else if jest dopóki nie doda siê GameState::Win lub coœ takiego
     else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed) {
         auto enemyType{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].enemyType };
         auto lane{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].lane };

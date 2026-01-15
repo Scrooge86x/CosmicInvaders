@@ -51,6 +51,7 @@ entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelSt
 	registry.emplace<Render>(entity, std::move(object));
 	registry.emplace<Damage>(entity, 3.0f);
 	registry.emplace<TimeDelay>(entity);
+	registry.emplace<Stats>(entity);
 	registry.emplace<EnemyTag>(entity);
 	registry.emplace<ShouldDestroy>(entity);
 

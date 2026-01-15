@@ -16,7 +16,6 @@ void cleanUpSystem(entt::registry& registry);
 //Player systems
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime);
 void restorePlayerHealthSystem(entt::registry& registry);
-bool isPlayerAliveSystem(entt::registry& registry);
 
 //Enemy & player systems
 void receivingDamageSystem(entt::registry& registry, const float deltaTime);

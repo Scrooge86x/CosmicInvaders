@@ -2,6 +2,7 @@ add_library(ecs STATIC
     entities.cpp entities.h 
     components.h 
     systems.cpp systems.h 
+    queries.cpp queries.h
 )
 
 target_link_libraries(ecs

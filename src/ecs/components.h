@@ -87,6 +87,12 @@ struct Animation {
     bool canShoot() const { return animationTime <= 0.0f; }
 };
 
+struct Stats {
+    float lostHealth{};
+    double firedBullets{};
+    float damageDealt{};
+};
+
 struct TimeDelay {
     float time{ 0.0f };
 };
