@@ -7,6 +7,8 @@
 
 #include <ecs/systems.h>
 
+#include "levels.h"
+
 #include <iostream>
 
 Game::Game(InputManager& inputManager)
@@ -58,21 +60,42 @@ void Game::render(Renderer& renderer) {
     }
 }
 
-void Game::loadEntities() {
-    std::cout << "W?" << "\n";
-    constexpr auto playerPath{"assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx"};
+void Game::loadPlayer() {
+    constexpr auto playerPath{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
 
     m_registry.clear();
 
-    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ -3.75f, -2.f, -17.f });
-    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -17.f });
-    createEntity(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 3.75f, -2.f, -17.f });
-
-    //createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -7.f });
+    createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -7.f });
 }
 
 void Game::updateSystems(const double dt) {
     //std::cout << "W" << "\n";
+
+    if (!isPlayerAliveSystem(m_registry)) {
+        m_gameState = GameState::GameOver;
+        return;
+    }
+
+    m_timePassed += dt;
+
+    if (gameplay::levels[m_currentLevel].spawns.size() >= m_enemyIdx) {
+        if (m_currentLevel < gameplay::levelsCount) {
+            ++m_currentLevel;
+            m_enemyIdx = 0;
+            restorePlayerHealthSystem(m_registry);
+        }
+        else {
+
+        }
+    }
+    else if (m_currentLevel >= gameplay::levelsCount) {} // ten else if jest dopuki nie doda siê GameState::Win lub coœ takiego
+    else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed) {
+        auto enemyType{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].enemyType };
+        auto lane{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].lane };
+        createEntity(m_registry, enemyType, m_modelStore, lane);
+        ++m_enemyIdx;
+    }
+
     cleanUpSystem(m_registry);
     enemyShootingSystem(m_registry, m_modelStore, dt);
     receivingDamageSystem(m_registry, dt);

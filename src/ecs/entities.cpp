@@ -23,9 +23,9 @@ entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelSt
 	glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 	float health{ 5.0f };
 
-	constexpr auto basicEnemy{ "" };
-	constexpr auto slimEnemy{ "" };
-	constexpr auto bulkyEnemy{ "" };
+	constexpr auto basicEnemy{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
+	constexpr auto slimEnemy{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Light_cruiser_05.fbx" };
+	constexpr auto bulkyEnemy{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_04.fbx" };
 
 	switch (enemyType) {
 	case EnemyType::Basic:

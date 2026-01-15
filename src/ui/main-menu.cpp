@@ -65,7 +65,7 @@ void ui::drawMainMenu(Game& game) {
     static bool s_showSettings{};
     if (ImGui::Button("Play", buttonSize)) {
         s_showSettings = false;
-        game.loadEntities();
+        game.loadPlayer();
         game.setState(GameState::Playing);
     }
     if (ImGui::Button("Settings", buttonSize)) {

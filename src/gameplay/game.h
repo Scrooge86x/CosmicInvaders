@@ -16,6 +16,7 @@
 #include <entt/entity/registry.hpp>
 
 class Renderer;
+enum class EnemyType;
 
 enum class GameState {
     MainMenu,
@@ -49,10 +50,13 @@ public:
     void setState(const GameState newState) { m_gameState = newState; }
     [[nodiscard]] GameState getState() const { return m_gameState; }
 
-    void loadEntities();
+    void loadPlayer();
 
 private:
     void updateSystems(const double dt);
+    double m_timePassed{};
+    std::size_t m_enemyIdx{};
+    std::size_t m_currentLevel{};
 
     InputManager& m_inputManager;
 
