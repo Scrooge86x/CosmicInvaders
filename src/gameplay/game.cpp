@@ -79,7 +79,7 @@ void Game::updateSystems(const double dt) {
 
     m_timePassed += dt;
 
-    if (gameplay::levels[m_currentLevel].spawns.size() >= m_enemyIdx) {
+    if (gameplay::levels[m_currentLevel].spawns.size() <= m_enemyIdx) {
         if (m_currentLevel < gameplay::levelsCount) {
             ++m_currentLevel;
             m_enemyIdx = 0;
@@ -90,7 +90,7 @@ void Game::updateSystems(const double dt) {
         }
     }
     else if (m_currentLevel >= gameplay::levelsCount) {} // ten else if jest dopóki nie doda siê GameState::Win lub coœ takiego
-    else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed) {
+    else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed * 1000) {
         auto enemyType{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].enemyType };
         auto lane{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].lane };
         createEntity(m_registry, enemyType, m_modelStore, lane);
