@@ -5,6 +5,8 @@
 
 #include <array>
 #include <utility>
+#include <span>
+#include <cstddef>
 
 #include <ecs/entities.h>
 
