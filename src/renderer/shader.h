@@ -10,16 +10,28 @@
 #include <filesystem>
 #include <unordered_map>
 
+/**
+ * @brief OpenGL shader program wrapper.
+ *
+ * Compiles, links and manages a shader program
+ * and uniform access.
+ */
 class Shader {
 public:
     using GLCharString = std::basic_string<GLchar>;
 
+    /**
+     * @brief Creates a shader program from source files.
+     */
     Shader(
         const std::filesystem::path& vertexShaderPath,
         const std::filesystem::path& fragmentShaderPath,
         const std::filesystem::path& geometryShaderPath = {}
     );
 
+    /**
+     * @brief Destroys the shader program.
+     */
     ~Shader() {
         deleteShaderProgram();
     }
@@ -30,16 +42,30 @@ public:
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
 
+    /**
+     * @brief Reloads from the disk and recompiles the shader program.
+     *
+     * @return True on success.
+     */
     bool reload();
 
+    /**
+     * @brief Activates the shader program.
+     */
     void use() const {
         glUseProgram(m_shaderProgramId);
     }
 
+    /**
+     * @brief Returns the OpenGL program ID.
+     */
     [[nodiscard]] GLuint getId() const {
         return m_shaderProgramId;
     }
 
+    /**
+     * @brief Returns cached uniform location for a given name.
+     */
     [[nodiscard]] GLint getUniformLocation(const GLchar* const name);
 
     void setBool(const GLchar* const name, const bool value) {

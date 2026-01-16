@@ -5,10 +5,20 @@
 
 #include <glm/glm.hpp>
 
+/**
+ * @brief 3D camera with cached matrices for better performance.
+ *
+ * Provides view, projection and view-projection matrices
+ * based on position and orientation in 3d space.
+ */
 class Camera {
 public:
     Camera() = default;
 
+    /**
+     * @brief Constructs a camera at a given 3d space position.
+     * @param position Initial camera position in world space.
+     */
     explicit Camera(const glm::vec3& position) {
         setPosition(position);
     }
@@ -25,8 +35,19 @@ public:
     [[nodiscard]] float getRoll() const { return m_roll; }
     [[nodiscard]] float getAspectRatio() const { return m_aspectRatio; }
 
+    /**
+     * @brief Returns the cached view matrix, recalculates it if the dirty flag is set.
+     */
     const glm::mat4& getView() const;
+
+    /**
+     * @brief Returns the projection matrix, recalculates it if the dirty flag is set.
+     */
     const glm::mat4& getProjection() const;
+
+    /**
+     * @brief Returns the combined view-projection matrix, recalculates it if the dirty flag is set.
+     */
     const glm::mat4& getViewProjection() const;
 
 private:

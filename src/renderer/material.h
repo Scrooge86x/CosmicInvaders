@@ -8,6 +8,12 @@
 #include <glm/glm.hpp>
 #include <optional>
 
+/**
+ * @brief Surface material description.
+ *
+ * Defines how a surface interacts with light,
+ * including texture and specular properties.
+ */
 struct Material {
     std::optional<Texture2D> diffuse{};
     glm::vec3 specularColor{ 1.f };
