@@ -28,7 +28,7 @@ public:
 
 private:
 	enum ShaderType {
-		Main = 0,
+		MeshLit,
 		COUNT
 	};
 
