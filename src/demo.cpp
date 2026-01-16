@@ -39,9 +39,9 @@ static int runDemo() {
     });
 
     ModelStore modelStore{};
-    constexpr auto objectPath{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
-    const auto object{ modelStore.load(objectPath, 0.0003f) };
-    if (object != modelStore.load(objectPath, 0.0003f)) {
+    constexpr auto objectPath{ "assets/3d-models/bullet.obj" };
+    const auto object{ modelStore.load(objectPath, 0.1f) };
+    if (object != modelStore.load(objectPath, 0.1f)) {
         std::cerr << "ModelStore failed to cache the object!\n";
         return -1;
     }

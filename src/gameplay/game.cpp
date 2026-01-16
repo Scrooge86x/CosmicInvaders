@@ -69,13 +69,16 @@ void Game::render(Renderer& renderer) {
 void Game::loadPlayer() {
     constexpr auto playerPath{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
 
+    m_enemyIdx = 0;
+    m_currentLevel = 0;
+    m_timePassed = 0;
+
     m_registry.clear();
 
     createPlayer(m_registry, m_modelStore.load(playerPath, 0.0003f), glm::vec3{ 0.f, -2.f, -7.f });
 }
 
 void Game::updateSystems(const double dt) {
-    //std::cout << "W" << "\n";
 
     if (!isPlayerAlive(m_registry)) {
         m_gameState = GameState::GameOver;
@@ -91,10 +94,9 @@ void Game::updateSystems(const double dt) {
             restorePlayerHealthSystem(m_registry);
         }
         else if (!enemyExists(m_registry)) {
-
+            m_gameState = GameState::Victory;
         }
     }
-    else if (m_currentLevel >= gameplay::levels.size()) {} // ten else if jest dopóki nie doda się GameState::Win lub coś takiego
     else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed * 1000) {
         auto enemyType{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].enemyType };
         auto lane{ gameplay::levels[m_currentLevel].spawns[m_enemyIdx].lane };

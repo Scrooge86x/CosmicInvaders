@@ -83,8 +83,6 @@ struct Animation {
     Lane::Lane currentLane{ Lane::Lane::Middle };
     Lane::Lane targetLane{ Lane::Lane::Middle };
     float animationTime{};
-
-    bool canShoot() const { return animationTime <= 0.0f; }
 };
 
 struct Stats {

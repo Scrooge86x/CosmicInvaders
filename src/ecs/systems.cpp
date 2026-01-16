@@ -49,65 +49,77 @@ void cleanUpSystem(entt::registry& registry) {
 
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
 	constexpr float animationTime{ 0.3f };
+	constexpr float bulletDelay{ 2.0f };
 
-	auto player = registry.view<Animation, Transform>();
+	auto player{ registry.view<PlayerTag>().front() };
+	Animation& animation{ registry.get<Animation>(player) };
+	Transform& transform{ registry.get<Transform>(player) };
+	TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
 
-	for (auto [entity, animation, transform] : player.each()) {
+	if (timeDelay.time > 0.0f) {
+		timeDelay.time -= deltaTime;
+	}
 
-		if (animation.animationTime <= 0.0f) {
-			Lane::Lane newLane{animation.currentLane};
+	if (animation.animationTime <= 0.0f) {
+		Lane::Lane newLane{animation.currentLane};
 
-			bool aPressed{ inputManager.isDown(inputManager.Key::A) };
-			bool dPressed{ inputManager.isDown(inputManager.Key::D) };
+		bool aPressed{ inputManager.isDown(InputManager::Key::A) };
+		bool dPressed{ inputManager.isDown(InputManager::Key::D) };
 
-			if (aPressed && !dPressed) { 
-				newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Left);
-			}
-			else if (!aPressed && dPressed) {
-				newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Right);
-			}
+		if (aPressed && !dPressed) { 
+			newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Left);
+		}
+		else if (!aPressed && dPressed) {
+			newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Right);
+		}
 
+		if (newLane != animation.currentLane) {
 			animation.targetLane = newLane;
 			animation.animationTime = animationTime;
-
-			if (animation.canShoot() && inputManager.isDown(inputManager.Key::Space)) {
-				constexpr auto path{"assets/3d-models/"};
-				glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
-				createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.0003f), transform.position, velocity);
-			}
 		}
 
-		if (animation.animationTime > 0.f) {
-			animation.animationTime -= deltaTime;
-
-			if (animation.animationTime <= 0.f) {
-				animation.animationTime = 0.f;
-				animation.currentLane = animation.targetLane;
-				transform.position.x = Lane::getLaneXPosition(animation.currentLane);
-			}
-			else {
-				float t{ 1.f - (animation.animationTime / animationTime) };
-				float startX{ Lane::getLaneXPosition(animation.currentLane) };
-				float targetX{ Lane::getLaneXPosition(animation.targetLane) };
-
-				transform.position.x = std::lerp(startX, targetX, t);
-			}
+		if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time <= 0.0f) {
+			std::cout << "Działa\n";
+			constexpr auto path{ "assets/3d-models/bullet.obj" };
+			glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
+			createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
+			timeDelay.time = bulletDelay;
 		}
-	};
+	}
+
+	if (animation.animationTime > 0.f) {
+		animation.animationTime -= deltaTime;
+
+		if (animation.animationTime <= 0.f) {
+			animation.animationTime = 0.f;
+			animation.currentLane = animation.targetLane;
+			transform.position.x = Lane::getLaneXPosition(animation.currentLane);
+		}
+		else {
+			float t{ 1.f - (animation.animationTime / animationTime) };
+			float startX{ Lane::getLaneXPosition(animation.currentLane) };
+			float targetX{ Lane::getLaneXPosition(animation.targetLane) };
+
+			transform.position.x = std::lerp(startX, targetX, t);
+		}
+	}
 }
 
 void restorePlayerHealthSystem(entt::registry& registry) {
-	auto player = registry.view<PlayerTag, Health>();
-
-	for (auto [playerEntity, health] : player.each()) {
-		health.current = health.max;
-	}
+	auto player = registry.view<PlayerTag>().front();
+	Health health{ registry.get<Health>(player) };
+	health.current = health.max;
 }
 
 void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 	constexpr float invincibilityTime{ 1.0f };
 
-	auto player = registry.view<PlayerTag, Health, TimeDelay, Transform>();
+	auto player = registry.view<PlayerTag>().front();
+	Health& health{ registry.get<Health>(player) };
+	TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
+	Transform transform{ registry.get<Transform>(player) };
+
+
 	auto enemy = registry.view<EnemyTag, Transform, Damage, Health, ShouldDestroy>();
 	auto bullet = registry.view<BulletTag, Transform, Damage, FromWho, ShouldDestroy>();
 
@@ -117,11 +129,14 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 				continue;
 			}
 
-			if (enemyTransform.position.x != enemyTransform.position.x) {
+			if (enemyTransform.position.x != bulletTransform.position.x) {
+				if (bulletTransform.position.z < -100) {
+					bulletShouldDestroy.shuld = true;
+				}
 				continue;
 			}
 
-			if (!(enemyTransform.position.z > bulletTransform.position.z)) {
+			if (!(enemyTransform.position.z < bulletTransform.position.z)) {
 				continue;
 			}
 
@@ -133,55 +148,55 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 		}
 	}
 
-	for (auto [entity, health, timeDelay, transform] : player.each()) {
-		if (timeDelay.time > 0.0f) {
-			timeDelay.time -= deltaTime;
-		}
-
-		if (timeDelay.time > 0.0f) {
-			return;
-		}
+	if (timeDelay.time > 0.0f) {
+		timeDelay.time -= deltaTime;
 	}
 
-	for (auto [playerEntity, health, timeDelay, transform] : player.each()) {
-		for (auto [bulletEntity, bulletTransform, damage, fromWho, shouldDestroy] : bullet.each()) {
-			if (fromWho.fromWho == EntityTypes::Player) {
-				continue;
-			}
-
-			if (transform.position.x != bulletTransform.position.x) {
-				if (bulletTransform.position.z > 0) {
-					shouldDestroy.shuld = true;
-				}
-				continue;
-			}
-
-			if (!(bulletTransform.position.z <= transform.position.z)) {
-				continue;
-			}
-
-			health.current -= damage.current;
-			timeDelay.time = invincibilityTime;
-
-			shouldDestroy.shuld = true;
-		}
+	if (timeDelay.time > 0.0f) {
+		return;
 	}
 
-	for (auto [playerEntity, health, timeDelay, transform] : player.each()) {
-		for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
-			if (transform.position.x != enemyTransform.position.x) {
-				continue;
-			}
-
-			if (!(enemyTransform.position.z < transform.position.z)) {
-				continue;
-			}
-
-			health.current -= damage.current;
-			timeDelay.time = invincibilityTime;
-
-			shouldDestroy.shuld = true;
+	// Player recieving damage from enemys bullet.
+	for (auto [bulletEntity, bulletTransform, damage, fromWho, shouldDestroy] : bullet.each()) {
+		if (fromWho.fromWho == EntityTypes::Player) {
+			continue;
 		}
+
+		if (transform.position.x != bulletTransform.position.x) {
+			if (bulletTransform.position.z > 0) {
+				shouldDestroy.shuld = true;
+			}
+			continue;
+		}
+
+		if (bulletTransform.position.z <= transform.position.z) {
+			continue;
+		}
+
+		//std::cout << "bullet: " << bulletTransform.position.z << "\n";
+
+		health.current -= damage.current;
+		timeDelay.time = invincibilityTime;
+
+		shouldDestroy.shuld = true;
+	}
+
+	// Player recieving damage from enemy
+	for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+		if (transform.position.x != enemyTransform.position.x) {
+			continue;
+		}
+
+		if (enemyTransform.position.z < transform.position.z) {
+			continue;
+		}
+
+		//std::cout << enemyTransform.position.z << " " << transform.position.z << "\n";
+
+		health.current -= damage.current;
+		timeDelay.time = invincibilityTime;
+
+		shouldDestroy.shuld = true;
 	}
 }
 
@@ -199,10 +214,10 @@ void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const
 
 		timeDelay.time = getRandomDelay(2.0f, 3.0f);
 
-		constexpr auto path{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
+		constexpr auto path{ "assets/3d-models/bullet.obj" };
 		glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 
-		createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.0003f), transform.position, velocity);
+		createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.1f), transform.position, glm::vec3{90.0f, 0.0f, 0.0f}, velocity);
 
 	}
 }
