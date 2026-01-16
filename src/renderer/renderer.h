@@ -13,27 +13,27 @@ struct Lighting;
 
 class Renderer {
 public:
-	Renderer();
+    Renderer();
 
-	Renderer(const Renderer&) = delete;
-	Renderer& operator=(const Renderer&) = delete;
+    Renderer(const Renderer&) = delete;
+    Renderer& operator=(const Renderer&) = delete;
 
-	Renderer(Renderer&&) = delete;
-	Renderer& operator=(Renderer&&) = delete;
+    Renderer(Renderer&&) = delete;
+    Renderer& operator=(Renderer&&) = delete;
 
-	void beginFrame(const Lighting& lighting, const Camera& camera);
-	void endFrame();
+    void beginFrame(const Lighting& lighting, const Camera& camera);
+    void endFrame();
 
-	void draw(const Model& object, const glm::mat4& transform);
+    void draw(const Model& object, const glm::mat4& transform);
 
 private:
-	enum ShaderType {
-		MeshLit,
-		COUNT
-	};
+    enum ShaderType {
+        MeshLit,
+        COUNT
+    };
 
-	std::array<Shader, ShaderType::COUNT> m_shaders;
-	const Camera* m_cachedCamera{};
+    std::array<Shader, ShaderType::COUNT> m_shaders;
+    const Camera* m_cachedCamera{};
 };
 
 #endif 

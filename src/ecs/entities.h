@@ -8,9 +8,9 @@ class Model;
 class ModelStore;
 
 enum class EnemyType {
-	Basic,
-	Slim,
-	Bulky
+    Basic,
+    Slim,
+    Bulky
 };
 
 entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> object, const glm::vec3& position);

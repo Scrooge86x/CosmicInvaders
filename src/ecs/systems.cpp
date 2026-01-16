@@ -12,222 +12,222 @@
 #include <iostream>
 
 void movementSystem(entt::registry& registry, const float deltaTime) {
-	entt::basic_view view = registry.view<Transform, Velocity>();
+    entt::basic_view view = registry.view<Transform, Velocity>();
 
-	const float speed{ 5.f };
+    const float speed{ 5.f };
 
-	for (auto [entity, transform, velocity]: view.each()) {
-		transform.position += velocity.linear * deltaTime * speed;
-	}
+    for (auto [entity, transform, velocity]: view.each()) {
+        transform.position += velocity.linear * deltaTime * speed;
+    }
 }
 
 void renderingSystem(entt::registry& registry, Renderer& renderer) {
-	entt::basic_view view = registry.view<Render, Transform>();
+    entt::basic_view view = registry.view<Render, Transform>();
 
-	for (auto [entity, render, transform] : view.each()) {
+    for (auto [entity, render, transform] : view.each()) {
 
-		//std::cout << transform.position.x << " " << transform.position.y << " " << transform.position.z << "\n";
+        //std::cout << transform.position.x << " " << transform.position.y << " " << transform.position.z << "\n";
 
-		glm::mat4 model{ 1.f };
-		model = glm::translate(model, transform.position);
-		model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3{ 1.f, 0.f, 0.f });
-		model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3{ 0.f, 1.f, 0.f });
-		model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3{ 0.f, 0.f, 1.f });
+        glm::mat4 model{ 1.f };
+        model = glm::translate(model, transform.position);
+        model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3{ 1.f, 0.f, 0.f });
+        model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3{ 0.f, 1.f, 0.f });
+        model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3{ 0.f, 0.f, 1.f });
 
-		renderer.draw(*render.object, model);
-	}
+        renderer.draw(*render.object, model);
+    }
 }
 
 void cleanUpSystem(entt::registry& registry) {
-	entt::basic_view view = registry.view<ShouldDestroy>();
-	
-	for (auto [entity, shouldDestroy] : view.each()) {
-		if (shouldDestroy.shuld)
-			registry.destroy(entity);
-	}
+    entt::basic_view view = registry.view<ShouldDestroy>();
+
+    for (auto [entity, shouldDestroy] : view.each()) {
+        if (shouldDestroy.shuld)
+            registry.destroy(entity);
+    }
 }
 
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
-	constexpr float animationTime{ 0.3f };
-	constexpr float bulletDelay{ 2.0f };
+    constexpr float animationTime{ 0.3f };
+    constexpr float bulletDelay{ 2.0f };
 
-	auto player{ registry.view<PlayerTag>().front() };
-	Animation& animation{ registry.get<Animation>(player) };
-	Transform& transform{ registry.get<Transform>(player) };
-	TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
+    auto player{ registry.view<PlayerTag>().front() };
+    Animation& animation{ registry.get<Animation>(player) };
+    Transform& transform{ registry.get<Transform>(player) };
+    TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
 
-	if (timeDelay.time > 0.0f) {
-		timeDelay.time -= deltaTime;
-	}
+    if (timeDelay.time > 0.0f) {
+        timeDelay.time -= deltaTime;
+    }
 
-	if (animation.animationTime <= 0.0f) {
-		Lane::Lane newLane{animation.currentLane};
+    if (animation.animationTime <= 0.0f) {
+        Lane::Lane newLane{animation.currentLane};
 
-		bool aPressed{ inputManager.isDown(InputManager::Key::A) };
-		bool dPressed{ inputManager.isDown(InputManager::Key::D) };
+        bool aPressed{ inputManager.isDown(InputManager::Key::A) };
+        bool dPressed{ inputManager.isDown(InputManager::Key::D) };
 
-		if (aPressed && !dPressed) { 
-			newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Left);
-		}
-		else if (!aPressed && dPressed) {
-			newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Right);
-		}
+        if (aPressed && !dPressed) {
+            newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Left);
+        }
+        else if (!aPressed && dPressed) {
+            newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Right);
+        }
 
-		if (newLane != animation.currentLane) {
-			animation.targetLane = newLane;
-			animation.animationTime = animationTime;
-		}
+        if (newLane != animation.currentLane) {
+            animation.targetLane = newLane;
+            animation.animationTime = animationTime;
+        }
 
-		if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time <= 0.0f) {
-			std::cout << "Działa\n";
-			constexpr auto path{ "assets/3d-models/bullet.obj" };
-			glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
-			createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
-			timeDelay.time = bulletDelay;
-		}
-	}
+        if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time <= 0.0f) {
+            std::cout << "Działa\n";
+            constexpr auto path{ "assets/3d-models/bullet.obj" };
+            glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
+            createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
+            timeDelay.time = bulletDelay;
+        }
+    }
 
-	if (animation.animationTime > 0.f) {
-		animation.animationTime -= deltaTime;
+    if (animation.animationTime > 0.f) {
+        animation.animationTime -= deltaTime;
 
-		if (animation.animationTime <= 0.f) {
-			animation.animationTime = 0.f;
-			animation.currentLane = animation.targetLane;
-			transform.position.x = Lane::getLaneXPosition(animation.currentLane);
-		}
-		else {
-			float t{ 1.f - (animation.animationTime / animationTime) };
-			float startX{ Lane::getLaneXPosition(animation.currentLane) };
-			float targetX{ Lane::getLaneXPosition(animation.targetLane) };
+        if (animation.animationTime <= 0.f) {
+            animation.animationTime = 0.f;
+            animation.currentLane = animation.targetLane;
+            transform.position.x = Lane::getLaneXPosition(animation.currentLane);
+        }
+        else {
+            float t{ 1.f - (animation.animationTime / animationTime) };
+            float startX{ Lane::getLaneXPosition(animation.currentLane) };
+            float targetX{ Lane::getLaneXPosition(animation.targetLane) };
 
-			transform.position.x = std::lerp(startX, targetX, t);
-		}
-	}
+            transform.position.x = std::lerp(startX, targetX, t);
+        }
+    }
 }
 
 void restorePlayerHealthSystem(entt::registry& registry) {
-	auto player = registry.view<PlayerTag>().front();
-	Health health{ registry.get<Health>(player) };
-	health.current = health.max;
+    auto player = registry.view<PlayerTag>().front();
+    Health health{ registry.get<Health>(player) };
+    health.current = health.max;
 }
 
 void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
-	constexpr float invincibilityTime{ 1.0f };
+    constexpr float invincibilityTime{ 1.0f };
 
-	auto player = registry.view<PlayerTag>().front();
-	Health& health{ registry.get<Health>(player) };
-	TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
-	Transform transform{ registry.get<Transform>(player) };
+    auto player = registry.view<PlayerTag>().front();
+    Health& health{ registry.get<Health>(player) };
+    TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
+    Transform transform{ registry.get<Transform>(player) };
 
 
-	auto enemy = registry.view<EnemyTag, Transform, Damage, Health, ShouldDestroy>();
-	auto bullet = registry.view<BulletTag, Transform, Damage, FromWho, ShouldDestroy>();
+    auto enemy = registry.view<EnemyTag, Transform, Damage, Health, ShouldDestroy>();
+    auto bullet = registry.view<BulletTag, Transform, Damage, FromWho, ShouldDestroy>();
 
-	for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
-		for (auto [bulletEntity, bulletTransform, bulletDamage, fromWho, bulletShouldDestroy] : bullet.each()) {
-			if (fromWho.fromWho == EntityTypes::Enemy) {
-				continue;
-			}
+    for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+        for (auto [bulletEntity, bulletTransform, bulletDamage, fromWho, bulletShouldDestroy] : bullet.each()) {
+            if (fromWho.fromWho == EntityTypes::Enemy) {
+                continue;
+            }
 
-			if (enemyTransform.position.x != bulletTransform.position.x) {
-				if (bulletTransform.position.z < -100) {
-					bulletShouldDestroy.shuld = true;
-				}
-				continue;
-			}
+            if (enemyTransform.position.x != bulletTransform.position.x) {
+                if (bulletTransform.position.z < -100) {
+                    bulletShouldDestroy.shuld = true;
+                }
+                continue;
+            }
 
-			if (enemyTransform.position.z < bulletTransform.position.z) {
-				continue;
-			}
+            if (enemyTransform.position.z < bulletTransform.position.z) {
+                continue;
+            }
 
-			enemyHealth.current -= bulletDamage.current;
-			bulletShouldDestroy.shuld = true;
+            enemyHealth.current -= bulletDamage.current;
+            bulletShouldDestroy.shuld = true;
 
-			if (enemyHealth.current <= 0) 
-				shouldDestroy.shuld = true;
-		}
-	}
+            if (enemyHealth.current <= 0) {
+                shouldDestroy.shuld = true;
+            }
+        }
+    }
 
-	if (timeDelay.time > 0.0f) {
-		timeDelay.time -= deltaTime;
-	}
+    if (timeDelay.time > 0.0f) {
+        timeDelay.time -= deltaTime;
+    }
 
-	if (timeDelay.time > 0.0f) {
-		return;
-	}
+    if (timeDelay.time > 0.0f) {
+        return;
+    }
 
-	// Player recieving damage from enemys bullet.
-	for (auto [bulletEntity, bulletTransform, damage, fromWho, shouldDestroy] : bullet.each()) {
-		if (fromWho.fromWho == EntityTypes::Player) {
-			continue;
-		}
+    // Player recieving damage from enemys bullet.
+    for (auto [bulletEntity, bulletTransform, damage, fromWho, shouldDestroy] : bullet.each()) {
+        if (fromWho.fromWho == EntityTypes::Player) {
+            continue;
+        }
 
-		if (transform.position.x != bulletTransform.position.x) {
-			if (bulletTransform.position.z > 0) {
-				shouldDestroy.shuld = true;
-			}
-			continue;
-		}
+        if (transform.position.x != bulletTransform.position.x) {
+            if (bulletTransform.position.z > 0) {
+                shouldDestroy.shuld = true;
+            }
+            continue;
+        }
 
-		if (bulletTransform.position.z <= transform.position.z) {
-			continue;
-		}
+        if (bulletTransform.position.z <= transform.position.z) {
+            continue;
+        }
 
-		//std::cout << "bullet: " << bulletTransform.position.z << "\n";
+        //std::cout << "bullet: " << bulletTransform.position.z << "\n";
 
-		health.current -= damage.current;
-		timeDelay.time = invincibilityTime;
+        health.current -= damage.current;
+        timeDelay.time = invincibilityTime;
 
-		shouldDestroy.shuld = true;
-	}
+        shouldDestroy.shuld = true;
+    }
 
-	// Player recieving damage from enemy
-	for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
-		if (transform.position.x != enemyTransform.position.x) {
-			continue;
-		}
+    // Player recieving damage from enemy
+    for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+        if (transform.position.x != enemyTransform.position.x) {
+            continue;
+        }
 
-		if (enemyTransform.position.z < transform.position.z) {
-			continue;
-		}
+        if (enemyTransform.position.z < transform.position.z) {
+            continue;
+        }
 
-		//std::cout << enemyTransform.position.z << " " << transform.position.z << "\n";
+        //std::cout << enemyTransform.position.z << " " << transform.position.z << "\n";
 
-		health.current -= damage.current;
-		timeDelay.time = invincibilityTime;
+        health.current -= damage.current;
+        timeDelay.time = invincibilityTime;
 
-		shouldDestroy.shuld = true;
-	}
+        shouldDestroy.shuld = true;
+    }
 }
 
 void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime) {
-	constexpr float delay{ 1.0f };
-	
-	auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
+    constexpr float delay{ 1.0f };
 
+    auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
 
-	for (auto [enemyEntity, timeDelay, transform] : enemy.each()) {
-		if (timeDelay.time > 0.0f) {
-			timeDelay.time -= deltaTime;
-			continue;
-		}
+    for (auto [enemyEntity, timeDelay, transform] : enemy.each()) {
+        if (timeDelay.time > 0.0f) {
+            timeDelay.time -= deltaTime;
+            continue;
+        }
 
-		timeDelay.time = getRandomDelay(2.0f, 3.0f);
+        timeDelay.time = getRandomDelay(2.0f, 3.0f);
 
-		constexpr auto path{ "assets/3d-models/bullet.obj" };
-		glm::vec3 velocity{0.0f, 0.0f, 2.0f};
+        constexpr auto path{ "assets/3d-models/bullet.obj" };
+        glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 
-		createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.1f), transform.position, glm::vec3{90.0f, 0.0f, 0.0f}, velocity);
+        createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.1f), transform.position, glm::vec3{90.0f, 0.0f, 0.0f}, velocity);
 
-	}
+    }
 }
 
 float getRandomDelay(float min, float max) {
-	std::random_device rd;
-	std::mt19937 gen(rd());
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-	std::uniform_real_distribution<float> distrib(min, max);
-	float rawNumber = distrib(gen);
+    std::uniform_real_distribution<float> distrib(min, max);
+    float rawNumber = distrib(gen);
 
-	return std::round(rawNumber * 10) / 10.0f;
+    return std::round(rawNumber * 10) / 10.0f;
 }
