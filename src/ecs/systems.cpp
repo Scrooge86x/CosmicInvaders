@@ -136,7 +136,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 				continue;
 			}
 
-			if (!(enemyTransform.position.z < bulletTransform.position.z)) {
+			if (enemyTransform.position.z < bulletTransform.position.z) {
 				continue;
 			}
 
