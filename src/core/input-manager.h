@@ -8,6 +8,12 @@
 
 struct GLFWwindow;
 
+/**
+ * @brief Handles keyboard input state tracking.
+ *
+ * Tracks current and previous key states
+ * to detect presses and holds.
+ */
 class InputManager {
 public:
     enum Key {
@@ -18,6 +24,10 @@ public:
         KEY_COUNT,
     };
 
+    /**
+     * @brief Constructs the input manager.
+     * @param window GLFW window to read input from.
+     */
     explicit InputManager(GLFWwindow* const window);
 
     InputManager(const InputManager&) = delete;
@@ -26,10 +36,26 @@ public:
     InputManager(InputManager&& other) noexcept;
     InputManager& operator=(InputManager&& other) noexcept;
 
+    /**
+     * @brief Updates input states.
+     *
+     * Should be called once per frame.
+     */
     void update();
 
+    /**
+     * @brief Checks if a key was down during the latest update.
+     */
     [[nodiscard]] bool isDown(const Key key) const { return m_currentStates[key]; }
+
+    /**
+     * @brief Checks if a was down during both previous and latest updates.
+     */
     [[nodiscard]] bool isHeld(const Key key) const { return m_currentStates[key] && m_previousStates[key]; }
+
+    /**
+     * @brief Checks if a key was pressed this frame (up in the previous update and down in the latest one).
+     */
     [[nodiscard]] bool isPressed(const Key key) const { return m_currentStates[key] && !m_previousStates[key]; }
 
 private:
