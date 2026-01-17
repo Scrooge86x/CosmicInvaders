@@ -11,6 +11,7 @@ entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> objec
     registry.emplace<Animation>(entity);
     registry.emplace<TimeDelay>(entity);
     registry.emplace<PlayerTag>(entity);
+    registry.emplace<Stats>(entity);
 
     return entity;
 }
