@@ -126,7 +126,7 @@ private:
     std::filesystem::path m_vertexShaderPath{};
     std::filesystem::path m_fragmentShaderPath{};
     std::filesystem::path m_geometryShaderPath{};
-    std::unordered_map<const GLchar*, GLint> m_uniformLocations{};
+    std::unordered_map<GLCharString, GLint> m_uniformLocations{};
 };
 
 #endif // SHADER_H
