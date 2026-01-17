@@ -16,9 +16,10 @@ Shader::Shader(
 
 Shader::Shader(Shader&& other) noexcept
     : m_shaderProgramId   { std::exchange(other.m_shaderProgramId, 0) }
-    , m_vertexShaderPath  { std::exchange(other.m_vertexShaderPath, {}) }
-    , m_fragmentShaderPath{ std::exchange(other.m_fragmentShaderPath, {}) }
-    , m_geometryShaderPath{ std::exchange(other.m_geometryShaderPath, {}) }
+    , m_vertexShaderPath  { std::move(other.m_vertexShaderPath) }
+    , m_fragmentShaderPath{ std::move(other.m_fragmentShaderPath) }
+    , m_geometryShaderPath{ std::move(other.m_geometryShaderPath) }
+    , m_uniformLocations  { std::move(other.m_uniformLocations) }
 {}
 
 Shader& Shader::operator=(Shader&& other) noexcept {
@@ -29,9 +30,10 @@ Shader& Shader::operator=(Shader&& other) noexcept {
     deleteShaderProgram();
 
     m_shaderProgramId    = std::exchange(other.m_shaderProgramId, 0);
-    m_vertexShaderPath   = std::exchange(other.m_vertexShaderPath, {});
-    m_fragmentShaderPath = std::exchange(other.m_fragmentShaderPath, {});
-    m_geometryShaderPath = std::exchange(other.m_geometryShaderPath, {});
+    m_vertexShaderPath   = std::move(other.m_vertexShaderPath);
+    m_fragmentShaderPath = std::move(other.m_fragmentShaderPath);
+    m_geometryShaderPath = std::move(other.m_geometryShaderPath);
+    m_uniformLocations   = std::move(other.m_uniformLocations);
 
     return *this;
 }

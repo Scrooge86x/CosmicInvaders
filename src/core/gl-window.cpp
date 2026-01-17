@@ -39,7 +39,8 @@ GlWindow::GlWindow(
 
 GlWindow::GlWindow(GlWindow&& other) noexcept
     : m_window        { std::exchange(other.m_window, nullptr) }
-    , m_resizeCallback{ std::exchange(other.m_resizeCallback, {}) } {}
+    , m_resizeCallback{ std::move(other.m_resizeCallback) }
+{}
 
 GlWindow& GlWindow::operator=(GlWindow&& other) noexcept {
     if (this == &other) {
@@ -49,7 +50,7 @@ GlWindow& GlWindow::operator=(GlWindow&& other) noexcept {
     glfwDestroyWindow(m_window);
 
     m_window         = std::exchange(other.m_window, nullptr);
-    m_resizeCallback = std::exchange(other.m_resizeCallback, {});
+    m_resizeCallback = std::move(other.m_resizeCallback);
 
     return *this;
 }
