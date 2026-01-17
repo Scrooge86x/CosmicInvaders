@@ -3,12 +3,14 @@
 #ifndef LEVELS_H
 #define LEVELS_H
 
+#include <ecs/entities.h>
+
 #include <array>
+#include <concepts>
+#include <cstddef>
 #include <utility>
 #include <span>
-#include <cstddef>
-
-#include <ecs/entities.h>
+#include <type_traits>
 
 namespace gameplay {
     struct EnemySpawnData {
@@ -37,7 +39,20 @@ namespace gameplay {
         std::span<const EnemySpawnData> spawns{};
     };
 
-    template <typename... Ts>
+    namespace detail {
+
+    template <typename>
+    struct IsLevel : std::false_type {};
+
+    template <std::size_t N>
+    struct IsLevel<Level<N>> : std::true_type {};
+
+    template <typename T>
+    concept LevelType = IsLevel<std::remove_cvref_t<T>>::value;
+
+    }
+
+    template <detail::LevelType... Ts>
     class LevelList {
     public:
         using TupleType = std::tuple<Ts...>;
