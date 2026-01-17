@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include <core/gl-window.h>
+
 #include <ui/main-menu.h>
 #include <ui/hud.h>
 #include <ui/pause-menu.h>
@@ -13,12 +15,13 @@
 
 #include <iostream>
 
-Game::Game(InputManager& inputManager)
-    : m_inputManager{ inputManager }
+Game::Game(const GlWindow& window)
+    : m_inputManager{ window.getNativeHandle() }
 {}
 
 void Game::update(const double dt) {
     m_fpsCounter.update(dt);
+    m_inputManager.update();
 
     switch (m_gameState) {
     case GameState::MainMenu:

@@ -16,7 +16,7 @@
 #include <entt/entity/registry.hpp>
 
 class Renderer;
-enum class EnemyType;
+class GlWindow;
 
 enum class GameState {
     MainMenu,
@@ -28,7 +28,7 @@ enum class GameState {
 
 class Game {
 public:
-    Game(InputManager& inputManager);
+    Game(const GlWindow& window);
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
@@ -61,7 +61,7 @@ private:
     std::size_t m_enemyIdx{};
     std::size_t m_currentLevel{};
 
-    InputManager& m_inputManager;
+    InputManager m_inputManager;
 
     AudioEngine m_audioEngine{};
     FpsCounter m_fpsCounter{};

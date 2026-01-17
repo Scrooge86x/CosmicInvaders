@@ -15,24 +15,20 @@ static int runGame() {
         return -1;
     }
 
-    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
-    Timer timer{};
-
-    InputManager inputManager{ window.getNativeHandle() };
-    Game game{ inputManager };
-
+    Game game{ window };
     game.getCamera().setAspectRatio(window.getFramebufferAspectRatio());
     window.setResizeCallback([&game](const int width, const int height) {
         game.getCamera().setAspectRatio(static_cast<float>(width) / height);
     });
 
+    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
     Renderer renderer{};
+    Timer timer{};
 
     while (!window.shouldClose() && !game.shouldQuit()) {
         timer.update();
 
         window.pollEvents();
-        inputManager.update();
 
         ui::beginFrame();
         renderer.beginFrame(game.getLighting(), game.getCamera());
