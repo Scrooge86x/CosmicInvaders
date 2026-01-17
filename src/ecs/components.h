@@ -59,12 +59,12 @@ struct Transform {
 };
 
 struct Health {
-    float max;
-    float current;
+    int max;
+    int current;
 };
 
 struct Damage {
-    float current{ 1 };
+    int current{ 1 };
 };
 
 struct Velocity {
@@ -101,6 +101,7 @@ struct FromWho {
 
 struct PlayerTag {};
 struct EnemyTag {};
-struct BulletTag {};
+struct EnemyBulletTag {};
+struct PlayerBulletTag {};
 
 #endif // !COMPONENTS_H

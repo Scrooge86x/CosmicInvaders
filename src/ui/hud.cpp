@@ -36,7 +36,7 @@ void ui::drawHud(Game& game) {
     );
 
     const Health playerHealth{ getPlayerHealth(game.getRegistry()) };
-    const float healthPercentage{ std::clamp(playerHealth.current / playerHealth.max, 0.f, 1.f) };
+    const float healthPercentage{ std::clamp(static_cast<float>(playerHealth.current) / playerHealth.max, 0.f, 1.f) };
     ImU32 healthColor{};
     switch (std::lround(healthPercentage * 3)) {
     case 0: healthColor = IM_COL32(255, 0, 0, 255); break;
