@@ -21,7 +21,7 @@ static int runGame() {
         game.getCamera().setAspectRatio(static_cast<float>(width) / height);
     });
 
-    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
+    ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
     Renderer renderer{};
     Timer timer{};
 

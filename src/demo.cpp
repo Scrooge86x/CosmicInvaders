@@ -39,9 +39,9 @@ static int runDemo() {
     });
 
     ModelStore modelStore{};
-    constexpr auto objectPath{ "assets/3d-models/bullet.obj" };
-    const auto object{ modelStore.load(objectPath, 0.1f) };
-    if (object != modelStore.load(objectPath, 0.1f)) {
+    constexpr auto objectPath{ "assets/3d-models/Battle-SpaceShip-Free-3D-Low-Poly-Models/Destroyer_01.fbx" };
+    const auto object{ modelStore.load(objectPath, 0.0003f) };
+    if (object != modelStore.load(objectPath, 0.0003f)) {
         std::cerr << "ModelStore failed to cache the object!\n";
         return -1;
     }
@@ -57,7 +57,7 @@ static int runDemo() {
     Renderer renderer{};
 
     bool isGuiVisible{ true };
-    float modelScale{ 4.f };
+    float modelScale{ 3.f };
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     glm::vec3 position{ 0.f, -2.f, -10.f };
@@ -66,7 +66,7 @@ static int runDemo() {
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
+    ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
     while (!window.shouldClose()) {
         timer.update();

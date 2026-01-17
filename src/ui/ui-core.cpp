@@ -18,6 +18,8 @@ void endFrame() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+} // namespace ui
+
 ImGuiContextManager::ImGuiContextManager(GLFWwindow* const window, const char* const glslVersion) {
     if (ImGui::GetCurrentContext() != nullptr) {
         throw std::runtime_error("ImGui context already exists");
@@ -40,5 +42,3 @@ ImGuiContextManager::~ImGuiContextManager() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(m_context);
 }
-
-} // namespace ui

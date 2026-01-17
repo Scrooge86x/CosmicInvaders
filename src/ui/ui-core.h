@@ -26,6 +26,8 @@ void beginFrame();
  */
 void endFrame();
 
+} // namespace ui
+
 /**
  * @class ImGuiContextManager
  * @brief RAII manager for ImGui context and backend lifetime.
@@ -69,7 +71,5 @@ public:
 private:
     ImGuiContext* m_context{};
 };
-
-} // namespace ui
 
 #endif // GUI_H
