@@ -28,7 +28,7 @@ enum class GameState {
 
 class Game {
 public:
-    Game(const GlWindow& window);
+    Game(const GlWindow& window) noexcept;
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
@@ -38,20 +38,20 @@ public:
 
     void update(const double dt);
     void render(Renderer& renderer);
-    void requestQuit() { m_shouldQuit = true; }
+    void requestQuit() noexcept { m_shouldQuit = true; }
 
-    [[nodiscard]] double getFps() const { return m_fpsCounter.getFps(); }
-    [[nodiscard]] const Settings& getSettings() const { return m_settings; }
-    [[nodiscard]] Settings& getSettings() { return m_settings; }
-    [[nodiscard]] const Camera& getCamera() const { return m_camera; }
-    [[nodiscard]] Camera& getCamera() { return m_camera; }
-    [[nodiscard]] const Lighting& getLighting() const { return m_lighting; }
-    [[nodiscard]] std::size_t getCurrentLevel() const { return m_currentLevel; }
-    [[nodiscard]] const entt::registry& getRegistry() const { return m_registry; }
-    [[nodiscard]] bool shouldQuit() const { return m_shouldQuit; }
+    [[nodiscard]] double getFps() const noexcept { return m_fpsCounter.getFps(); }
+    [[nodiscard]] const Settings& getSettings() const noexcept { return m_settings; }
+    [[nodiscard]] Settings& getSettings() noexcept { return m_settings; }
+    [[nodiscard]] const Camera& getCamera() const noexcept { return m_camera; }
+    [[nodiscard]] Camera& getCamera() noexcept { return m_camera; }
+    [[nodiscard]] const Lighting& getLighting() const noexcept { return m_lighting; }
+    [[nodiscard]] std::size_t getCurrentLevel() const noexcept { return m_currentLevel; }
+    [[nodiscard]] const entt::registry& getRegistry() const noexcept { return m_registry; }
+    [[nodiscard]] bool shouldQuit() const noexcept { return m_shouldQuit; }
 
-    void setState(const GameState newState) { m_gameState = newState; }
-    [[nodiscard]] GameState getState() const { return m_gameState; }
+    void setState(const GameState newState) noexcept { m_gameState = newState; }
+    [[nodiscard]] GameState getState() const noexcept { return m_gameState; }
 
     void loadPlayer();
 

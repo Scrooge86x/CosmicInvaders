@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-Game::Game(const GlWindow& window)
+Game::Game(const GlWindow& window) noexcept
     : m_inputManager{ window.getNativeHandle() }
 {}
 

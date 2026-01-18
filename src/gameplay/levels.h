@@ -32,7 +32,7 @@ namespace gameplay {
 
     struct LevelView {
         template <std::size_t N>
-        constexpr LevelView(const Level<N>& level)
+        constexpr LevelView(const Level<N>& level) noexcept
             : spawns{ level.spawns }
         {}
 
@@ -61,7 +61,7 @@ namespace gameplay {
             : m_levels{ std::forward<Ts>(levels)... }
         {}
 
-        [[nodiscard]] LevelView operator[](const std::size_t index) const {
+        [[nodiscard]] LevelView operator[](const std::size_t index) const noexcept {
             static constexpr auto getterTable = []<std::size_t... Is>(std::index_sequence<Is...>) {
                 using GetterFn = LevelView(*)(const TupleType&);
                 return std::array<GetterFn, sizeof...(Ts)>{
@@ -72,13 +72,13 @@ namespace gameplay {
             return getterTable[index](m_levels);
         }
 
-        [[nodiscard]] std::size_t size() const {
+        [[nodiscard]] constexpr std::size_t size() const noexcept {
             return sizeof...(Ts);
         }
 
     private:
         template <std::size_t I>
-        static constexpr LevelView get(const TupleType& tuple) {
+        static constexpr LevelView get(const TupleType& tuple) noexcept {
             return std::get<I>(tuple);
         }
 
