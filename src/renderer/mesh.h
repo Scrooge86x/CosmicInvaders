@@ -37,6 +37,8 @@ public:
      * @param vertices Vertex data.
      * @param indices Index data.
      * @param material Material shared by this mesh.
+     *
+     * @throws std::runtime_error If mesh creation fails.
      */
     Mesh(
         const std::span<Vertex> vertices,
@@ -50,6 +52,8 @@ public:
      * @param mesh Assimp mesh source.
      * @param material Material used by this mesh.
      * @param transform Transform applied to vertex positions.
+     *
+     * @throws std::runtime_error If mesh creation fails.
      */
     Mesh(
         const aiMesh& mesh,
