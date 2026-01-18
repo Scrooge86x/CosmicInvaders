@@ -26,6 +26,8 @@ public:
      *
      * @param path Path to the model file.
      * @param transform Root transform applied to the model.
+     *
+     * @throws std::runtime_error If texture loading fails
      */
     explicit Model(
         const std::filesystem::path& path,
