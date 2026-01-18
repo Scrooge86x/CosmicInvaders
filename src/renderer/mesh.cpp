@@ -16,7 +16,12 @@ Mesh::Mesh(
         : m_vertexCount{ static_cast<GLsizei>(vertices.size()) }
         , m_indexCount{ static_cast<GLsizei>(indices.size()) }
         , m_material{ material } {
-    createMesh(vertices, indices);
+    try {
+        createMesh(vertices, indices);
+    } catch (...) {
+        deleteMesh();
+        throw;
+    }
 }
 
 Mesh::Mesh(
@@ -63,7 +68,12 @@ Mesh::Mesh(
         }
     }
 
-    createMesh(vertices, indices);
+    try {
+        createMesh(vertices, indices);
+    } catch (...) {
+        deleteMesh();
+        throw;
+    }
 }
 
 Mesh::Mesh(Mesh&& other) noexcept
@@ -96,6 +106,8 @@ void Mesh::createMesh(
     const std::span<Vertex> vertices,
     const std::span<GLuint> indices
 ) {
+    deleteMesh();
+
     GL_CALL(glGenVertexArrays(1, &m_vao));
     GL_CALL(glGenBuffers(1, &m_vbo));
     GL_CALL(glGenBuffers(1, &m_ebo));
@@ -121,11 +133,16 @@ void Mesh::createMesh(
 }
 
 void Mesh::deleteMesh() {
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
-    glDeleteBuffers(1, &m_ebo);
-
-    m_vao = 0;
-    m_vbo = 0;
-    m_ebo = 0;
+    if (m_vao) {
+        glDeleteVertexArrays(1, &m_vao);
+        m_vao = 0;
+    }
+    if (m_vbo) {
+        glDeleteBuffers(1, &m_vbo);
+        m_vbo = 0;
+    }
+    if (m_ebo) {
+        glDeleteBuffers(1, &m_ebo);
+        m_ebo = 0;
+    }
 }

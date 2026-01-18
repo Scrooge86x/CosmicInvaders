@@ -78,6 +78,8 @@ void Texture2D::bind(const unsigned int slotId) const {
 }
 
 void Texture2D::createTextureFromData(const unsigned char* const data) {
+    deleteTexture();
+
     GLint internalFormat{};
     GLenum format{};
 
