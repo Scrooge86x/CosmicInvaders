@@ -75,16 +75,16 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
             animation.animationTime = animationTime;
         }
 
-        if (timeDelay.time2 > 0.0f) {
-            timeDelay.time2 -= deltaTime;
+        if (timeDelay.shootingDelay > 0.0f) {
+            timeDelay.shootingDelay -= deltaTime;
         }
 
-        if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time2 <= 0.0f) {
+        if (inputManager.isDown(InputManager::Key::Space) && timeDelay.shootingDelay <= 0.0f) {
             std::cout << "Działa\n";
             constexpr auto path{ "assets/3d-models/bullet.obj" };
             glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
             createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
-            timeDelay.time2 = bulletDelay;
+            timeDelay.shootingDelay = bulletDelay;
             stats.firedBullets += 1;
         }
     }
@@ -153,11 +153,11 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
         }
     }
 
-    if (timeDelay.time > 0.0f) {
-        timeDelay.time -= deltaTime;
+    if (timeDelay.recievingDamageDelay > 0.0f) {
+        timeDelay.recievingDamageDelay -= deltaTime;
     }
 
-    if (timeDelay.time > 0.0f) {
+    if (timeDelay.recievingDamageDelay > 0.0f) {
         return;
     }
 
@@ -182,14 +182,14 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
         std::cout << "bullet: " << bulletTransform.position.z << "\n";
 
         health.current -= damage.current;
-        timeDelay.time = invincibilityTime;
+        timeDelay.recievingDamageDelay = invincibilityTime;
 
         stats.lostHealth += damage.current;
 
         shouldDestroy.shuld = true;
     }
 
-    if (timeDelay.time > 0.0f) {
+    if (timeDelay.recievingDamageDelay > 0.0f) {
         return;
     }
 
@@ -211,7 +211,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
         //std::cout << enemyTransform.position.z << " " << transform.position.z << "\n";
 
         health.current -= damage.current + additionalDmg;
-        timeDelay.time = invincibilityTime;
+        timeDelay.recievingDamageDelay = invincibilityTime;
 
         stats.lostHealth += damage.current + additionalDmg;
 
@@ -225,12 +225,12 @@ void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const
     auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
 
     for (auto [enemyEntity, timeDelay, transform] : enemy.each()) {
-        if (timeDelay.time > 0.0f) {
-            timeDelay.time -= deltaTime;
+        if (timeDelay.shootingDelay > 0.0f) {
+            timeDelay.shootingDelay -= deltaTime;
             continue;
         }
 
-        timeDelay.time = getRandomDelay(2.0f, 3.0f);
+        timeDelay.shootingDelay = getRandomDelay(2.0f, 3.0f);
 
         constexpr auto path{ "assets/3d-models/bullet.obj" };
         glm::vec3 velocity{0.0f, 0.0f, 2.0f};

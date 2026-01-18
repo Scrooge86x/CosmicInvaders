@@ -93,8 +93,8 @@ struct Stats {
 };
 
 struct TimeDelay {
-    float time{};
-    float time2{};
+    float shootingDelay{};
+    float recievingDamageDelay{};
 };
 
 struct FromWho {
