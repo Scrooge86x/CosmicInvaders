@@ -129,14 +129,16 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 
     for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
         for (auto [bulletEntity, bulletTransform, bulletDamage, bulletShouldDestroy] : playerBullet.each()) {
-            if (enemyTransform.position.x != bulletTransform.position.x) {
-                if (bulletTransform.position.z < -100) {
-                    bulletShouldDestroy.shuld = true;
-                }
+            if (bulletTransform.position.z < -40) {
+                bulletShouldDestroy.shuld = true;
                 continue;
             }
 
             if (enemyTransform.position.z < bulletTransform.position.z) {
+                continue;
+            }
+
+            if (enemyTransform.position.x != bulletTransform.position.x) {
                 continue;
             }
 
@@ -161,14 +163,19 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 
     // Player recieving damage from enemys bullet.
     for (auto [bulletEntity, bulletTransform, damage, shouldDestroy] : enemyBullet.each()) {
-        if (transform.position.x != bulletTransform.position.x) {
-            if (bulletTransform.position.z > 0) {
-                shouldDestroy.shuld = true;
-            }
+        if (bulletTransform.position.z > 0) {
+            shouldDestroy.shuld = true;
+            continue;
+        }
+        if (bulletTransform.position.z > -5) {
             continue;
         }
 
         if (bulletTransform.position.z <= transform.position.z) {
+            continue;
+        }
+
+        if (transform.position.x != bulletTransform.position.x) {
             continue;
         }
 
@@ -188,8 +195,13 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 
     // Player recieving damage from enemy
     for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+        int additionalDmg{};
+
         if (transform.position.x != enemyTransform.position.x) {
-            continue;
+            if (enemyTransform.position.z < -2) {
+                continue;
+            }
+            additionalDmg = 20;
         }
 
         if (enemyTransform.position.z < transform.position.z) {
@@ -198,10 +210,10 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 
         //std::cout << enemyTransform.position.z << " " << transform.position.z << "\n";
 
-        health.current -= damage.current;
+        health.current -= damage.current + additionalDmg;
         timeDelay.time = invincibilityTime;
 
-        stats.lostHealth += damage.current;
+        stats.lostHealth += damage.current + additionalDmg;
 
         shouldDestroy.shuld = true;
     }
