@@ -20,9 +20,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <exception>
 #include <format>
 #include <iostream>
+#include <stdexcept>
 
 static int runDemo() {
     AudioEngine audioEngine{};
@@ -122,6 +122,10 @@ int main() {
         std::cerr << "Failed to initialize GLFW\n";
         return -1;
     }
+
+    glfwSetErrorCallback([](const int error, const char* const description) {
+        std::cerr << std::format("GLFW error: {}: {}\n", error, description);
+    });
 
     int returnValue{ -1 };
     try {

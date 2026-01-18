@@ -6,9 +6,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <exception>
 #include <format>
 #include <iostream>
+#include <stdexcept>
 
 static int runGame() {
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
@@ -48,6 +48,10 @@ int main() {
         std::cerr << "Failed to initialize GLFW\n";
         return -1;
     }
+
+    glfwSetErrorCallback([](const int error, const char* const description) {
+        std::cerr << std::format("GLFW error: {}: {}\n", error, description);
+    });
 
     int returnValue{ -1 };
     try {
