@@ -31,6 +31,10 @@ public:
      *
      * @param path Model file path.
      * @param scale Uniform scale applied to the model.
+     *
+     * @throws std::runtime_error If assimp fails to parse the file
+     *         or the mesh creation fails.
+     *
      * @return Shared pointer to the model.
      */
     [[nodiscard]] std::shared_ptr<Model> load(

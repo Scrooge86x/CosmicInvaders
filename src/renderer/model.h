@@ -27,7 +27,8 @@ public:
      * @param path Path to the model file.
      * @param transform Root transform applied to the model.
      *
-     * @throws std::runtime_error If assimp fails to parse the file.
+     * @throws std::runtime_error If assimp fails to parse the file
+     *         or the mesh creation fails.
      */
     explicit Model(
         const std::filesystem::path& path,

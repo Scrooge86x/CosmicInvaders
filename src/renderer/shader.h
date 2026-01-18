@@ -23,8 +23,8 @@ public:
     /**
      * @brief Creates a shader program from source files.
      *
-     * @throws std::runtime_error
-     * If the specified files cannot be opened or the shader linking/compilation fails.
+     * @throws std::runtime_error If the specified files cannot be opened or
+     *         the shader linking/compilation fails.
      */
     Shader(
         const std::filesystem::path& vertexShaderPath,
