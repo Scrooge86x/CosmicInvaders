@@ -18,6 +18,7 @@ Texture2D::Texture2D(const std::filesystem::path& path) {
     try {
         createTextureFromData(data);
     } catch (...) {
+        deleteTexture();
         stbi_image_free(data);
         throw;
     }
@@ -41,6 +42,7 @@ Texture2D::Texture2D(const aiTexture& texture) {
     try {
         createTextureFromData(data);
     } catch (...) {
+        deleteTexture();
         stbi_image_free(data);
         throw;
     }
@@ -117,10 +119,10 @@ void Texture2D::createTextureFromData(const unsigned char* const data) {
 void Texture2D::deleteTexture() {
     if (m_textureId) {
         glDeleteTextures(1, &m_textureId);
+        m_textureId = 0;
     }
 
-    m_textureId = 0;
-    m_width = 0;
-    m_height = 0;
+    m_width     = 0;
+    m_height    = 0;
     m_nChannels = 0;
 }
