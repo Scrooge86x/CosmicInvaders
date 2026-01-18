@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <stdexcept>
+
 GlWindow::GlWindow(
     const int width,
     const int height,
@@ -15,17 +17,18 @@ GlWindow::GlWindow(
 
     m_window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!m_window) {
-        return;
+        throw std::runtime_error{ "Failed to create GLFW window" };
     }
     glfwSetWindowSizeLimits(m_window, 250, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     glfwMakeContextCurrent(m_window);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        return;
+        glfwDestroyWindow(m_window);
+        throw std::runtime_error{ "Failed to initialize GLAD" };
     }
 
     glfwSetWindowUserPointer(m_window, this);
-    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* const window, const int width, const int height) {
         if (glfwGetCurrentContext() == window) {
             glViewport(0, 0, width, height);
         }
@@ -75,9 +78,7 @@ void GlWindow::makeCurrentContext() const {
     glfwMakeContextCurrent(m_window);
 
     const auto& [width, height] { getFramebufferSize() };
-    if (glViewport) {
-        glViewport(0, 0, width, height);
-    }
+    glViewport(0, 0, width, height);
 }
 
 bool GlWindow::shouldClose() const {

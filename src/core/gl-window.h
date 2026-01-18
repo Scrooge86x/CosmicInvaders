@@ -20,6 +20,9 @@ public:
 
     /**
      * @brief Creates a window and OpenGL context.
+     *
+     * @throws std::runtime_error If the window cannot be created or
+     *         OpenGL initialization fails.
      */
     GlWindow(
         const int width,
@@ -38,14 +41,6 @@ public:
      * @brief Destroys the window.
      */
     ~GlWindow();
-
-    /**
-     * @brief Checks whether the window is valid.
-     * @return True if the window exists.
-     */
-    [[nodiscard]] operator bool() const {
-        return m_window != NULL;
-    }
 
     /**
      * @brief Returns the native GLFW window handle.

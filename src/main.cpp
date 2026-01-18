@@ -12,12 +12,8 @@
 
 static int runGame() {
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
-    if (!window) {
-        std::cerr << "Failed to create GLFW window\n";
-        return -1;
-    }
-
     Game game{ window };
+
     game.getCamera().setAspectRatio(window.getFramebufferAspectRatio());
     window.setResizeCallback([&game](const int width, const int height) {
         game.getCamera().setAspectRatio(static_cast<float>(width) / height);

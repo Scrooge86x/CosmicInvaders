@@ -29,10 +29,6 @@ static int runDemo() {
     audioEngine.play("assets/sounds/space-laser.mp3");
 
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
-    if (!window) {
-        std::cerr << "Failed to create GLFW window\n";
-        return -1;
-    }
 
     Camera camera{ { 0.f, 0.f, 1.f } };
     camera.setAspectRatio(window.getFramebufferAspectRatio());
