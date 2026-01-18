@@ -60,7 +60,7 @@ static int runDemo() {
     float rotationAngle{};
     glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
-        .sunPosition{ 0.f, 20.f, 0.f },
+        .sunPosition{ -4.f, 20.f, 1.f },
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
