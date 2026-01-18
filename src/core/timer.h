@@ -15,7 +15,7 @@ public:
      *
      * This function should be called once per frame to measure the time between frames.
      */
-    void update();
+    void update() noexcept;
 
     /**
      * @brief Returns the stored delta time from the last update, does NOT recompute it.
@@ -24,7 +24,7 @@ public:
      * @return Delta time in seconds.
      */
     template <std::floating_point T>
-    [[nodiscard]] T getDt() const {
+    [[nodiscard]] T getDt() const noexcept {
         return static_cast<T>(m_dt);
     }
 

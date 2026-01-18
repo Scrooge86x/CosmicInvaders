@@ -45,41 +45,41 @@ public:
     /**
      * @brief Returns the native GLFW window handle.
      */
-    [[nodiscard]] GLFWwindow* getNativeHandle() const {
+    [[nodiscard]] GLFWwindow* getNativeHandle() const noexcept {
         return m_window;
     }
 
     /**
      * @brief Returns the framebuffer size in pixels.
      */
-    [[nodiscard]] std::pair<int, int> getFramebufferSize() const;
+    [[nodiscard]] std::pair<int, int> getFramebufferSize() const noexcept;
 
     /**
      * @brief Calculates the current framebuffer aspect ratio.
      *
      * Helper method useful for calculating projection matrix
      */
-    [[nodiscard]] float getFramebufferAspectRatio() const;
+    [[nodiscard]] float getFramebufferAspectRatio() const noexcept;
 
     /**
      * @brief Checks if the window should close (for example if the user pressed the X button on the titlebar).
      */
-    [[nodiscard]] bool shouldClose() const;
+    [[nodiscard]] bool shouldClose() const noexcept;
 
     /**
      * @brief Makes this window's context current.
      */
-    void makeCurrentContext() const;
+    void makeCurrentContext() const noexcept;
 
     /**
      * @brief Swaps front and back buffers.
      */
-    void swapBuffers() const;
+    void swapBuffers() const noexcept;
 
     /**
      * @brief Polls window events.
      */
-    void pollEvents() const;
+    void pollEvents() const noexcept;
 
     /**
      * @brief Sets a callback invoked on window resize.

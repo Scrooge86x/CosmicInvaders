@@ -4,7 +4,7 @@
 
 #include <utility>
 
-InputManager::InputManager(GLFWwindow* const window)
+InputManager::InputManager(GLFWwindow* const window) noexcept
     : m_window{ window }
 {}
 
@@ -26,7 +26,7 @@ InputManager& InputManager::operator=(InputManager&& other) noexcept {
     return *this;
 }
 
-void InputManager::update() {
+void InputManager::update() noexcept {
     if (!m_window) {
         return;
     }

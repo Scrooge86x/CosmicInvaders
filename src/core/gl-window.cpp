@@ -62,33 +62,33 @@ GlWindow::~GlWindow() {
     glfwDestroyWindow(m_window);
 }
 
-std::pair<int, int> GlWindow::getFramebufferSize() const {
+std::pair<int, int> GlWindow::getFramebufferSize() const noexcept {
     int width{};
     int height{};
     glfwGetFramebufferSize(m_window, &width, &height);
     return { width, height };
 }
 
-float GlWindow::getFramebufferAspectRatio() const {
+float GlWindow::getFramebufferAspectRatio() const noexcept {
     const auto& [width, height] { getFramebufferSize() };
     return static_cast<float>(width) / height;
 }
 
-void GlWindow::makeCurrentContext() const {
+bool GlWindow::shouldClose() const noexcept {
+    return glfwWindowShouldClose(m_window);
+}
+
+void GlWindow::makeCurrentContext() const noexcept {
     glfwMakeContextCurrent(m_window);
 
     const auto& [width, height] { getFramebufferSize() };
     glViewport(0, 0, width, height);
 }
 
-bool GlWindow::shouldClose() const {
-    return glfwWindowShouldClose(m_window);
-}
-
-void GlWindow::swapBuffers() const {
+void GlWindow::swapBuffers() const noexcept {
     glfwSwapBuffers(m_window);
 }
 
-void GlWindow::pollEvents() const {
+void GlWindow::pollEvents() const noexcept {
     glfwPollEvents();
 }

@@ -28,7 +28,7 @@ public:
      * @brief Constructs the input manager.
      * @param window GLFW window to read input from.
      */
-    explicit InputManager(GLFWwindow* const window);
+    explicit InputManager(GLFWwindow* const window) noexcept;
 
     InputManager(const InputManager&) = delete;
     InputManager& operator=(const InputManager&) = delete;
@@ -41,22 +41,22 @@ public:
      *
      * Should be called once per frame.
      */
-    void update();
+    void update() noexcept;
 
     /**
      * @brief Checks if a key was down during the latest update.
      */
-    [[nodiscard]] bool isDown(const Key key) const { return m_currentStates[key]; }
+    [[nodiscard]] bool isDown(const Key key) const noexcept { return m_currentStates[key]; }
 
     /**
      * @brief Checks if a was down during both previous and latest updates.
      */
-    [[nodiscard]] bool isHeld(const Key key) const { return m_currentStates[key] && m_previousStates[key]; }
+    [[nodiscard]] bool isHeld(const Key key) const noexcept { return m_currentStates[key] && m_previousStates[key]; }
 
     /**
      * @brief Checks if a key was pressed this frame (up in the previous update and down in the latest one).
      */
-    [[nodiscard]] bool isPressed(const Key key) const { return m_currentStates[key] && !m_previousStates[key]; }
+    [[nodiscard]] bool isPressed(const Key key) const noexcept { return m_currentStates[key] && !m_previousStates[key]; }
 
 private:
     GLFWwindow* m_window{};

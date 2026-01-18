@@ -1,6 +1,6 @@
 #include "fps-counter.h"
 
-void FpsCounter::update(const double dt) {
+void FpsCounter::update(const double dt) noexcept {
     ++m_frameCount;
 
     m_accumulatedTime += dt;

@@ -20,13 +20,13 @@ public:
      *
      * @param dt Delta time in seconds since the last update.
      */
-    void update(const double dt);
+    void update(const double dt) noexcept;
 
     /**
      * @brief Returns the current calculated FPS.
      * @return Frames per second.
      */
-    [[nodiscard]] double getFps() const {
+    [[nodiscard]] double getFps() const noexcept {
         return m_fps;
     }
 

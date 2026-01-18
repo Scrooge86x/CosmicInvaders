@@ -41,7 +41,7 @@ public:
      *
      * @param path Path to the audio file.
      */
-    void play(const char* const path) {
+    void play(const char* const path) noexcept {
         ma_engine_play_sound(&m_engine, path, NULL);
     }
 
