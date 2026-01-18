@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <exception>
+#include <format>
 #include <iostream>
 
 static int runGame() {
@@ -51,7 +53,14 @@ int main() {
         return -1;
     }
 
-    int returnValue{ runGame() };
+    int returnValue{ -1 };
+    try {
+        returnValue = runGame();
+    } catch (const std::exception& exception) {
+        std::cerr << std::format("Fatal error: {}\n", exception.what());
+    } catch (...) {
+        std::cerr << "Unknown fatal error\n";
+    }
 
     glfwTerminate();
     return returnValue;

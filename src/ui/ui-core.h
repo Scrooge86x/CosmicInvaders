@@ -23,6 +23,7 @@ void beginFrame();
  *
  * Must be called once per frame after all ImGui draw calls.
  * Submits draw data to the OpenGL backend.
+ * Assumes a valid ImGui context and initialized GLFW and OpenGL backends.
  */
 void endFrame();
 

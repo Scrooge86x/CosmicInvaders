@@ -20,6 +20,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <exception>
+#include <format>
 #include <iostream>
 
 static int runDemo() {
@@ -125,7 +127,14 @@ int main() {
         return -1;
     }
 
-    int returnValue{ runDemo() };
+    int returnValue{ -1 };
+    try {
+        returnValue = runDemo();
+    } catch (const std::exception& exception) {
+        std::cerr << std::format("Fatal error: {}\n", exception.what());
+    } catch (...) {
+        std::cerr << "Unknown fatal error\n";
+    }
 
     glfwTerminate();
     return returnValue;
