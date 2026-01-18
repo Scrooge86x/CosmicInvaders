@@ -19,14 +19,14 @@ public:
     /**
      * @brief Loads a texture from a file.
      *
-     * @throws std::runtime_error If texture creation fails
+     * @throws std::runtime_error If texture creation fails.
      */
     explicit Texture2D(const std::filesystem::path& path);
 
     /**
      * @brief Creates a texture from Assimp data.
      *
-     * @throws std::runtime_error If texture creation fails
+     * @throws std::runtime_error If texture creation fails.
      */
     explicit Texture2D(const aiTexture& texture);
 

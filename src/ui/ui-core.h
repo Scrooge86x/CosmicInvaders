@@ -52,7 +52,8 @@ public:
      * @param window GLFW window used by ImGui.
      * @param glslVersion GLSL version string (e.g. "#version 330").
      *
-     * @throws std::runtime_error If an ImGui context already exists.
+     * @throws std::runtime_error If an ImGui context already exists
+     *         or if backend initialization fails.
      */
     ImGuiContextManager(GLFWwindow* const window, const char* const glslVersion = "#version 330");
 

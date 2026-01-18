@@ -22,14 +22,18 @@ void endFrame() {
 
 ImGuiContextManager::ImGuiContextManager(GLFWwindow* const window, const char* const glslVersion) {
     if (ImGui::GetCurrentContext() != nullptr) {
-        throw std::runtime_error("ImGui context already exists");
+        throw std::runtime_error{ "ImGui context already exists" };
     }
 
     IMGUI_CHECKVERSION();
     m_context = ImGui::CreateContext();
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glslVersion);
+    if (!ImGui_ImplGlfw_InitForOpenGL(window, true)) {
+        throw std::runtime_error{ "Failed to initialize ImGui GLFW backend" };
+    }
+    if (!ImGui_ImplOpenGL3_Init(glslVersion)) {
+        throw std::runtime_error{ "Failed to initialize ImGui OpenGL3 backend" };
+    }
 }
 
 ImGuiContextManager::~ImGuiContextManager() {

@@ -17,7 +17,7 @@ struct aiNode;
 /**
  * @brief 3D model composed of multiple meshes.
  *
- * Loads mesh and material data using Assimp
+ * Loads mesh and material data using Assimp.
  */
 class Model {
 public:
@@ -27,7 +27,7 @@ public:
      * @param path Path to the model file.
      * @param transform Root transform applied to the model.
      *
-     * @throws std::runtime_error If texture loading fails
+     * @throws std::runtime_error If texture loading fails.
      */
     explicit Model(
         const std::filesystem::path& path,
