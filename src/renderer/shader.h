@@ -22,6 +22,9 @@ public:
 
     /**
      * @brief Creates a shader program from source files.
+     *
+     * @throws std::runtime_error
+     * If the specified files cannot be opened or the shader linking/compilation fails.
      */
     Shader(
         const std::filesystem::path& vertexShaderPath,
@@ -41,13 +44,6 @@ public:
 
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
-
-    /**
-     * @brief Reloads from the disk and recompiles the shader program.
-     *
-     * @return True on success.
-     */
-    bool reload();
 
     /**
      * @brief Activates the shader program.
