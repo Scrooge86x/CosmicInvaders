@@ -57,10 +57,6 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
     TimeDelay& timeDelay{ registry.get<TimeDelay>(player) };
     Stats& stats{ registry.get<Stats>(player) };
 
-    if (timeDelay.time > 0.0f) {
-        timeDelay.time -= deltaTime;
-    }
-
     if (animation.animationTime <= 0.0f) {
         Lane::lane newLane{animation.currentLane};
 
@@ -79,12 +75,16 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
             animation.animationTime = animationTime;
         }
 
-        if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time <= 0.0f) {
+        if (timeDelay.time2 > 0.0f) {
+            timeDelay.time2 -= deltaTime;
+        }
+
+        if (inputManager.isDown(InputManager::Key::Space) && timeDelay.time2 <= 0.0f) {
             std::cout << "Działa\n";
             constexpr auto path{ "assets/3d-models/bullet.obj" };
             glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
             createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
-            timeDelay.time = bulletDelay;
+            timeDelay.time2 = bulletDelay;
             stats.firedBullets += 1;
         }
     }
@@ -167,7 +167,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
             shouldDestroy.shuld = true;
             continue;
         }
-        if (bulletTransform.position.z > -5) {
+        if (bulletTransform.position.z > -4) {
             continue;
         }
 
@@ -179,7 +179,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
             continue;
         }
 
-        //std::cout << "bullet: " << bulletTransform.position.z << "\n";
+        std::cout << "bullet: " << bulletTransform.position.z << "\n";
 
         health.current -= damage.current;
         timeDelay.time = invincibilityTime;

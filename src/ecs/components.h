@@ -93,7 +93,8 @@ struct Stats {
 };
 
 struct TimeDelay {
-    float time{ 0.0f };
+    float time{};
+    float time2{};
 };
 
 struct FromWho {
