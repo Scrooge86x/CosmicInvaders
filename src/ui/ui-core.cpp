@@ -21,7 +21,7 @@ void endFrame() {
 } // namespace ui
 
 ImGuiContextManager::ImGuiContextManager(GLFWwindow* const window, const char* const glslVersion) {
-    if (ImGui::GetCurrentContext() != nullptr) {
+    if (ImGui::GetCurrentContext()) {
         throw std::runtime_error{ "ImGui context already exists" };
     }
 
@@ -29,15 +29,18 @@ ImGuiContextManager::ImGuiContextManager(GLFWwindow* const window, const char* c
     m_context = ImGui::CreateContext();
 
     if (!ImGui_ImplGlfw_InitForOpenGL(window, true)) {
+        ImGui::DestroyContext(m_context);
         throw std::runtime_error{ "Failed to initialize ImGui GLFW backend" };
     }
     if (!ImGui_ImplOpenGL3_Init(glslVersion)) {
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext(m_context);
         throw std::runtime_error{ "Failed to initialize ImGui OpenGL3 backend" };
     }
 }
 
 ImGuiContextManager::~ImGuiContextManager() {
-    if (m_context == nullptr) {
+    if (!m_context) {
         return;
     }
 
@@ -45,4 +48,5 @@ ImGuiContextManager::~ImGuiContextManager() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(m_context);
+    m_context = nullptr;
 }
