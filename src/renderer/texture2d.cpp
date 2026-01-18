@@ -119,11 +119,13 @@ void Texture2D::createTextureFromData(const unsigned char* const data) {
 }
 
 void Texture2D::deleteTexture() {
-    if (m_textureId) {
-        glDeleteTextures(1, &m_textureId);
-        m_textureId = 0;
+    if (!m_textureId) {
+        return;
     }
 
+    glDeleteTextures(1, &m_textureId);
+
+    m_textureId = 0;
     m_width     = 0;
     m_height    = 0;
     m_nChannels = 0;
