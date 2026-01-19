@@ -50,3 +50,16 @@ endfunction()
 
 copy_assets_for_target(game)
 copy_assets_for_target(demo)
+
+install(
+    TARGETS game
+    RUNTIME DESTINATION .
+)
+
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/assets
+    DESTINATION .
+)
+
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
+include(InstallRequiredSystemLibraries)
