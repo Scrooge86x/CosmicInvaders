@@ -26,8 +26,21 @@ enum class GameState {
     Victory,
 };
 
+/**
+ * @brief Main game controller.
+ *
+ * Owns and coordinates all major game subsystems, including input,
+ * rendering, audio, and entity management.
+ */
 class Game {
 public:
+    /**
+     * @brief Constructs the game instance.
+     *
+     * @param window Window used for input.
+     *
+     * @throws std::runtime_error If ambient sound initialization fails.
+     */
     Game(const GlWindow& window);
 
     Game(const Game&) = delete;
@@ -36,9 +49,36 @@ public:
     Game(Game&&) = delete;
     Game& operator=(Game&&) = delete;
 
+    /**
+     * @brief Updates the game state.
+     *
+     * Advances simulation, processes input, and updates entities.
+     * Should be called once per frame.
+     *
+     * @param dt Time delta in seconds since the last update.
+     */
     void update(double dt);
+
+    /**
+     * @brief Renders the current game state.
+     *
+     * Should be called once per frame.
+     *
+     * @param renderer Renderer used to draw the scene.
+     */
     void render(Renderer& renderer);
+
+    /**
+     * @brief Requests termination of the game loop.
+     */
     void requestQuit() noexcept { m_shouldQuit = true; }
+
+    /**
+     * @brief Initializes the player entity and lears the current registry.
+     *
+     * @throws std::runtime_error If the player model fails to load.
+     */
+    void loadPlayer();
 
     [[nodiscard]] double getFps() const noexcept { return m_fpsCounter.getFps(); }
     [[nodiscard]] const Settings& getSettings() const noexcept { return m_settings; }
@@ -53,8 +93,6 @@ public:
 
     void setState(const GameState newState) noexcept { m_gameState = newState; }
     [[nodiscard]] GameState getState() const noexcept { return m_gameState; }
-
-    void loadPlayer();
 
 private:
     void updateSystems(const double dt);

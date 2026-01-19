@@ -13,26 +13,43 @@
 #include <type_traits>
 
 namespace gameplay {
+
+    /**
+     * @brief Describes a single enemy spawn.
+     */
     struct EnemySpawnData {
         EnemyType enemyType{};
         double spawnTime{};
         Lane::Lane lane{};
     };
 
+    /**
+     * @brief Compile-time level definition.
+     *
+     * @tparam N Number of enemy spawns in the level.
+     */
     template <std::size_t N>
     struct Level {
-        consteval Level(const EnemySpawnData(&arr)[N]) {
+        /**
+         * @brief Constructs a level from a fixed-size array of spawn data during compile time.
+         */
+        consteval Level(const EnemySpawnData(&spawnData)[N]) {
             for (std::size_t i{}; i < N; ++i) {
-                spawns[i] = arr[i];
+                spawns[i] = spawnData[i];
             }
         }
 
         std::array<EnemySpawnData, N> spawns{};
     };
 
+    /**
+     * @brief Lightweight runtime view over a level.
+     *
+     * Provides a uniform interface independent of the level size.
+     */
     struct LevelView {
         template <std::size_t N>
-        constexpr LevelView(const Level<N>& level) noexcept
+        LevelView(const Level<N>& level) noexcept
             : spawns{ level.spawns }
         {}
 
@@ -52,15 +69,32 @@ namespace gameplay {
 
     }
 
+    /**
+     * @brief Compile time list of levels.
+     *
+     * Allows indexed runtime access to levels of different sizes via LevelView.
+     *
+     * @tparam Ts Parameter pack of Level types.
+     */
     template <detail::LevelType... Ts>
     class LevelList {
     public:
         using TupleType = std::tuple<Ts...>;
 
+        /**
+         * @brief Constructs the level list during compile time from individual levels.
+         *
+         * @param levels Levels to store.
+         */
         consteval LevelList(Ts&&... levels)
-            : m_levels{ std::forward<Ts>(levels)... }
+            : m_levels{ levels... }
         {}
 
+        /**
+         * @brief Access a level during runtime by index.
+         *
+         * @note It does NOT do any bounds checking.
+         */
         [[nodiscard]] LevelView operator[](const std::size_t index) const noexcept {
             static constexpr auto getterTable = []<std::size_t... Is>(std::index_sequence<Is...>) {
                 using GetterFn = LevelView(*)(const TupleType&);
@@ -85,16 +119,21 @@ namespace gameplay {
         TupleType m_levels{};
     };
 
+    /**
+     * @brief Global compile-time list of all game levels.
+     *
+     * Each entry represents a complete enemy spawn order for a level.
+     */
     inline constexpr LevelList levels{
         Level{{
             { EnemyType::Basic,  1000, Lane::Lane::Left   },
             { EnemyType::Basic,  4000, Lane::Lane::Right  },
             { EnemyType::Basic,  7000, Lane::Lane::Middle },
-            { EnemyType::Basic,  10000, Lane::Lane::Middle },
-            { EnemyType::Basic,  13000, Lane::Lane::Left   },
-            { EnemyType::Slim,   16000, Lane::Lane::Right  },
-            { EnemyType::Basic,  19000, Lane::Lane::Left   },
-            { EnemyType::Slim,   22000, Lane::Lane::Middle },
+            { EnemyType::Basic, 10000, Lane::Lane::Middle },
+            { EnemyType::Basic, 13000, Lane::Lane::Left   },
+            { EnemyType::Slim,  16000, Lane::Lane::Right  },
+            { EnemyType::Basic, 19000, Lane::Lane::Left   },
+            { EnemyType::Slim,  22000, Lane::Lane::Middle },
             { EnemyType::Basic, 25000, Lane::Lane::Right  },
             { EnemyType::Basic, 28000, Lane::Lane::Left   },
             { EnemyType::Bulky, 31000, Lane::Lane::Middle },
@@ -104,8 +143,8 @@ namespace gameplay {
             { EnemyType::Bulky,  3000, Lane::Lane::Right  },
             { EnemyType::Slim,   6000, Lane::Lane::Left   },
             { EnemyType::Basic,  9000, Lane::Lane::Middle },
-            { EnemyType::Basic,  12000, Lane::Lane::Right  },
-            { EnemyType::Basic,  15000, Lane::Lane::Middle },
+            { EnemyType::Basic, 12000, Lane::Lane::Right  },
+            { EnemyType::Basic, 15000, Lane::Lane::Middle },
             { EnemyType::Bulky, 18000, Lane::Lane::Left   },
             { EnemyType::Basic, 21000, Lane::Lane::Middle },
             { EnemyType::Slim,  24000, Lane::Lane::Left   },
@@ -123,8 +162,8 @@ namespace gameplay {
             { EnemyType::Bulky,  3000, Lane::Lane::Right  },
             { EnemyType::Slim,   6000, Lane::Lane::Left   },
             { EnemyType::Basic,  9000, Lane::Lane::Middle },
-            { EnemyType::Basic,  12000, Lane::Lane::Right  },
-            { EnemyType::Basic,  15000, Lane::Lane::Middle },
+            { EnemyType::Basic, 12000, Lane::Lane::Right  },
+            { EnemyType::Basic, 15000, Lane::Lane::Middle },
             { EnemyType::Bulky, 18000, Lane::Lane::Left   },
             { EnemyType::Basic, 21000, Lane::Lane::Middle },
             { EnemyType::Slim,  24000, Lane::Lane::Left   },
@@ -148,4 +187,4 @@ namespace gameplay {
     };
 }
 
-#endif LEVELS_H // !LEVELS_H
+#endif // LEVELS_H
