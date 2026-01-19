@@ -59,11 +59,8 @@ void Game::update(double dt) {
 void Game::render(Renderer& renderer) {
     switch (m_gameState) {
     case GameState::Playing:
-        //std::cout << "W" << "\n";
-        renderingSystem(m_registry, renderer);
-        break;
     case GameState::Paused:
-        // TODO: Render the ECS entities
+        renderingSystem(m_registry, renderer);
         break;
     case GameState::MainMenu:
     case GameState::GameOver:
