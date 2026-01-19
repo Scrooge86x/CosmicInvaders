@@ -28,14 +28,14 @@ void Game::update(const double dt) {
         ui::drawMainMenu(*this);
         break;
     case GameState::Playing:
-        ui::drawHud(*this);
+        ui::drawHud(*this, dt);
         if (m_inputManager.isPressed(InputManager::Escape)) {
             m_gameState = GameState::Paused;
         }
         updateSystems(dt);
         break;
     case GameState::Paused:
-        ui::drawHud(*this);
+        ui::drawHud(*this, dt);
         ui::drawPauseMenu(*this);
         if (m_inputManager.isPressed(InputManager::Escape)) {
             m_gameState = GameState::Playing;

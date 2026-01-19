@@ -11,7 +11,7 @@
 #include <cmath>
 #include <format>
 
-void ui::drawHud(Game& game) {
+void ui::drawHud(Game& game, const double dt) {
     const ImGuiViewport* const mainViewport{ ImGui::GetMainViewport() };
     ImDrawList* const drawList{ ImGui::GetBackgroundDrawList() };
     constexpr float padding{ 10.f };
@@ -26,14 +26,42 @@ void ui::drawHud(Game& game) {
         );
     }
 
-    ImGui::PushFont(NULL, 25.f);
-    const std::string levelText{ std::format("Level {}", game.getCurrentLevel() + 1) };
+    static auto previousLevel{ game.getCurrentLevel() };
+    const auto currentLevel{ game.getCurrentLevel() + 1 };
 
-    drawList->AddText(
-        { (mainViewport->WorkSize.x - ImGui::CalcTextSize(levelText.c_str()).x) / 2.f, padding },
-        IM_COL32_WHITE,
-        levelText.c_str()
-    );
+    static double zoomedLevelTime{};
+    if (previousLevel != currentLevel) {
+        zoomedLevelTime = 1.5;
+    }
+    previousLevel = currentLevel;
+
+    const std::string levelText{ std::format("Level {}", currentLevel) };
+    if (zoomedLevelTime > 0.0) {
+        zoomedLevelTime -= dt;
+
+        ImGui::PushFont(NULL, 50.f);
+        const ImVec2 levelTextSize{ ImGui::CalcTextSize(levelText.c_str()) };
+        drawList->AddText(
+            {
+                (mainViewport->WorkSize.x - levelTextSize.x) / 2.f,
+                (mainViewport->WorkSize.y - levelTextSize.y) / 2.f,
+            },
+            IM_COL32_WHITE,
+            levelText.c_str()
+        );
+    } else {
+        ImGui::PushFont(NULL, 25.f);
+        drawList->AddText(
+            {
+                (mainViewport->WorkSize.x - ImGui::CalcTextSize(levelText.c_str()).x) / 2.f,
+                padding
+            },
+            IM_COL32_WHITE,
+            levelText.c_str()
+        );
+    }
+
+    ImGui::PopFont();
 
     const Health playerHealth{ getPlayerHealth(game.getRegistry()) };
     const float healthPercentage{ std::clamp(static_cast<float>(playerHealth.current) / playerHealth.max, 0.f, 1.f) };
@@ -44,6 +72,8 @@ void ui::drawHud(Game& game) {
     case 2: healthColor = IM_COL32(255, 255, 0, 255); break;
     case 3: healthColor = IM_COL32(0, 255, 0, 255); break;
     }
+
+    ImGui::PushFont(NULL, 25.f);
 
     const std::string hpText{ std::format("Health: {}", playerHealth.current) };
     const ImVec2 hpTextSize{ ImGui::CalcTextSize(hpText.c_str()) };
@@ -57,6 +87,7 @@ void ui::drawHud(Game& game) {
         healthColor,
         hpText.c_str()
     );
+
     ImGui::PopFont();
 
     drawList->AddRectFilled(
