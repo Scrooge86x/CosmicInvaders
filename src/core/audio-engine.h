@@ -45,6 +45,16 @@ public:
         ma_engine_play_sound(&m_engine, path, NULL);
     }
 
+    /**
+     * @brief Changes the engine volume.
+     *
+     * @param volume Linear scale where 0 is full silence and
+     *        everything over 1 results in amplification.
+     */
+    void setVolume(const float volume) noexcept {
+        ma_engine_set_volume(&m_engine, volume);
+    }
+
 private:
     ma_engine m_engine{};
 };

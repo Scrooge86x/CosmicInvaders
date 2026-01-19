@@ -16,8 +16,9 @@
 #include <iostream>
 
 Game::Game(const GlWindow& window) noexcept
-    : m_inputManager{ window.getNativeHandle() }
-{}
+        : m_inputManager{ window.getNativeHandle() } {
+    m_audioEngine.setVolume(m_settings.volume);
+}
 
 void Game::update(double dt) {
     m_fpsCounter.update(dt);

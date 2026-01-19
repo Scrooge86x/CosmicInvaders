@@ -48,6 +48,7 @@ public:
     [[nodiscard]] const Lighting& getLighting() const noexcept { return m_lighting; }
     [[nodiscard]] std::size_t getCurrentLevel() const noexcept { return m_currentLevel; }
     [[nodiscard]] const entt::registry& getRegistry() const noexcept { return m_registry; }
+    [[nodiscard]] AudioEngine& getAudioEngine() noexcept { return m_audioEngine; }
     [[nodiscard]] bool shouldQuit() const noexcept { return m_shouldQuit; }
 
     void setState(const GameState newState) noexcept { m_gameState = newState; }
