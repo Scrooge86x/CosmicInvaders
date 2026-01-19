@@ -132,7 +132,7 @@ void Mesh::createMesh(
     GL_CALL(glBindVertexArray(0));
 }
 
-void Mesh::deleteMesh() {
+void Mesh::deleteMesh() noexcept {
     if (m_vao) {
         glDeleteVertexArrays(1, &m_vao);
         m_vao = 0;

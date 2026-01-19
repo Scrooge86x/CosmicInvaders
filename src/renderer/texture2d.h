@@ -48,9 +48,9 @@ public:
      *
      * @param slotId Texture unit index.
      */
-    void bind(const unsigned int slotId) const;
+    void bind(const unsigned int slotId) const noexcept;
 
-    void unbind() const {
+    void unbind() const noexcept {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
@@ -58,25 +58,25 @@ public:
      * @brief Returns the OpenGL texture object ID.
      * @return OpenGL texture object ID.
      */
-    [[nodiscard]] GLuint getId() const {
+    [[nodiscard]] GLuint getId() const noexcept {
         return m_textureId;
     }
 
-    [[nodiscard]] int getWidth() const {
+    [[nodiscard]] int getWidth() const noexcept {
         return m_width;
     }
 
-    [[nodiscard]] int getHeight() const {
+    [[nodiscard]] int getHeight() const noexcept {
         return m_height;
     }
 
-    [[nodiscard]] int getChannelCount() const {
+    [[nodiscard]] int getChannelCount() const noexcept {
         return m_nChannels;
     }
 
 private:
     void createTextureFromData(const unsigned char* const data);
-    void deleteTexture();
+    void deleteTexture() noexcept;
 
     GLuint m_textureId{};
     int m_width{};

@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
-void Camera::setAspectRatio(const float aspectRatio) {
+void Camera::setAspectRatio(const float aspectRatio) noexcept {
     if (std::isnan(aspectRatio)) {
         return;
     }
@@ -13,25 +13,25 @@ void Camera::setAspectRatio(const float aspectRatio) {
     m_viewProjectionMatrixCache.first = true;
 }
 
-void Camera::setPosition(const glm::vec3& position) {
+void Camera::setPosition(const glm::vec3& position) noexcept {
     m_position = position;
     m_viewMatrixCache.first = true;
     m_viewProjectionMatrixCache.first = true;
 }
 
-void Camera::setYaw(const float yaw) {
+void Camera::setYaw(const float yaw) noexcept {
     m_yaw = yaw;
     m_viewMatrixCache.first = true;
     m_viewProjectionMatrixCache.first = true;
 }
 
-void Camera::setPitch(const float pitch) {
+void Camera::setPitch(const float pitch) noexcept {
     m_pitch = pitch;
     m_viewMatrixCache.first = true;
     m_viewProjectionMatrixCache.first = true;
 }
 
-void Camera::setRoll(const float roll) {
+void Camera::setRoll(const float roll) noexcept {
     m_roll = roll;
     m_viewMatrixCache.first = true;
     m_viewProjectionMatrixCache.first = true;

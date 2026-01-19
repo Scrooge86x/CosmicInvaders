@@ -72,7 +72,7 @@ Texture2D& Texture2D::operator=(Texture2D&& other) noexcept {
     return *this;
 }
 
-void Texture2D::bind(const unsigned int slotId) const {
+void Texture2D::bind(const unsigned int slotId) const noexcept {
     glActiveTexture(GL_TEXTURE0 + slotId);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
 }
@@ -118,7 +118,7 @@ void Texture2D::createTextureFromData(const unsigned char* const data) {
     GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
-void Texture2D::deleteTexture() {
+void Texture2D::deleteTexture() noexcept {
     if (!m_textureId) {
         return;
     }

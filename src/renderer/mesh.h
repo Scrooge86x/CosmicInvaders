@@ -74,19 +74,19 @@ public:
         deleteMesh();
     }
 
-    [[nodiscard]] GLuint getVao() const { return m_vao; }
-    [[nodiscard]] GLuint getVbo() const { return m_vbo; }
-    [[nodiscard]] GLuint getEbo() const { return m_ebo; }
-    [[nodiscard]] GLsizei getVertexCount() const { return m_vertexCount; }
-    [[nodiscard]] GLsizei getIndexCount() const { return m_indexCount; }
-    [[nodiscard]] std::shared_ptr<Material> getMaterial() const { return m_material; }
+    [[nodiscard]] GLuint getVao() const noexcept { return m_vao; }
+    [[nodiscard]] GLuint getVbo() const noexcept { return m_vbo; }
+    [[nodiscard]] GLuint getEbo() const noexcept { return m_ebo; }
+    [[nodiscard]] GLsizei getVertexCount() const noexcept { return m_vertexCount; }
+    [[nodiscard]] GLsizei getIndexCount() const noexcept { return m_indexCount; }
+    [[nodiscard]] std::shared_ptr<Material> getMaterial() const noexcept { return m_material; }
 
 private:
     void createMesh(
         const std::span<Vertex> vertices,
         const std::span<GLuint> indices
     );
-    void deleteMesh();
+    void deleteMesh() noexcept;
 
     GLuint m_vao{};
     GLuint m_vbo{};

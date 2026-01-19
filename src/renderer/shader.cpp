@@ -90,7 +90,7 @@ GLuint Shader::createShaderFromFile(const GLenum type, const std::filesystem::pa
     ) };
 }
 
-void Shader::deleteShaderProgram() {
+void Shader::deleteShaderProgram() noexcept {
     if (m_shaderProgramId) {
         glDeleteProgram(m_shaderProgramId);
         m_shaderProgramId = 0;

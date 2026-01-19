@@ -41,10 +41,7 @@ public:
     Model(Model&& other) noexcept = default;
     Model& operator=(Model&& other) noexcept = default;
 
-    /**
-     * @brief Returns all meshes in this model.
-     */
-    [[nodiscard]] const std::vector<Mesh>& getMeshes() const {
+    [[nodiscard]] const std::vector<Mesh>& getMeshes() const noexcept {
         return m_meshes;
     }
 

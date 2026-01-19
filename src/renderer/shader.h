@@ -48,14 +48,14 @@ public:
     /**
      * @brief Activates the shader program.
      */
-    void use() const {
+    void use() const noexcept {
         glUseProgram(m_shaderProgramId);
     }
 
     /**
      * @brief Returns the OpenGL program ID.
      */
-    [[nodiscard]] GLuint getId() const {
+    [[nodiscard]] GLuint getId() const noexcept {
         return m_shaderProgramId;
     }
 
@@ -115,7 +115,7 @@ public:
 private:
     GLuint createShaderFromFile(const GLenum type, const std::filesystem::path& fileName);
 
-    void deleteShaderProgram();
+    void deleteShaderProgram() noexcept;
     void createShaderProgram();
 
     GLuint m_shaderProgramId{};

@@ -19,21 +19,21 @@ public:
      * @brief Constructs a camera at a given 3d space position.
      * @param position Initial camera position in world space.
      */
-    explicit Camera(const glm::vec3& position) {
+    explicit Camera(const glm::vec3& position) noexcept {
         setPosition(position);
     }
 
-    void setAspectRatio(const float aspectRatio);
-    void setPosition(const glm::vec3& position);
-    void setYaw(const float yaw);
-    void setPitch(const float pitch);
-    void setRoll(const float roll);
+    void setAspectRatio(const float aspectRatio) noexcept;
+    void setPosition(const glm::vec3& position) noexcept;
+    void setYaw(const float yaw) noexcept;
+    void setPitch(const float pitch) noexcept;
+    void setRoll(const float roll) noexcept;
 
-    [[nodiscard]] glm::vec3 getPosition() const { return m_position; }
-    [[nodiscard]] float getYaw() const { return m_yaw; }
-    [[nodiscard]] float getPitch() const { return m_pitch; }
-    [[nodiscard]] float getRoll() const { return m_roll; }
-    [[nodiscard]] float getAspectRatio() const { return m_aspectRatio; }
+    [[nodiscard]] glm::vec3 getPosition() const noexcept { return m_position; }
+    [[nodiscard]] float getYaw() const noexcept { return m_yaw; }
+    [[nodiscard]] float getPitch() const noexcept { return m_pitch; }
+    [[nodiscard]] float getRoll() const noexcept { return m_roll; }
+    [[nodiscard]] float getAspectRatio() const noexcept { return m_aspectRatio; }
 
     /**
      * @brief Returns the cached view matrix, recalculates it if the dirty flag is set.
