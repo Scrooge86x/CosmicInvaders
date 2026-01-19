@@ -3,6 +3,7 @@
 #include <renderer/renderer.h>
 #include <renderer/model-store.h>
 #include <core/input-manager.h>
+#include <core/audio-engine.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -46,7 +47,7 @@ void cleanUpSystem(entt::registry& registry) {
     }
 }
 
-void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime) {
     constexpr float animationTime{ 0.3f };
     constexpr float bulletDelay{ 1.0f };
 
@@ -83,6 +84,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
             constexpr auto path{ "assets/3d-models/bullet.obj" };
             glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
             createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
+            audioEngine.play("assets/sounds/space-laser.mp3");
             timeDelay.shootingDelay = bulletDelay;
             stats.firedBullets += 1;
         }
@@ -234,7 +236,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
     }
 }
 
-void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime) {
+void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime) {
     constexpr float delay{ 1.0f };
 
     auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
@@ -251,6 +253,7 @@ void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const
         glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 
         createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.1f), transform.position, glm::vec3{90.0f, 0.0f, 0.0f}, velocity);
+        audioEngine.play("assets/sounds/space-laser.mp3");
 
     }
 }

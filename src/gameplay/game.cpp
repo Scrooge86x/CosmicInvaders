@@ -113,9 +113,9 @@ void Game::updateSystems(const double dt) {
     }
 
     cleanUpSystem(m_registry);
-    enemyShootingSystem(m_registry, m_modelStore, dt);
+    enemyShootingSystem(m_registry, m_modelStore, m_audioEngine, dt);
     receivingDamageSystem(m_registry, dt);
-    playerInputSystem(m_registry, m_inputManager, m_modelStore, dt);
+    playerInputSystem(m_registry, m_inputManager, m_modelStore, m_audioEngine, dt);
     movementSystem(m_registry, dt);
 }
 

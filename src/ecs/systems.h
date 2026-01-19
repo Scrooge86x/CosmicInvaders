@@ -7,6 +7,7 @@
 class Renderer;
 class InputManager;
 class ModelStore;
+class AudioEngine;
 
 //Generel systems
 
@@ -53,9 +54,10 @@ void cleanUpSystem(entt::registry& registry);
  * @param registry ECS registry containing all entities.
  * @param inputManager Input handler providing current input state.
  * @param modelStore Storage used to load and access models.
+ * @param audioEngine Audio engine for playing sound effects.
  * @param deltaTime Time elapsed since the last frame.
  */
-void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime);
+void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime);
 
 /**
  * @brief Restores player health to maximum.
@@ -88,9 +90,10 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime);
  *
  * @param registry ECS registry containing all entities.
  * @param modelStore Storage used to load and access models.
+ * @param audioEngine Audio engine for playing sound effects.
  * @param deltaTime Time elapsed since the last frame.
  */
-void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime);
+void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime);
 
 //Helping functions
 
