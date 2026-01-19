@@ -90,10 +90,9 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime);
  *
  * @param registry ECS registry containing all entities.
  * @param modelStore Storage used to load and access models.
- * @param audioEngine Audio engine for playing sound effects.
  * @param deltaTime Time elapsed since the last frame.
  */
-void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime);
+void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime);
 
 //Helping functions
 

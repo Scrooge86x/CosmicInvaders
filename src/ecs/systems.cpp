@@ -236,7 +236,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
     }
 }
 
-void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, AudioEngine& audioEngine, const float deltaTime) {
+void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime) {
     constexpr float delay{ 1.0f };
 
     auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
@@ -253,8 +253,6 @@ void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, Audio
         glm::vec3 velocity{0.0f, 0.0f, 2.0f};
 
         createBullet(registry, EntityTypes::Enemy, modelStore.load(path, 0.1f), transform.position, glm::vec3{90.0f, 0.0f, 0.0f}, velocity);
-        audioEngine.play("assets/sounds/space-laser.mp3");
-
     }
 }
 
