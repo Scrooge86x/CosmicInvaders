@@ -16,7 +16,7 @@ entt::entity createPlayer(entt::registry& registry, std::shared_ptr<Model> objec
     return entity;
 }
 
-entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelStore& modelStore, Lane::lane& lane) {
+entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelStore& modelStore, Lane::Lane& lane) {
 
     entt::entity entity = registry.create();
     std::shared_ptr<Model> object;

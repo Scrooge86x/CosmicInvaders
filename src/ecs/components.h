@@ -7,41 +7,40 @@
 #include "glm/glm.hpp"
 #include "../renderer/model.h"
 
-class Lane {
-public:
-    enum class lane {
+namespace Lane {
+    enum class Lane {
         Left,
         Middle,
         Right
     };
 
-    enum class laneDirection {
+    enum class LaneDirection {
         Left,
         Right
     };
 
-    static lane changeLane(lane current, laneDirection direction) {
-        bool moveRight = (direction == laneDirection::Right);
+    inline Lane changeLane(Lane current, LaneDirection direction) {
+        bool moveRight = (direction == LaneDirection::Right);
 
         switch (current) {
-        case lane::Left:
-            return moveRight ? lane::Middle : current;
-        case lane::Middle:
-            return moveRight ? lane::Right : lane::Left;
-        case lane::Right:
-            return moveRight ? current : lane::Middle;
+        case Lane::Left:
+            return moveRight ? Lane::Middle : current;
+        case Lane::Middle:
+            return moveRight ? Lane::Right : Lane::Left;
+        case Lane::Right:
+            return moveRight ? current : Lane::Middle;
         default:
             return current;
         }
     }
 
-    static float getLaneXPosition(lane current) {
+    inline float getLaneXPosition(Lane current) {
         switch (current) {
-        case lane::Left:
+        case Lane::Left:
             return -3.75f;
-        case lane::Middle:
+        case Lane::Middle:
             return 0.f;
-        case lane::Right:
+        case Lane::Right:
             return 3.75f;
         default:
             return 0.f;
@@ -81,8 +80,8 @@ struct Render {
 };
 
 struct Animation {
-    Lane::lane currentLane{ Lane::lane::Middle };
-    Lane::lane targetLane{ Lane::lane::Middle };
+    Lane::Lane currentLane{ Lane::Lane::Middle };
+    Lane::Lane targetLane{ Lane::Lane::Middle };
     float animationTime{};
 };
 

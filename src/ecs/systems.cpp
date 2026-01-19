@@ -58,16 +58,16 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
     Stats& stats{ registry.get<Stats>(player) };
 
     if (animation.animationTime <= 0.0f) {
-        Lane::lane newLane{animation.currentLane};
+        Lane::Lane newLane{animation.currentLane};
 
         bool aPressed{ inputManager.isDown(InputManager::Key::A) };
         bool dPressed{ inputManager.isDown(InputManager::Key::D) };
 
         if (aPressed && !dPressed) {
-            newLane = Lane::changeLane(animation.currentLane, Lane::laneDirection::Left);
+            newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Left);
         }
         else if (!aPressed && dPressed) {
-            newLane = Lane::changeLane(animation.currentLane, Lane::laneDirection::Right);
+            newLane = Lane::changeLane(animation.currentLane, Lane::LaneDirection::Right);
         }
 
         if (newLane != animation.currentLane) {
