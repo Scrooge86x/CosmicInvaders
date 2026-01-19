@@ -7,18 +7,35 @@
 #include "glm/glm.hpp"
 #include "../renderer/model.h"
 
+/**
+ * @brief Contains lane related enums and helper functions.
+ */
 namespace Lane {
+
+    /**
+     * @brief Represents possible lanes an entity can occupy.
+     */
     enum class Lane {
         Left,
         Middle,
         Right
     };
 
+    /**
+     * @brief Represents direction of lane change.
+     */
     enum class LaneDirection {
         Left,
         Right
     };
 
+    /**
+     * @brief Calculates a new lane based on current lane and movement direction.
+     *
+     * @param current Current lane
+     * @param direction Direction of movement
+     * @return New lane after applying the direction
+     */
     inline Lane changeLane(Lane current, LaneDirection direction) {
         bool moveRight = (direction == LaneDirection::Right);
 
@@ -34,6 +51,12 @@ namespace Lane {
         }
     }
 
+    /**
+     * @brief Returns the world X position for a given lane.
+     *
+     * @param current Lane for which the X position is requested
+     * @return X coordinate corresponding to the lane
+     */
     inline float getLaneXPosition(Lane current) {
         switch (current) {
         case Lane::Left:
@@ -71,35 +94,44 @@ struct Velocity {
     glm::vec3 linear{ 0.0f, 0.0f, 0.0f };
 };
 
-struct ShouldDestroy {
-    bool shuld{ false };
-};
-
 struct Render {
     std::shared_ptr<Model> object;
 };
 
+/**
+ * @brief Stores lane animation state for a player.
+ */
 struct Animation {
-    Lane::Lane currentLane{ Lane::Lane::Middle };
-    Lane::Lane targetLane{ Lane::Lane::Middle };
-    float animationTime{};
+    Lane::Lane currentLane{ Lane::Lane::Middle }; ///< Current lane of the entity
+    Lane::Lane targetLane{ Lane::Lane::Middle };  ///< Target lane for animation
+    float animationTime{};                        ///< Elapsed time of lane change animation
 };
 
+/**
+ * @brief Stores gameplay statistics for a player.
+ */
 struct Stats {
-    int lostHealth{};
-    double firedBullets{};
-    float damageDealt{};
+    int lostHealth{};      ///< Amount of health lost
+    double firedBullets{}; ///< Number of bullets fired
+    float damageDealt{};   ///< Total damage dealt to other entities
 };
 
+/**
+ * @brief Stores cooldown timers for actions.
+ */
 struct TimeDelay {
-    float shootingDelay{};
-    float recievingDamageDelay{};
+    float shootingDelay{};        ///< Delay between consecutive shots
+    float recievingDamageDelay{}; ///< Delay after receiving damage
 };
 
+/**
+ * @brief Identifies the source entity type of an bullet.
+ */
 struct FromWho {
-    EntityTypes fromWho;
+    EntityTypes fromWho; ///< Type of entity that fired the bullet.
 };
 
+struct DestroyTag {};
 struct PlayerTag {};
 struct EnemyTag {};
 struct EnemyBulletTag {};

@@ -39,11 +39,10 @@ void renderingSystem(entt::registry& registry, Renderer& renderer) {
 }
 
 void cleanUpSystem(entt::registry& registry) {
-    entt::basic_view view = registry.view<ShouldDestroy>();
+    entt::basic_view view = registry.view<DestroyTag>();
 
-    for (auto [entity, shouldDestroy] : view.each()) {
-        if (shouldDestroy.shuld)
-            registry.destroy(entity);
+    for (auto [entity] : view.each()) {
+        registry.destroy(entity);
     }
 }
 
@@ -80,7 +79,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
         }
 
         if (inputManager.isDown(InputManager::Key::Space) && timeDelay.shootingDelay <= 0.0f) {
-            std::cout << "Działa\n";
+            //std::cout << "Działa\n";
             constexpr auto path{ "assets/3d-models/bullet.obj" };
             glm::vec3 velocity{ 0.0f, 0.0f, -1.0f };
             createBullet(registry, EntityTypes::Player, modelStore.load(path, 0.1f), transform.position, glm::vec3{-90.0f, 0.0f, 0.0f}, velocity);
@@ -123,14 +122,16 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
     Stats& stats{ registry.get<Stats>(player) };
 
 
-    auto enemy = registry.view<EnemyTag, Transform, Damage, Health, ShouldDestroy>();
-    auto enemyBullet = registry.view<EnemyBulletTag, Transform, Damage, ShouldDestroy>();
-    auto playerBullet = registry.view<PlayerBulletTag, Transform, Damage, ShouldDestroy>();
+    auto enemy = registry.view<EnemyTag, Transform, Damage, Health>();
+    auto enemyBullet = registry.view<EnemyBulletTag, Transform, Damage>();
+    auto playerBullet = registry.view<PlayerBulletTag, Transform, Damage>();
 
-    for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
-        for (auto [bulletEntity, bulletTransform, bulletDamage, bulletShouldDestroy] : playerBullet.each()) {
+    for (auto [enemyEntity, enemyTransform, damage, enemyHealth] : enemy.each()) {
+        for (auto [bulletEntity, bulletTransform, bulletDamage] : playerBullet.each()) {
             if (bulletTransform.position.z < -40) {
-                bulletShouldDestroy.shuld = true;
+                if (!registry.any_of<DestroyTag>(bulletEntity)) {
+                    registry.emplace<DestroyTag>(bulletEntity);
+                }
                 continue;
             }
 
@@ -143,12 +144,17 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
             }
 
             enemyHealth.current -= bulletDamage.current;
-            bulletShouldDestroy.shuld = true;
+
+            if (!registry.any_of<DestroyTag>(bulletEntity)) {
+                registry.emplace<DestroyTag>(bulletEntity);
+            }
 
             stats.damageDealt += bulletDamage.current;
 
             if (enemyHealth.current <= 0) {
-                shouldDestroy.shuld = true;
+                if (!registry.any_of<DestroyTag>(enemyEntity)) {
+                    registry.emplace<DestroyTag>(enemyEntity);
+                }
             }
         }
     }
@@ -162,12 +168,15 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
     }
 
     // Player recieving damage from enemys bullet.
-    for (auto [bulletEntity, bulletTransform, damage, shouldDestroy] : enemyBullet.each()) {
+    for (auto [bulletEntity, bulletTransform, damage] : enemyBullet.each()) {
         if (bulletTransform.position.z > 0) {
-            shouldDestroy.shuld = true;
+
+            if (!registry.any_of<DestroyTag>(bulletEntity)) {
+                registry.emplace<DestroyTag>(bulletEntity);
+            }
             continue;
         }
-        if (bulletTransform.position.z > -4) {
+        if (bulletTransform.position.z > -6) {
             continue;
         }
 
@@ -179,14 +188,17 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
             continue;
         }
 
-        std::cout << "bullet: " << bulletTransform.position.z << "\n";
+        //std::cout << "bullet: " << bulletTransform.position.z << "\n";
 
         health.current -= damage.current;
         timeDelay.recievingDamageDelay = invincibilityTime;
 
         stats.lostHealth += damage.current;
 
-        shouldDestroy.shuld = true;
+
+        if (!registry.any_of<DestroyTag>(bulletEntity)) {
+            registry.emplace<DestroyTag>(bulletEntity);
+        }
     }
 
     if (timeDelay.recievingDamageDelay > 0.0f) {
@@ -194,7 +206,7 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
     }
 
     // Player recieving damage from enemy
-    for (auto [enemyEntity, enemyTransform, damage, enemyHealth, shouldDestroy] : enemy.each()) {
+    for (auto [enemyEntity, enemyTransform, damage, enemyHealth] : enemy.each()) {
         int additionalDmg{};
 
         if (transform.position.x != enemyTransform.position.x) {
@@ -215,7 +227,10 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 
         stats.lostHealth += damage.current + additionalDmg;
 
-        shouldDestroy.shuld = true;
+
+        if (!registry.any_of<DestroyTag>(enemyEntity)) {
+            registry.emplace<DestroyTag>(enemyEntity);
+        }
     }
 }
 

@@ -54,7 +54,6 @@ entt::entity createEntity(entt::registry& registry, EnemyType enemyType, ModelSt
     registry.emplace<TimeDelay>(entity);
     registry.emplace<Stats>(entity);
     registry.emplace<EnemyTag>(entity);
-    registry.emplace<ShouldDestroy>(entity);
 
     return entity;
 }
@@ -74,7 +73,6 @@ entt::entity createBullet(entt::registry& registry, const EntityTypes fromWho, s
     registry.emplace<Transform>(entity, position, rotation);
     registry.emplace<Velocity>(entity, velocity);
     registry.emplace<Render>(entity, object);
-    registry.emplace<ShouldDestroy>(entity);
     registry.emplace<Damage>(entity, damage);
 
 
