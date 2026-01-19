@@ -9,11 +9,30 @@
 
 struct aiTexture;
 
+/**
+ * @brief 2D texture wrapper.
+ *
+ * Loads texture data and manages its OpenGL lifetime.
+ */
 class Texture2D {
 public:
+    /**
+     * @brief Loads a texture from a file.
+     *
+     * @throws std::runtime_error If texture creation fails.
+     */
     explicit Texture2D(const std::filesystem::path& path);
+
+    /**
+     * @brief Creates a texture from Assimp data.
+     *
+     * @throws std::runtime_error If texture creation fails.
+     */
     explicit Texture2D(const aiTexture& texture);
 
+    /**
+     * @brief Destroys the texture.
+     */
     ~Texture2D() {
         deleteTexture();
     }
@@ -24,31 +43,40 @@ public:
     Texture2D(Texture2D&& other) noexcept;
     Texture2D& operator=(Texture2D&& other) noexcept;
 
-    void bind(const unsigned int slotId) const;
+    /**
+     * @brief Binds the texture to a texture unit.
+     *
+     * @param slotId Texture unit index.
+     */
+    void bind(const unsigned int slotId) const noexcept;
 
-    void unbind() const {
+    void unbind() const noexcept {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    [[nodiscard]] GLuint getId() const {
+    /**
+     * @brief Returns the OpenGL texture object ID.
+     * @return OpenGL texture object ID.
+     */
+    [[nodiscard]] GLuint getId() const noexcept {
         return m_textureId;
     }
 
-    [[nodiscard]] int getWidth() const {
+    [[nodiscard]] int getWidth() const noexcept {
         return m_width;
     }
 
-    [[nodiscard]] int getHeight() const {
+    [[nodiscard]] int getHeight() const noexcept {
         return m_height;
     }
 
-    [[nodiscard]] int getChannelCount() const {
+    [[nodiscard]] int getChannelCount() const noexcept {
         return m_nChannels;
     }
 
 private:
     void createTextureFromData(const unsigned char* const data);
-    void deleteTexture();
+    void deleteTexture() noexcept;
 
     GLuint m_textureId{};
     int m_width{};

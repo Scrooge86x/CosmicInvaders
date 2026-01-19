@@ -12,19 +12,49 @@
 struct aiMesh;
 struct Material;
 
+/**
+ * @brief Single mesh vertex.
+ *
+ * Contains all vertex attributes required for rendering.
+ */
 struct Vertex {
     glm::vec3 position{};
     glm::vec3 normal{};
     glm::vec2 uv{};
 };
 
+/**
+ * @brief Renderable mesh stored on the GPU.
+ *
+ * Owns the OpenGL buffers and VAO needed to draw
+ * indexed geometry.
+ */
 class Mesh {
 public:
+    /**
+     * @brief Creates a mesh from raw vertex and index data.
+     *
+     * @param vertices Vertex data.
+     * @param indices Index data.
+     * @param material Material shared by this mesh.
+     *
+     * @throws std::runtime_error If mesh creation fails.
+     */
     Mesh(
         const std::span<Vertex> vertices,
         const std::span<GLuint> indices,
         const std::shared_ptr<Material> material
     );
+
+    /**
+     * @brief Creates a mesh from an Assimp mesh.
+     *
+     * @param mesh Assimp mesh source.
+     * @param material Material used by this mesh.
+     * @param transform Transform applied to vertex positions.
+     *
+     * @throws std::runtime_error If mesh creation fails.
+     */
     Mesh(
         const aiMesh& mesh,
         const std::shared_ptr<Material> material,
@@ -37,23 +67,26 @@ public:
     Mesh(Mesh&& other) noexcept;
     Mesh& operator=(Mesh&& other) noexcept;
 
+    /**
+     * @brief Destroys the mesh and releases GPU resources.
+     */
     ~Mesh() {
         deleteMesh();
     }
 
-    [[nodiscard]] GLuint getVao() const { return m_vao; }
-    [[nodiscard]] GLuint getVbo() const { return m_vao; }
-    [[nodiscard]] GLuint getEbo() const { return m_vao; }
-    [[nodiscard]] GLsizei getVertexCount() const { return m_vertexCount; }
-    [[nodiscard]] GLsizei getIndexCount() const { return m_indexCount; }
-    [[nodiscard]] std::shared_ptr<Material> getMaterial() const { return m_material; }
+    [[nodiscard]] GLuint getVao() const noexcept { return m_vao; }
+    [[nodiscard]] GLuint getVbo() const noexcept { return m_vbo; }
+    [[nodiscard]] GLuint getEbo() const noexcept { return m_ebo; }
+    [[nodiscard]] GLsizei getVertexCount() const noexcept { return m_vertexCount; }
+    [[nodiscard]] GLsizei getIndexCount() const noexcept { return m_indexCount; }
+    [[nodiscard]] std::shared_ptr<Material> getMaterial() const noexcept { return m_material; }
 
 private:
     void createMesh(
         const std::span<Vertex> vertices,
         const std::span<GLuint> indices
     );
-    void deleteMesh();
+    void deleteMesh() noexcept;
 
     GLuint m_vao{};
     GLuint m_vbo{};

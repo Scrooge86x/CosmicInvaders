@@ -5,11 +5,28 @@
 
 #include <cstddef>
 
+/**
+ * @brief Utility class for calculating frames per second.
+ *
+ * Accumulates frame time and frame count to compute
+ * average FPS over time.
+ */
 class FpsCounter {
 public:
-    void update(const double dt);
+    /**
+     * @brief Updates the FPS calculation.
+     *
+     * Should be called once every frame.
+     *
+     * @param dt Delta time in seconds since the last update.
+     */
+    void update(const double dt) noexcept;
 
-    [[nodiscard]] double getFps() const {
+    /**
+     * @brief Returns the current calculated FPS.
+     * @return Frames per second.
+     */
+    [[nodiscard]] double getFps() const noexcept {
         return m_fps;
     }
 

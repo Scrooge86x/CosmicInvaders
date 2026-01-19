@@ -1,8 +1,10 @@
 #include "shader.h"
 
-#include <utility>
-#include <iostream>
+#include "gl-call.h"
+
 #include <fstream>
+#include <iostream>
+#include <utility>
 
 Shader::Shader(
     const std::filesystem::path& vertexShaderPath,
@@ -11,14 +13,20 @@ Shader::Shader(
         : m_vertexShaderPath  { vertexShaderPath }
         , m_fragmentShaderPath{ fragmentShaderPath }
         , m_geometryShaderPath{ geometryShaderPath } {
-    createShaderProgram();
+    try {
+        createShaderProgram();
+    } catch (...) {
+        deleteShaderProgram();
+        throw;
+    }
 }
 
 Shader::Shader(Shader&& other) noexcept
     : m_shaderProgramId   { std::exchange(other.m_shaderProgramId, 0) }
-    , m_vertexShaderPath  { std::exchange(other.m_vertexShaderPath, {}) }
-    , m_fragmentShaderPath{ std::exchange(other.m_fragmentShaderPath, {}) }
-    , m_geometryShaderPath{ std::exchange(other.m_geometryShaderPath, {}) }
+    , m_vertexShaderPath  { std::move(other.m_vertexShaderPath) }
+    , m_fragmentShaderPath{ std::move(other.m_fragmentShaderPath) }
+    , m_geometryShaderPath{ std::move(other.m_geometryShaderPath) }
+    , m_uniformLocations  { std::move(other.m_uniformLocations) }
 {}
 
 Shader& Shader::operator=(Shader&& other) noexcept {
@@ -29,17 +37,12 @@ Shader& Shader::operator=(Shader&& other) noexcept {
     deleteShaderProgram();
 
     m_shaderProgramId    = std::exchange(other.m_shaderProgramId, 0);
-    m_vertexShaderPath   = std::exchange(other.m_vertexShaderPath, {});
-    m_fragmentShaderPath = std::exchange(other.m_fragmentShaderPath, {});
-    m_geometryShaderPath = std::exchange(other.m_geometryShaderPath, {});
+    m_vertexShaderPath   = std::move(other.m_vertexShaderPath);
+    m_fragmentShaderPath = std::move(other.m_fragmentShaderPath);
+    m_geometryShaderPath = std::move(other.m_geometryShaderPath);
+    m_uniformLocations   = std::move(other.m_uniformLocations);
 
     return *this;
-}
-
-bool Shader::reload() {
-    deleteShaderProgram();
-    createShaderProgram();
-    return m_shaderProgramId != 0;
 }
 
 GLint Shader::getUniformLocation(const GLchar* const name) {
@@ -50,8 +53,7 @@ GLint Shader::getUniformLocation(const GLchar* const name) {
 GLuint Shader::createShaderFromFile(const GLenum type, const std::filesystem::path& fileName) {
     std::ifstream shaderFile{ fileName };
     if (!shaderFile) {
-        std::cerr << "Error: Couldn't open file: " << fileName << "\n";
-        return 0;
+        throw std::runtime_error{ std::format("Failed to open shader file: {}", fileName.generic_string()) };
     }
 
     const GLCharString shaderSource{
@@ -60,28 +62,35 @@ GLuint Shader::createShaderFromFile(const GLenum type, const std::filesystem::pa
     };
     const GLchar* const sourcePtr{ shaderSource.c_str() };
 
-    const GLuint glShader{ glCreateShader(type) };
-    glShaderSource(glShader, 1, &sourcePtr, NULL);
-    glCompileShader(glShader);
+    const GLuint shader{ glCreateShader(type) };
+    if (!shader) {
+        throw std::runtime_error{ "glCreateShader failed" };
+    }
+
+    glShaderSource(shader, 1, &sourcePtr, NULL);
+    glCompileShader(shader);
 
     GLint success{};
-    glGetShaderiv(glShader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (success) {
-        return glShader;
+        return shader;
     }
 
     GLint infoLogSize{};
-    glGetShaderiv(glShader, GL_INFO_LOG_LENGTH, &infoLogSize);
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogSize);
 
     GLCharString infoLog{};
     infoLog.resize(infoLogSize);
-    glGetShaderInfoLog(glShader, infoLogSize, NULL, infoLog.data());
+    glGetShaderInfoLog(shader, infoLogSize, NULL, infoLog.data());
 
-    std::cerr << "Error: Shader compilation failed:\n" << infoLog << '\n';
-    return 0;
+    glDeleteShader(shader);
+    throw std::runtime_error{ std::format(R"(Shader compilation of "{}" failed: {})",
+        fileName.generic_string(),
+        infoLog
+    ) };
 }
 
-void Shader::deleteShaderProgram() {
+void Shader::deleteShaderProgram() noexcept {
     if (m_shaderProgramId) {
         glDeleteProgram(m_shaderProgramId);
         m_shaderProgramId = 0;
@@ -89,39 +98,29 @@ void Shader::deleteShaderProgram() {
 }
 
 void Shader::createShaderProgram() {
-    if (m_shaderProgramId) {
-        return;
-    }
+    deleteShaderProgram();
 
     m_shaderProgramId = glCreateProgram();
-
-    const GLuint vertexShader{ createShaderFromFile(GL_VERTEX_SHADER, m_vertexShaderPath) };
-    if (!vertexShader) {
-        return deleteShaderProgram();
+    if (!m_shaderProgramId) {
+        throw std::runtime_error{ "glCreateProgram failed" };
     }
 
+    const GLuint vertexShader{ createShaderFromFile(GL_VERTEX_SHADER, m_vertexShaderPath) };
     glAttachShader(m_shaderProgramId, vertexShader);
     glDeleteShader(vertexShader);
 
     const GLuint fragmentShader{ createShaderFromFile(GL_FRAGMENT_SHADER, m_fragmentShaderPath) };
-    if (!fragmentShader) {
-        return deleteShaderProgram();
-    }
-
     glAttachShader(m_shaderProgramId, fragmentShader);
     glDeleteShader(fragmentShader);
 
     if (!m_geometryShaderPath.empty()) {
         const GLuint geometryShader{ createShaderFromFile(GL_GEOMETRY_SHADER, m_geometryShaderPath) };
-        if (!geometryShader) {
-            return deleteShaderProgram();
-        }
-
         glAttachShader(m_shaderProgramId, geometryShader);
         glDeleteShader(geometryShader);
     }
 
     glLinkProgram(m_shaderProgramId);
+
     GLint success{};
     glGetProgramiv(m_shaderProgramId, GL_LINK_STATUS, &success);
     if (success) {
@@ -129,13 +128,12 @@ void Shader::createShaderProgram() {
     }
 
     GLint infoLogSize{};
-    glGetShaderiv(m_shaderProgramId, GL_INFO_LOG_LENGTH, &infoLogSize);
+    glGetProgramiv(m_shaderProgramId, GL_INFO_LOG_LENGTH, &infoLogSize);
 
     GLCharString infoLog{};
     infoLog.resize(infoLogSize);
-    glGetShaderInfoLog(m_shaderProgramId, infoLogSize, NULL, infoLog.data());
+    glGetProgramInfoLog(m_shaderProgramId, infoLogSize, NULL, infoLog.data());
 
-    std::cerr << "Error: Program linking failed:\n" << infoLog << '\n';
-    deleteShaderProgram();
+    throw std::runtime_error{ std::format("Program linking failed: {}", infoLog) };
 }
 

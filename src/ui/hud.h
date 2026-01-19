@@ -7,7 +7,7 @@ class Game;
 
 namespace ui {
 
-void drawHud(Game& game);
+void drawHud(Game& game, const double dt);
 
 }
 

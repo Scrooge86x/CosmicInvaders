@@ -16,7 +16,7 @@ Settings::Settings(const std::filesystem::path& path)
 
     json data{ json::parse(file) };
 
-#define X(type, name, value) name = data[#name].get<type>();
+#define X(type, name, val) name = data.value(#name, val);
     SETTINGS_H_CONFIG
 #undef X
 }

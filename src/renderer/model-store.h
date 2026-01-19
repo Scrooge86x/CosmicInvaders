@@ -10,6 +10,12 @@
 
 class Model;
 
+/**
+ * @brief Centralized cache for loaded models.
+ *
+ * Prevents loading the same model multiple times
+ * for identical scale values.
+ */
 class ModelStore {
 public:
     ModelStore() = default;
@@ -20,6 +26,17 @@ public:
     ModelStore(ModelStore&& other) noexcept = default;
     ModelStore& operator=(ModelStore&& other) noexcept = default;
 
+    /**
+     * @brief Loads or retrieves a cached model.
+     *
+     * @param path Model file path.
+     * @param scale Uniform scale applied to the model.
+     *
+     * @throws std::runtime_error If assimp fails to parse the file
+     *         or the mesh creation fails.
+     *
+     * @return Shared pointer to the model.
+     */
     [[nodiscard]] std::shared_ptr<Model> load(
         const std::filesystem::path& path,
         const float scale = { 1.f }

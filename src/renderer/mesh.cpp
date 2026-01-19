@@ -1,5 +1,6 @@
 #include "mesh.h"
 
+#include "gl-call.h"
 #include "material.h"
 
 #include <assimp/mesh.h>
@@ -15,7 +16,12 @@ Mesh::Mesh(
         : m_vertexCount{ static_cast<GLsizei>(vertices.size()) }
         , m_indexCount{ static_cast<GLsizei>(indices.size()) }
         , m_material{ material } {
-    createMesh(vertices, indices);
+    try {
+        createMesh(vertices, indices);
+    } catch (...) {
+        deleteMesh();
+        throw;
+    }
 }
 
 Mesh::Mesh(
@@ -62,7 +68,12 @@ Mesh::Mesh(
         }
     }
 
-    createMesh(vertices, indices);
+    try {
+        createMesh(vertices, indices);
+    } catch (...) {
+        deleteMesh();
+        throw;
+    }
 }
 
 Mesh::Mesh(Mesh&& other) noexcept
@@ -95,36 +106,43 @@ void Mesh::createMesh(
     const std::span<Vertex> vertices,
     const std::span<GLuint> indices
 ) {
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &m_vbo);
-    glGenBuffers(1, &m_ebo);
+    deleteMesh();
 
-    glBindVertexArray(m_vao);
+    GL_CALL(glGenVertexArrays(1, &m_vao));
+    GL_CALL(glGenBuffers(1, &m_vbo));
+    GL_CALL(glGenBuffers(1, &m_ebo));
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size_bytes(), vertices.data(), GL_STATIC_DRAW);
+    GL_CALL(glBindVertexArray(m_vao));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size_bytes(), indices.data(), GL_STATIC_DRAW);
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertices.size_bytes(), vertices.data(), GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
+    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo));
+    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size_bytes(), indices.data(), GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+    GL_CALL(glEnableVertexAttribArray(0));
+    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position))));
 
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+    GL_CALL(glEnableVertexAttribArray(1));
+    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal))));
 
-    glBindVertexArray(0);
+    GL_CALL(glEnableVertexAttribArray(2));
+    GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv))));
+
+    GL_CALL(glBindVertexArray(0));
 }
 
-void Mesh::deleteMesh() {
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
-    glDeleteBuffers(1, &m_ebo);
-
-    m_vao = 0;
-    m_vbo = 0;
-    m_ebo = 0;
+void Mesh::deleteMesh() noexcept {
+    if (m_vao) {
+        glDeleteVertexArrays(1, &m_vao);
+        m_vao = 0;
+    }
+    if (m_vbo) {
+        glDeleteBuffers(1, &m_vbo);
+        m_vbo = 0;
+    }
+    if (m_ebo) {
+        glDeleteBuffers(1, &m_ebo);
+        m_ebo = 0;
+    }
 }

@@ -5,12 +5,26 @@
 
 #include <concepts>
 
+/**
+ * @brief Measures delta time between updates.
+ */
 class Timer {
 public:
-    void update();
+    /**
+     * @brief Updates the current delta time based on the previous timestamp.
+     *
+     * This function should be called once per frame to measure the time between frames.
+     */
+    void update() noexcept;
 
+    /**
+     * @brief Returns the stored delta time from the last update, does NOT recompute it.
+     *
+     * @tparam T Floating point type to return the value as.
+     * @return Delta time in seconds.
+     */
     template <std::floating_point T>
-    [[nodiscard]] T getDt() const {
+    [[nodiscard]] T getDt() const noexcept {
         return static_cast<T>(m_dt);
     }
 

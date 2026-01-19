@@ -20,17 +20,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <format>
 #include <iostream>
+#include <stdexcept>
 
 static int runDemo() {
     AudioEngine audioEngine{};
     audioEngine.play("assets/sounds/space-laser.mp3");
 
     GlWindow window{ 900, 600, "Cosmic Invaders", { 3, 3 } };
-    if (!window) {
-        std::cerr << "Failed to create GLFW window\n";
-        return -1;
-    }
 
     Camera camera{ { 0.f, 0.f, 1.f } };
     camera.setAspectRatio(window.getFramebufferAspectRatio());
@@ -57,16 +55,16 @@ static int runDemo() {
     Renderer renderer{};
 
     bool isGuiVisible{ true };
-    float modelScale{ 4.f };
+    float modelScale{ 3.f };
     float rotationSpeed{ 0.5f };
     float rotationAngle{};
     glm::vec3 position{ 0.f, -2.f, -10.f };
     Lighting lighting{
-        .sunPosition{ 0.f, 20.f, 0.f },
+        .sunPosition{ -4.f, 20.f, 1.f },
         .sunColor{ 1.f, 1.f, 3.f },
     };
 
-    ui::ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
+    ImGuiContextManager imGuiContext{ window.getNativeHandle(), "#version 330" };
 
     while (!window.shouldClose()) {
         timer.update();
@@ -125,7 +123,18 @@ int main() {
         return -1;
     }
 
-    int returnValue{ runDemo() };
+    glfwSetErrorCallback([](const int error, const char* const description) {
+        std::cerr << std::format("GLFW error: {}: {}\n", error, description);
+    });
+
+    int returnValue{ -1 };
+    try {
+        returnValue = runDemo();
+    } catch (const std::exception& exception) {
+        std::cerr << std::format("Fatal error: {}\n", exception.what());
+    } catch (...) {
+        std::cerr << "Unknown fatal error\n";
+    }
 
     glfwTerminate();
     return returnValue;

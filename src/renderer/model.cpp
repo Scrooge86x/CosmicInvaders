@@ -6,30 +6,27 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include <optional>
-#include <iostream>
 #include <format>
+#include <iostream>
+#include <optional>
+#include <stdexcept>
 
-[[nodiscard]] static std::optional<std::filesystem::path> findTextureInAssets(
-    const std::filesystem::path searchRoot,
-    const std::filesystem::path fullTexturePath
+[[nodiscard]] static std::filesystem::path findTextureInAssets(
+    const std::filesystem::path& searchRoot,
+    const std::filesystem::path& fullTexturePath
 ) {
-    try {
-        if (!std::filesystem::exists(searchRoot) || !std::filesystem::is_directory(searchRoot)) {
-            return {};
-        }
-
-        const auto targetFileName{ fullTexturePath.filename() };
-        for (const auto& entry : std::filesystem::recursive_directory_iterator{ searchRoot }) {
-            if (entry.is_regular_file() && entry.path().filename() == targetFileName) {
-                return entry.path();
-            }
-        }
-    } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "std::filesystem error: " << e.what() << '\n';
+    if (!std::filesystem::exists(searchRoot) || !std::filesystem::is_directory(searchRoot)) {
+        throw std::runtime_error{ std::format(R"("{}" is not a directory.)", searchRoot.generic_string()) };
     }
 
-    return {};
+    const auto targetFileName{ fullTexturePath.filename() };
+    for (const auto& entry : std::filesystem::recursive_directory_iterator{ searchRoot }) {
+        if (entry.is_regular_file() && entry.path().filename() == targetFileName) {
+            return entry.path();
+        }
+    }
+
+    throw std::runtime_error{ std::format(R"("{}" was not found.)", targetFileName.string()) };
 }
 
 Model::Model(
@@ -42,7 +39,7 @@ Model::Model(
         aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FlipUVs
     ) };
     if (!scene) {
-        return;
+        throw std::runtime_error{ std::format("Assimp failed to parse: {}", path.generic_string()) };
     }
 
     m_materials.reserve(scene->mNumMaterials);
@@ -54,15 +51,15 @@ Model::Model(
         aiMaterial* material{ scene->mMaterials[i] };
         if (material->GetTextureCount(aiTextureType_DIFFUSE)) {
             material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
-            if (texturePath.C_Str()[0] == '*') {
-                materialPtr->diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
-            } else {
-                auto textureAssetPath{ findTextureInAssets(path.parent_path(), texturePath.C_Str())};
-                if (textureAssetPath) {
-                    materialPtr->diffuse = Texture2D{ *textureAssetPath };
+            try {
+                if (texturePath.C_Str()[0] == '*') {
+                    materialPtr->diffuse = Texture2D{ *scene->mTextures[std::atoi(texturePath.C_Str() + 1)] };
                 } else {
-                    std::cerr << std::format("Asset path of '{}' was not found.", texturePath.C_Str());
+                    const auto textureAssetPath{ findTextureInAssets(path.parent_path(), texturePath.C_Str()) };
+                    materialPtr->diffuse = Texture2D{ textureAssetPath };
                 }
+            } catch (const std::exception& exception) {
+                std::cerr << "Error when loading a texture: " << exception.what() << '\n';
             }
         }
 

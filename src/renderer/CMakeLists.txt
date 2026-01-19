@@ -5,9 +5,10 @@ add_library(renderer STATIC
     model.cpp model.h
     camera.cpp camera.h
     model-store.cpp model-store.h
+    renderer.cpp renderer.h
     material.h
     lighting.h
-    renderer.cpp renderer.h 
+    gl-call.h
 )
 
 target_link_libraries(renderer

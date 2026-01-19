@@ -8,10 +8,22 @@
 
 struct GLFWwindow;
 
+/**
+ * @brief RAII wrapper around a GLFW window and OpenGL context.
+ *
+ * Manages window creation, context handling, buffer swapping
+ * and event polling.
+ */
 class GlWindow {
 public:
     using ResizeCallback = std::function<void(int, int)>;
 
+    /**
+     * @brief Creates a window and OpenGL context.
+     *
+     * @throws std::runtime_error If the window cannot be created or
+     *         OpenGL initialization fails.
+     */
     GlWindow(
         const int width,
         const int height,
@@ -25,24 +37,53 @@ public:
     GlWindow(GlWindow&& other) noexcept;
     GlWindow& operator=(GlWindow&& other) noexcept;
 
+    /**
+     * @brief Destroys the window.
+     */
     ~GlWindow();
 
-    [[nodiscard]] operator bool() const {
-        return m_window != NULL;
-    }
-
-    [[nodiscard]] GLFWwindow* getNativeHandle() const {
+    /**
+     * @brief Returns the native GLFW window handle.
+     */
+    [[nodiscard]] GLFWwindow* getNativeHandle() const noexcept {
         return m_window;
     }
 
-    [[nodiscard]] std::pair<int, int> getFramebufferSize() const;
-    [[nodiscard]] float getFramebufferAspectRatio() const;
-    [[nodiscard]] bool shouldClose() const;
+    /**
+     * @brief Returns the framebuffer size in pixels.
+     */
+    [[nodiscard]] std::pair<int, int> getFramebufferSize() const noexcept;
 
-    void makeCurrentContext() const;
-    void swapBuffers() const;
-    void pollEvents() const;
+    /**
+     * @brief Calculates the current framebuffer aspect ratio.
+     *
+     * Helper method useful for calculating projection matrix
+     */
+    [[nodiscard]] float getFramebufferAspectRatio() const noexcept;
 
+    /**
+     * @brief Checks if the window should close (for example if the user pressed the X button on the titlebar).
+     */
+    [[nodiscard]] bool shouldClose() const noexcept;
+
+    /**
+     * @brief Makes this window's context current.
+     */
+    void makeCurrentContext() const noexcept;
+
+    /**
+     * @brief Swaps front and back buffers.
+     */
+    void swapBuffers() const noexcept;
+
+    /**
+     * @brief Polls window events.
+     */
+    void pollEvents() const noexcept;
+
+    /**
+     * @brief Sets a callback invoked on window resize.
+     */
     void setResizeCallback(const ResizeCallback& resizeCallback) {
         m_resizeCallback = resizeCallback;
     }

@@ -10,16 +10,31 @@
 #include <filesystem>
 #include <unordered_map>
 
+/**
+ * @brief OpenGL shader program wrapper.
+ *
+ * Compiles, links and manages a shader program
+ * and uniform access.
+ */
 class Shader {
 public:
     using GLCharString = std::basic_string<GLchar>;
 
+    /**
+     * @brief Creates a shader program from source files.
+     *
+     * @throws std::runtime_error If the specified files cannot be opened or
+     *         the shader linking/compilation fails.
+     */
     Shader(
         const std::filesystem::path& vertexShaderPath,
         const std::filesystem::path& fragmentShaderPath,
         const std::filesystem::path& geometryShaderPath = {}
     );
 
+    /**
+     * @brief Destroys the shader program.
+     */
     ~Shader() {
         deleteShaderProgram();
     }
@@ -30,16 +45,23 @@ public:
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
 
-    bool reload();
-
-    void use() const {
+    /**
+     * @brief Activates the shader program.
+     */
+    void use() const noexcept {
         glUseProgram(m_shaderProgramId);
     }
 
-    [[nodiscard]] GLuint getId() const {
+    /**
+     * @brief Returns the OpenGL program ID.
+     */
+    [[nodiscard]] GLuint getId() const noexcept {
         return m_shaderProgramId;
     }
 
+    /**
+     * @brief Returns cached uniform location for a given name.
+     */
     [[nodiscard]] GLint getUniformLocation(const GLchar* const name);
 
     void setBool(const GLchar* const name, const bool value) {
@@ -93,14 +115,14 @@ public:
 private:
     GLuint createShaderFromFile(const GLenum type, const std::filesystem::path& fileName);
 
-    void deleteShaderProgram();
+    void deleteShaderProgram() noexcept;
     void createShaderProgram();
 
     GLuint m_shaderProgramId{};
     std::filesystem::path m_vertexShaderPath{};
     std::filesystem::path m_fragmentShaderPath{};
     std::filesystem::path m_geometryShaderPath{};
-    std::unordered_map<const GLchar*, GLint> m_uniformLocations{};
+    std::unordered_map<GLCharString, GLint> m_uniformLocations{};
 };
 
 #endif // SHADER_H

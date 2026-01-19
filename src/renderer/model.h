@@ -14,8 +14,22 @@ struct Material;
 struct aiScene;
 struct aiNode;
 
+/**
+ * @brief 3D model composed of multiple meshes.
+ *
+ * Loads mesh and material data using Assimp.
+ */
 class Model {
 public:
+    /**
+     * @brief Loads a model from disk.
+     *
+     * @param path Path to the model file.
+     * @param transform Root transform applied to the model.
+     *
+     * @throws std::runtime_error If assimp fails to parse the file
+     *         or the mesh creation fails.
+     */
     explicit Model(
         const std::filesystem::path& path,
         const glm::mat4& transform = { 1.f }
@@ -27,7 +41,7 @@ public:
     Model(Model&& other) noexcept = default;
     Model& operator=(Model&& other) noexcept = default;
 
-    [[nodiscard]] const std::vector<Mesh>& getMeshes() const {
+    [[nodiscard]] const std::vector<Mesh>& getMeshes() const noexcept {
         return m_meshes;
     }
 

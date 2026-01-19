@@ -4,14 +4,14 @@
 
 #include <utility>
 
-InputManager::InputManager(GLFWwindow* const window)
+InputManager::InputManager(GLFWwindow* const window) noexcept
     : m_window{ window }
 {}
 
 InputManager::InputManager(InputManager&& other) noexcept
     : m_window        { std::exchange(other.m_window, nullptr) }
-    , m_currentStates { std::exchange(other.m_currentStates, {}) }
-    , m_previousStates{ std::exchange(other.m_previousStates, {}) }
+    , m_currentStates { std::move(other.m_currentStates) }
+    , m_previousStates{ std::move(other.m_previousStates) }
 {}
 
 InputManager& InputManager::operator=(InputManager&& other) noexcept {
@@ -20,13 +20,13 @@ InputManager& InputManager::operator=(InputManager&& other) noexcept {
     }
 
     m_window         = std::exchange(other.m_window, nullptr);
-    m_currentStates  = std::exchange(other.m_currentStates, {});
-    m_previousStates = std::exchange(other.m_previousStates, {});
+    m_currentStates  = std::move(other.m_currentStates);
+    m_previousStates = std::move(other.m_previousStates);
 
     return *this;
 }
 
-void InputManager::update() {
+void InputManager::update() noexcept {
     if (!m_window) {
         return;
     }
