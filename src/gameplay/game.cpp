@@ -90,14 +90,17 @@ void Game::updateSystems(const double dt) {
 
     m_timePassed += dt;
 
+    if (gameplay::levels.size() <= m_currentLevel) {
+        m_gameState = GameState::Victory;
+        return;
+    }
+
     if (gameplay::levels[m_currentLevel].spawns.size() <= m_enemyIdx) {
-        if (m_currentLevel < gameplay::levels.size()) {
+        if (m_currentLevel < gameplay::levels.size() && !enemyExists(m_registry)) {
             ++m_currentLevel;
             m_enemyIdx = 0;
+            m_timePassed = 0;
             restorePlayerHealthSystem(m_registry);
-        }
-        else if (!enemyExists(m_registry)) {
-            m_gameState = GameState::Victory;
         }
     }
     else if (gameplay::levels[m_currentLevel].spawns[m_enemyIdx].spawnTime < m_timePassed * 1000) {

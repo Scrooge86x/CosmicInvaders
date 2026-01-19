@@ -49,7 +49,7 @@ void cleanUpSystem(entt::registry& registry) {
 
 void playerInputSystem(entt::registry& registry, const InputManager& inputManager, ModelStore& modelStore, const float deltaTime) {
     constexpr float animationTime{ 0.3f };
-    constexpr float bulletDelay{ 2.0f };
+    constexpr float bulletDelay{ 1.0f };
 
     auto player{ registry.view<PlayerTag>().front() };
     Animation& animation{ registry.get<Animation>(player) };
@@ -109,7 +109,7 @@ void playerInputSystem(entt::registry& registry, const InputManager& inputManage
 
 void restorePlayerHealthSystem(entt::registry& registry) {
     auto player = registry.view<PlayerTag>().front();
-    Health health{ registry.get<Health>(player) };
+    Health& health{ registry.get<Health>(player) };
     health.current = health.max;
 }
 
