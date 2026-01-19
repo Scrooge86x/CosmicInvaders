@@ -19,9 +19,11 @@ Game::Game(const GlWindow& window) noexcept
     : m_inputManager{ window.getNativeHandle() }
 {}
 
-void Game::update(const double dt) {
+void Game::update(double dt) {
     m_fpsCounter.update(dt);
     m_inputManager.update();
+
+    dt *= m_settings.gameSpeed;
 
     switch (m_gameState) {
     case GameState::MainMenu:

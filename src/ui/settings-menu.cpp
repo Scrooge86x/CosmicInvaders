@@ -14,6 +14,7 @@ void ui::drawSettingsMenu(Game& game, bool& isOpen) {
 
     ImGui::Begin("Settings", &isOpen);
     ImGui::Checkbox("Show fps", &settings.showFps);
+    ImGui::SliderFloat("Game speed", &settings.gameSpeed, 0.4f, 1.5f);
     if (ImGui::Button("Save settings")) {
         settings.saveToFile();
     }

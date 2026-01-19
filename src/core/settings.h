@@ -6,7 +6,8 @@
 #include <filesystem>
 
 #define SETTINGS_H_CONFIG \
-    X(bool, showFps, true)
+    X(bool, showFps, true) \
+    X(float, gameSpeed, 1.f)
 
 /**
  * @brief Application configuration container.

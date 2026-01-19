@@ -36,7 +36,7 @@ public:
     Game(Game&&) = delete;
     Game& operator=(Game&&) = delete;
 
-    void update(const double dt);
+    void update(double dt);
     void render(Renderer& renderer);
     void requestQuit() noexcept { m_shouldQuit = true; }
 
