@@ -38,20 +38,15 @@ target_link_libraries(demo
         glm
 )
 
-add_custom_command(
-    TARGET game
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND}
-    ARGS -E copy_directory_if_different
-        ${CMAKE_SOURCE_DIR}/assets
-        $<TARGET_FILE_DIR:game>/assets
-)
+function(copy_assets_for_target target)
+    add_custom_command(
+        TARGET ${target}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+            ${CMAKE_SOURCE_DIR}/assets
+            $<TARGET_FILE_DIR:${target}>/assets
+    )
+endfunction()
 
-add_custom_command(
-    TARGET demo
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND}
-    ARGS -E copy_directory_if_different
-        ${CMAKE_SOURCE_DIR}/assets
-        $<TARGET_FILE_DIR:demo>/assets
-)
+copy_assets_for_target(game)
+copy_assets_for_target(demo)
