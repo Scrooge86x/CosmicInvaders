@@ -28,7 +28,7 @@ enum class GameState {
 
 class Game {
 public:
-    Game(const GlWindow& window) noexcept;
+    Game(const GlWindow& window);
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
@@ -58,6 +58,7 @@ public:
 
 private:
     void updateSystems(const double dt);
+
     double m_timePassed{};
     std::size_t m_enemyIdx{};
     std::size_t m_currentLevel{};

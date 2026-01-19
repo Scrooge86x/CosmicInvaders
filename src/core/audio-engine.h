@@ -24,9 +24,7 @@ public:
     /**
      * @brief Destroys the audio engine and releases all resources.
      */
-    ~AudioEngine() {
-        ma_engine_uninit(&m_engine);
-    }
+    ~AudioEngine();
 
     AudioEngine(const AudioEngine&) = delete;
     AudioEngine& operator=(const AudioEngine&) = delete;
@@ -55,8 +53,28 @@ public:
         ma_engine_set_volume(&m_engine, volume);
     }
 
+    /**
+     * @brief Plays looping ambient background music.
+     *
+     * Stops any currently playing ambient track and starts a new one.
+     *
+     * @param ambientPath Path to the ambient audio file.
+     *
+     * @throws std::runtime_error If the ambient sound fails to initialize.
+     */
+    void playAmbient(const char* const ambientPath);
+
+    /**
+     * @brief Stops the currently playing ambient background music.
+     *
+     * If no ambient music is currently playing, this function does nothing.
+     * All resources associated with the ambient sound are released.
+     */
+    void stopAmbient() noexcept;
+
 private:
     ma_engine m_engine{};
+    ma_sound m_ambientSound{};
 };
 
 #endif // AUDIO_ENGINE_H

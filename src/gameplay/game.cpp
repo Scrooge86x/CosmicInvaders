@@ -15,9 +15,10 @@
 
 #include <iostream>
 
-Game::Game(const GlWindow& window) noexcept
+Game::Game(const GlWindow& window)
         : m_inputManager{ window.getNativeHandle() } {
     m_audioEngine.setVolume(m_settings.volume);
+    m_audioEngine.playAmbient("assets/sounds/space-ambient.mp3");
 }
 
 void Game::update(double dt) {
