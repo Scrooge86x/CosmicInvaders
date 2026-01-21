@@ -18,6 +18,8 @@ class AudioEngine {
 public:
     /**
      * @brief Constructs and initializes miniaudio engine.
+     *
+     * @throws std::runtime_error If miniaudio engine fails to initialize.
      */
     AudioEngine();
 
