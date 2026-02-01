@@ -9,8 +9,10 @@ Cosmic Invaders is a 3D game inspired by old classic, "Space Invaders". It is bu
 Main menu (running on [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux))  
 
 Game over screen (running on windows 11)  
+<img width="902" height="632" alt="game-over-on-windows-11" src="https://github.com/user-attachments/assets/af7c565a-801c-46a8-837c-c3b6d9f9b0fa" />
 
 Victory screen (running on kubuntu)  
+<img width="904" height="633" alt="victory-screen-on-kubuntu" src="https://github.com/user-attachments/assets/f5ee6ba0-8455-47e2-b52e-04a3f7aaccd9" />
 
 ## Prerequisites
 
