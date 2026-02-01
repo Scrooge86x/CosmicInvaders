@@ -237,8 +237,6 @@ void receivingDamageSystem(entt::registry& registry, const float deltaTime) {
 }
 
 void enemyShootingSystem(entt::registry& registry, ModelStore& modelStore, const float deltaTime) {
-    constexpr float delay{ 1.0f };
-
     auto enemy = registry.view<EnemyTag, TimeDelay, Transform>();
 
     for (auto [enemyEntity, timeDelay, transform] : enemy.each()) {
