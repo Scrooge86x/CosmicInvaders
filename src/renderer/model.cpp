@@ -10,6 +10,7 @@
 #include <iostream>
 #include <optional>
 #include <stdexcept>
+#include <string_view>
 
 [[nodiscard]] static std::filesystem::path findTextureInAssets(
     const std::filesystem::path& searchRoot,
@@ -19,14 +20,21 @@
         throw std::runtime_error{ std::format(R"("{}" is not a directory.)", searchRoot.generic_string()) };
     }
 
-    const auto targetFileName{ fullTexturePath.filename() };
+    const auto texturePathString{ fullTexturePath.string() };
+    std::string_view targetFileName{ texturePathString };
+
+    const auto lastSeparatorPos{ targetFileName.find_last_of("\\/") };
+    if (lastSeparatorPos != std::string_view::npos) {
+        targetFileName.remove_prefix(lastSeparatorPos + 1);
+    }
+
     for (const auto& entry : std::filesystem::recursive_directory_iterator{ searchRoot }) {
         if (entry.is_regular_file() && entry.path().filename() == targetFileName) {
             return entry.path();
         }
     }
 
-    throw std::runtime_error{ std::format(R"("{}" was not found.)", targetFileName.string()) };
+    throw std::runtime_error{ std::format(R"("{}" was not found.)", texturePathString) };
 }
 
 Model::Model(
