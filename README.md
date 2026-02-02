@@ -1,8 +1,9 @@
-# <center>Cosmic Invaders </center>
+# Cosmic Invaders
 
 ## Introduction
 
-Cosmic Invaders is a 3D game inspired by old classic, "Space Invaders". It is built using C++, OpenGL and ECS architecture with EnTT.
+Cosmic Invaders is a 3D game inspired by old classic, "Space Invaders".
+It is built using C++, OpenGL and ECS architecture with EnTT.
 
 ## Screenshots
 
@@ -65,12 +66,14 @@ All enemies shoot projectiles that deal 10 HP damage. Their firing delay is rand
 
 ## Documentation
 
-Game was documented with doxygen. To generate it follow these steps:
+The codebase is documented using Doxygen.
+To generate the documentation, follow these steps:
 
 1. Download and install [Doxygen](https://www.doxygen.nl/download.html).
-2. Open terminal/cmd in CosmicInvaders folder.
+2. Open a terminal or command prompt in the CosmicInvaders folder.
 3. Run `doxygen`
-Documentation will be in `./docs` folder.
+
+The documentation will be generated in the `./docs` folder.
 
 ## Used libraries
 
