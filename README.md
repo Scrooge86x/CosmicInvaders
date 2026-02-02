@@ -84,34 +84,34 @@ Documentation will be in `./docs` folder.
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [stb](https://nothings.org/stb/)
 
-### assets
+### [assets](assets/)
 
-During build they are copied to the folder with the executable file.
+Assets copied to the executable directory during the build process.
 
-### core
+### [core](src/core/)
 
-All core classes, like AudioEngine and InputManager.
+Core systems such as windowing, input, audio, timing, and settings.
 
-### ecs
+### [ecs](src/ecs/)
 
-Contains ECS implementation with EnTT library.
+ECS utilities and systems built on top of the EnTT library.
 
-### gameplay
+### [gameplay](src/gameplay/)
 
-Contains class that updates whole game and namespace that contains informations about levels.
+High-level game logic that coordinates systems and drives game flow.
 
-### renderer
+### [renderer](src/renderer/)
 
-All classes related to model processing and rendering.
+Rendering logic and model processing.
 
-### ui
+### [ui](src/ui/)
 
-Implemetation of games UI.
+User interface and HUD.
 
-### demo.cpp
+### [demo.cpp](src/demo.cpp)
 
-Runs demo that shows rendering capabilities.
+Standalone demo showcasing rendering features.
 
-### main.cpp
+### [main.cpp](src/main.cpp)
 
-Main gameplay loop.
+Main game entry point responsible for starting and running the game.
