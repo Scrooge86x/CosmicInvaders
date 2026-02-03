@@ -77,14 +77,14 @@ The documentation will be generated in the `./docs` folder.
 
 ## Used libraries
 
-- [assimp](https://assimp.org/)
-- [entt](https://github.com/skypjack/entt)
-- [glad](https://github.com/Dav1dde/glad)
-- [glfw](https://www.glfw.org/)
-- [glm](https://github.com/g-truc/glm)
-- [imgui](https://www.dearimgui.com/)
+- [Assimp](https://assimp.org/)
+- [EnTT](https://skypjack.github.io/entt/)
+- [GLAD](https://glad.dav1d.de/)
+- [GLFW](https://www.glfw.org/)
+- [GLM](https://glm.g-truc.net/)
+- [Dear ImGui](https://www.dearimgui.com/)
 - [miniaudio](https://miniaud.io/)
-- [nlohmann/json](https://github.com/nlohmann/json)
+- [nlohmann/json](https://json.nlohmann.me/)
 - [stb](https://nothings.org/stb/)
 
 ### [assets](assets/)
